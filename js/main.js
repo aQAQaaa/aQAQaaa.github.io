@@ -27,12 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', '#1a1a1a');
+    // Update button icon
+    const btn = document.getElementById('darkmode');
+    if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
   };
 
   const activateLightMode = () => {
     document.documentElement.setAttribute('data-theme', 'light');
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', '#ffffff');
+    const btn = document.getElementById('darkmode');
+    if (btn) btn.innerHTML = '<i class="fas fa-moon"></i>';
   };
 
   // Initialize theme
@@ -45,11 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     theme === 'light' ? activateLightMode() : activateDarkMode();
   }
 
-  // Dark mode toggle
+  // Dark mode toggle with smooth transition
   const darkmodeBtn = document.getElementById('darkmode');
   if (darkmodeBtn) {
     darkmodeBtn.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme');
+      // Add transition class for smooth color change
+      document.body.style.transition = 'background-color 0.5s ease, color 0.5s ease';
       if (currentTheme === 'light') {
         activateDarkMode();
         saveToLocal.set('theme', 'dark', 365);
@@ -57,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         activateLightMode();
         saveToLocal.set('theme', 'light', 365);
       }
+      // Remove transition after animation
+      setTimeout(() => { document.body.style.transition = ''; }, 600);
     });
   }
 
@@ -278,35 +287,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==================== Right Side Controls ====================
   const rightside = document.getElementById('rightside');
-  document.getElementById('rightside-config')?.addEventListener('click', () => rightside?.classList.toggle('open'));
+  const rightsideConfig = document.getElementById('rightside-config');
+  const rightsideConfigHide = document.getElementById('rightside-config-hide');
 
+  // Toggle settings panel
+  rightsideConfig?.addEventListener('click', () => {
+    rightside?.classList.toggle('open');
+  });
+
+  // Go Up button with smooth scroll
   const goUpBtn = document.getElementById('go-up');
   const scrollPercent = document.querySelector('.scroll-percent');
-  goUpBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+  goUpBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Update scroll percentage and button visibility
   const updateScrollPercent = () => {
     const st = window.scrollY;
     const dh = document.documentElement.scrollHeight - window.innerHeight;
     const p = dh > 0 ? Math.round(st / dh * 100) : 0;
-    if (scrollPercent) scrollPercent.textContent = st > 100 ? p + '%' : '';
-    if (goUpBtn) goUpBtn.style.display = st > 100 ? 'block' : 'none';
+
+    if (scrollPercent) {
+      scrollPercent.textContent = st > 100 ? p + '%' : '';
+    }
+
+    if (goUpBtn) {
+      if (st > 100) {
+        goUpBtn.classList.add('show');
+      } else {
+        goUpBtn.classList.remove('show');
+      }
+    }
   };
+
   window.addEventListener('scroll', updateScrollPercent, { passive: true });
   updateScrollPercent();
 
   // ==================== Aside Toggle ====================
-  document.getElementById('hide-aside-btn')?.addEventListener('click', () => {
-    const l = document.querySelector('.layout');
-    if (l) { l.classList.toggle('hide-aside'); saveToLocal.set('aside-status', l.classList.contains('hide-aside') ? 'hide' : 'show', 365); }
+  const hideAsideBtn = document.getElementById('hide-aside-btn');
+  const layout = document.querySelector('.layout');
+
+  hideAsideBtn?.addEventListener('click', () => {
+    if (layout) {
+      layout.classList.toggle('hide-aside');
+      saveToLocal.set('aside-status', layout.classList.contains('hide-aside') ? 'hide' : 'show', 365);
+    }
   });
-  if (saveToLocal.get('aside-status') === 'hide') document.querySelector('.layout')?.classList.add('hide-aside');
+
+  if (saveToLocal.get('aside-status') === 'hide') {
+    layout?.classList.add('hide-aside');
+  }
 
   // ==================== Mobile Sidebar ====================
   const toggleMenu = document.getElementById('toggle-menu');
   const menuMask = document.getElementById('menu-mask');
   const sidebarMenus = document.getElementById('sidebar-menus');
-  const openSidebar = () => { if (menuMask) { menuMask.style.display = 'block'; menuMask.style.animation = 'to_show 0.5s'; } if (sidebarMenus) sidebarMenus.classList.add('open'); document.body.style.overflow = 'hidden'; };
-  const closeSidebar = () => { if (menuMask) { menuMask.style.animation = 'to_hide 0.5s'; setTimeout(() => { menuMask.style.display = 'none'; }, 500); } if (sidebarMenus) sidebarMenus.classList.remove('open'); document.body.style.overflow = ''; };
+
+  const openSidebar = () => {
+    if (menuMask) {
+      menuMask.style.display = 'block';
+      menuMask.style.animation = 'to_show 0.5s';
+    }
+    if (sidebarMenus) sidebarMenus.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeSidebar = () => {
+    if (menuMask) {
+      menuMask.style.animation = 'to_hide 0.5s';
+      setTimeout(() => { menuMask.style.display = 'none'; }, 500);
+    }
+    if (sidebarMenus) sidebarMenus.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
   toggleMenu?.addEventListener('click', openSidebar);
   menuMask?.addEventListener('click', closeSidebar);
 
@@ -330,11 +386,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== Keyboard Shortcuts ====================
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    // T = toggle theme
     if (e.key === 't' || e.key === 'T') {
       const t = document.documentElement.getAttribute('data-theme');
+      document.body.style.transition = 'background-color 0.5s ease, color 0.5s ease';
       t === 'light' ? (activateDarkMode(), saveToLocal.set('theme', 'dark', 365)) : (activateLightMode(), saveToLocal.set('theme', 'light', 365));
+      setTimeout(() => { document.body.style.transition = ''; }, 600);
     }
   });
 
   window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+  // ==================== Smooth Scroll for All Internal Links ====================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ==================== Reading Progress Bar ====================
+  const progressBar = document.getElementById('reading-progress');
+  if (progressBar) {
+    window.addEventListener('scroll', () => {
+      const st = window.scrollY;
+      const dh = document.documentElement.scrollHeight - window.innerHeight;
+      const p = dh > 0 ? (st / dh) * 100 : 0;
+      progressBar.style.width = p + '%';
+    }, { passive: true });
+  }
 });
