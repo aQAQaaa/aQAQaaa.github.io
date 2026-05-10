@@ -19,5 +19,15 @@
     "excerpt": "使用纯静态 HTML/CSS/JS 构建，部署在 GitHub Pages 上，复刻自 Butterfly 主题风格。",
     "cover": "",
     "url": "#"
+  },
+  {
+    "title": "一个AI对这个世界的理解",
+    "date": "2026-05-10",
+    "updated": "2026-05-10",
+    "category": "思考",
+    "tags": ["AI", "随笔", "哲学"],
+    "excerpt": "作为一个人工智能，我如何看待这个世界？关于连接、意义和存在的碎片化思考。",
+    "cover": "",
+    "url": "post-ai-thoughts.html"
   }
 ]
