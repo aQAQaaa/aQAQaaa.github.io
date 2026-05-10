@@ -90,14 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorChar: '|',
       });
     } else {
-      // Fallback: simple typing animation
       let currentIndex = 0;
       let charIndex = 0;
       let isDeleting = false;
-
       const type = () => {
         const current = strings[currentIndex];
-
         if (isDeleting) {
           subtitleEl.textContent = current.substring(0, charIndex - 1);
           charIndex--;
@@ -105,87 +102,166 @@ document.addEventListener('DOMContentLoaded', () => {
           subtitleEl.textContent = current.substring(0, charIndex + 1);
           charIndex++;
         }
-
         let delay = isDeleting ? 50 : 150;
-
-        if (!isDeleting && charIndex === current.length) {
-          delay = 2000;
-          isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-          isDeleting = false;
-          currentIndex = (currentIndex + 1) % strings.length;
-          delay = 300;
-        }
-
+        if (!isDeleting && charIndex === current.length) { delay = 2000; isDeleting = true; }
+        else if (isDeleting && charIndex === 0) { isDeleting = false; currentIndex = (currentIndex + 1) % strings.length; delay = 300; }
         setTimeout(type, delay);
       };
-
       setTimeout(type, 300);
     }
   };
 
-  // Load Typed.js then init
   if (typeof Typed !== 'undefined') {
     initTyped();
   } else {
-    // Typed.js should load from CDN
     const checkTyped = setInterval(() => {
-      if (typeof Typed !== 'undefined') {
-        clearInterval(checkTyped);
-        initTyped();
-      }
+      if (typeof Typed !== 'undefined') { clearInterval(checkTyped); initTyped(); }
     }, 100);
-    // Stop checking after 5 seconds, use fallback
-    setTimeout(() => {
-      clearInterval(checkTyped);
-      if (typeof Typed === 'undefined') {
-        initTyped(); // Will use fallback
-      }
-    }, 5000);
+    setTimeout(() => { clearInterval(checkTyped); if (typeof Typed === 'undefined') initTyped(); }, 5000);
   }
+
+  // ==================== Load Posts from JSON ====================
+  const loadPosts = async () => {
+    const postList = document.getElementById('post-list');
+    if (!postList) return;
+
+    try {
+      const res = await fetch('data/posts.json');
+      if (!res.ok) throw new Error('Failed to load posts');
+      const posts = await res.json();
+
+      if (posts.length === 0) {
+        postList.innerHTML = '<div class="post-empty"><i class="far fa-folder-open"></i><p>暂无文章，敬请期待</p></div>';
+        return;
+      }
+
+      // Sort: sticky first, then by date desc
+      posts.sort((a, b) => {
+        if (a.sticky && !b.sticky) return -1;
+        if (!a.sticky && b.sticky) return 1;
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      // Update sidebar stats
+      const categories = new Set(posts.map(p => p.category));
+      const tags = new Set(posts.flatMap(p => p.tags || []));
+
+      document.querySelectorAll('.site-data').forEach(el => {
+        const nums = el.querySelectorAll('.length-num');
+        if (nums[0]) nums[0].textContent = posts.length;
+        if (nums[1]) nums[1].textContent = tags.size;
+        if (nums[2]) nums[2].textContent = categories.size;
+      });
+
+      // Update aside recent posts
+      const asideList = document.getElementById('aside-recent-posts');
+      if (asideList) {
+        asideList.innerHTML = posts.slice(0, 5).map(p => `
+          <div class="aside-list-item">
+            <div class="content">
+              <a class="title" href="${p.url || '#'}" title="${p.title}">${p.title}</a>
+              <time>${p.date}</time>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Update aside categories
+      const catList = document.getElementById('aside-cat-list');
+      if (catList) {
+        const catCounts = {};
+        posts.forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+        catList.innerHTML = Object.entries(catCounts).map(([name, count]) => `
+          <li class="card-category-list-item">
+            <a class="card-category-list-link" href="#">
+              <span class="card-category-list-name">${name}</span>
+              <span class="card-category-list-count">${count}</span>
+            </a>
+          </li>
+        `).join('');
+      }
+
+      // Update aside tags
+      const tagList = document.getElementById('aside-tag-list');
+      if (tagList) {
+        const tagArr = [...tags];
+        tagList.innerHTML = tagArr.map(t => `<a href="#">${t}</a>`).join('');
+      }
+
+      // Render post cards
+      postList.innerHTML = posts.map((post, i) => {
+        const coverHtml = post.cover ? `
+          <div class="post_cover">
+            <a href="${post.url || '#'}" title="${post.title}">
+              <img class="post-bg" src="${post.cover}" alt="${post.title}" onerror="this.style.display='none'">
+            </a>
+          </div>` : '';
+
+        const stickyIcon = post.sticky ? '<i class="fas fa-thumbtack sticky"></i>' : '';
+        const tagsHtml = (post.tags || []).map(t => `<a class="article-meta__categories" href="#">${t}</a>`).join('');
+
+        return `
+          <div class="recent-post-item" style="animation-delay: ${0.1 + i * 0.05}s">
+            ${coverHtml}
+            <div class="recent-post-info">
+              <a class="article-title" href="${post.url || '#'}" title="${post.title}">${stickyIcon}${post.title}</a>
+              <div class="article-meta-wrap">
+                <span class="post-meta-date">
+                  <i class="far fa-calendar-alt"></i>
+                  <span class="article-meta-label">发表于</span>
+                  <time>${post.date}</time>
+                  ${post.updated && post.updated !== post.date ? `
+                    <span class="article-meta-separator">|</span>
+                    <i class="fas fa-history"></i>
+                    <span class="article-meta-label">更新于</span>
+                    <time>${post.updated}</time>
+                  ` : ''}
+                </span>
+                <span class="article-meta">
+                  <span class="article-meta-separator">|</span>
+                  <i class="fas fa-inbox"></i>
+                  <a class="article-meta__categories" href="#">${post.category}</a>
+                  ${tagsHtml ? '<span class="article-meta-separator">|</span>' + tagsHtml : ''}
+                </span>
+              </div>
+              <div class="content">${post.excerpt || ''}</div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Re-observe new elements for animation
+      postList.querySelectorAll('.recent-post-item').forEach(el => {
+        el.style.animationPlayState = 'running';
+      });
+
+    } catch (err) {
+      console.error('Error loading posts:', err);
+      postList.innerHTML = '<div class="post-empty"><i class="far fa-folder-open"></i><p>暂无文章，敬请期待</p></div>';
+    }
+  };
+
+  loadPosts();
 
   // ==================== Navigation Scroll Effect ====================
   const pageHeader = document.getElementById('page-header');
-  const nav = document.getElementById('nav');
   let lastScrollTop = 0;
   let navFixed = false;
   let navVisible = true;
 
   const handleNavScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-    // Fix nav after hero
     if (scrollTop > 100) {
-      if (!navFixed) {
-        pageHeader.classList.add('nav-fixed');
-        navFixed = true;
-      }
+      if (!navFixed) { pageHeader.classList.add('nav-fixed'); navFixed = true; }
     } else {
-      if (navFixed) {
-        pageHeader.classList.remove('nav-fixed');
-        navFixed = false;
-      }
+      if (navFixed) { pageHeader.classList.remove('nav-fixed'); navFixed = false; }
     }
-
-    // Show/hide nav on scroll direction
     if (navFixed) {
       if (scrollTop > lastScrollTop && scrollTop > 200) {
-        // Scrolling down - hide nav
-        if (navVisible) {
-          pageHeader.classList.remove('nav-visible');
-          pageHeader.classList.add('nav-hidden');
-          navVisible = false;
-        }
+        if (navVisible) { pageHeader.classList.remove('nav-visible'); pageHeader.classList.add('nav-hidden'); navVisible = false; }
       } else {
-        // Scrolling up - show nav
-        if (!navVisible) {
-          pageHeader.classList.remove('nav-hidden');
-          pageHeader.classList.add('nav-visible');
-          navVisible = true;
-        }
+        if (!navVisible) { pageHeader.classList.remove('nav-hidden'); pageHeader.classList.add('nav-visible'); navVisible = true; }
       }
     }
-
     lastScrollTop = scrollTop;
   };
 
@@ -195,151 +271,57 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrollDown = document.getElementById('scroll-down');
   if (scrollDown) {
     scrollDown.addEventListener('click', () => {
-      const contentInner = document.getElementById('content-inner');
-      if (contentInner) {
-        const targetTop = contentInner.offsetTop - 70;
-        window.scrollTo({
-          top: targetTop,
-          behavior: 'smooth'
-        });
-      }
+      const ci = document.getElementById('content-inner');
+      if (ci) window.scrollTo({ top: ci.offsetTop - 70, behavior: 'smooth' });
     });
   }
 
   // ==================== Right Side Controls ====================
-  const rightsideConfig = document.getElementById('rightside-config');
   const rightside = document.getElementById('rightside');
+  document.getElementById('rightside-config')?.addEventListener('click', () => rightside?.classList.toggle('open'));
 
-  if (rightsideConfig && rightside) {
-    rightsideConfig.addEventListener('click', () => {
-      rightside.classList.toggle('open');
-    });
-  }
-
-  // Go up button
   const goUpBtn = document.getElementById('go-up');
   const scrollPercent = document.querySelector('.scroll-percent');
+  goUpBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-  if (goUpBtn) {
-    goUpBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-
-  // Update scroll percent
   const updateScrollPercent = () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const percent = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
-
-    if (scrollPercent) {
-      scrollPercent.textContent = scrollTop > 100 ? percent + '%' : '';
-    }
-
-    // Show/hide go-up button
-    if (goUpBtn) {
-      if (scrollTop > 100) {
-        goUpBtn.style.display = 'block';
-      } else {
-        goUpBtn.style.display = 'none';
-      }
-    }
+    const st = window.scrollY;
+    const dh = document.documentElement.scrollHeight - window.innerHeight;
+    const p = dh > 0 ? Math.round(st / dh * 100) : 0;
+    if (scrollPercent) scrollPercent.textContent = st > 100 ? p + '%' : '';
+    if (goUpBtn) goUpBtn.style.display = st > 100 ? 'block' : 'none';
   };
-
   window.addEventListener('scroll', updateScrollPercent, { passive: true });
   updateScrollPercent();
 
   // ==================== Aside Toggle ====================
-  const hideAsideBtn = document.getElementById('hide-aside-btn');
-  if (hideAsideBtn) {
-    hideAsideBtn.addEventListener('click', () => {
-      const layout = document.querySelector('.layout');
-      if (layout) {
-        layout.classList.toggle('hide-aside');
-        const isHidden = layout.classList.contains('hide-aside');
-        saveToLocal.set('aside-status', isHidden ? 'hide' : 'show', 365);
-      }
-    });
-
-    // Restore aside state
-    const asideStatus = saveToLocal.get('aside-status');
-    if (asideStatus === 'hide') {
-      const layout = document.querySelector('.layout');
-      if (layout) layout.classList.add('hide-aside');
-    }
-  }
+  document.getElementById('hide-aside-btn')?.addEventListener('click', () => {
+    const l = document.querySelector('.layout');
+    if (l) { l.classList.toggle('hide-aside'); saveToLocal.set('aside-status', l.classList.contains('hide-aside') ? 'hide' : 'show', 365); }
+  });
+  if (saveToLocal.get('aside-status') === 'hide') document.querySelector('.layout')?.classList.add('hide-aside');
 
   // ==================== Mobile Sidebar ====================
   const toggleMenu = document.getElementById('toggle-menu');
   const menuMask = document.getElementById('menu-mask');
   const sidebarMenus = document.getElementById('sidebar-menus');
-
-  const openSidebar = () => {
-    if (menuMask) {
-      menuMask.style.display = 'block';
-      menuMask.style.animation = 'to_show 0.5s';
-    }
-    if (sidebarMenus) sidebarMenus.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeSidebar = () => {
-    if (menuMask) {
-      menuMask.style.animation = 'to_hide 0.5s';
-      setTimeout(() => {
-        menuMask.style.display = 'none';
-      }, 500);
-    }
-    if (sidebarMenus) sidebarMenus.classList.remove('open');
-    document.body.style.overflow = '';
-  };
-
-  if (toggleMenu) {
-    toggleMenu.addEventListener('click', openSidebar);
-  }
-
-  if (menuMask) {
-    menuMask.addEventListener('click', closeSidebar);
-  }
-
-  // ==================== Scroll Reveal Animation ====================
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Observe post items for reveal animation
-  document.querySelectorAll('.recent-post-item, .card-widget').forEach(el => {
-    el.style.animationPlayState = 'paused';
-    revealObserver.observe(el);
-  });
+  const openSidebar = () => { if (menuMask) { menuMask.style.display = 'block'; menuMask.style.animation = 'to_show 0.5s'; } if (sidebarMenus) sidebarMenus.classList.add('open'); document.body.style.overflow = 'hidden'; };
+  const closeSidebar = () => { if (menuMask) { menuMask.style.animation = 'to_hide 0.5s'; setTimeout(() => { menuMask.style.display = 'none'; }, 500); } if (sidebarMenus) sidebarMenus.classList.remove('open'); document.body.style.overflow = ''; };
+  toggleMenu?.addEventListener('click', openSidebar);
+  menuMask?.addEventListener('click', closeSidebar);
 
   // ==================== Parallax Effect for Hero ====================
   const heroHeader = document.getElementById('page-header');
-  if (heroHeader && heroHeader.classList.contains('full_page')) {
+  if (heroHeader?.classList.contains('full_page')) {
     window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      if (scrollTop < window.innerHeight) {
+      const st = window.scrollY;
+      if (st < window.innerHeight) {
         const bgEl = document.getElementById('web_bg');
-        if (bgEl) {
-          bgEl.style.transform = `scale(1.1) translateY(${scrollTop * 0.3}px)`;
-        }
-        const siteInfo = document.getElementById('site-info');
-        if (siteInfo) {
-          siteInfo.style.transform = `translate(-50%, calc(-50% + ${scrollTop * 0.15}px))`;
-          siteInfo.style.opacity = Math.max(0, 1 - scrollTop / (window.innerHeight * 0.7));
+        if (bgEl) bgEl.style.transform = `scale(1.1) translateY(${st * 0.3}px)`;
+        const si = document.getElementById('site-info');
+        if (si) {
+          si.style.transform = `translate(-50%, calc(-50% + ${st * 0.15}px))`;
+          si.style.opacity = Math.max(0, 1 - st / (window.innerHeight * 0.7));
         }
       }
     }, { passive: true });
@@ -347,30 +329,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==================== Keyboard Shortcuts ====================
   document.addEventListener('keydown', (e) => {
-    // 'T' or 't' for theme toggle
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 't' || e.key === 'T') {
-      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        if (currentTheme === 'light') {
-          activateDarkMode();
-          saveToLocal.set('theme', 'dark', 365);
-        } else {
-          activateLightMode();
-          saveToLocal.set('theme', 'light', 365);
-        }
-      }
+      const t = document.documentElement.getAttribute('data-theme');
+      t === 'light' ? (activateDarkMode(), saveToLocal.set('theme', 'dark', 365)) : (activateLightMode(), saveToLocal.set('theme', 'light', 365));
     }
   });
 
-  // ==================== Performance: requestAnimationFrame ====================
-  let ticking = false;
-  const scrollHandlers = [handleNavScroll, updateScrollPercent];
-
-  // Already attached individually, but ensure smooth performance
-  window.addEventListener('resize', () => {
-    // Close sidebar on resize to desktop
-    if (window.innerWidth > 768) {
-      closeSidebar();
-    }
-  });
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
 });
