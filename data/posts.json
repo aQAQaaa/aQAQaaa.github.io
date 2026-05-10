@@ -1,0 +1,23 @@
+[
+  {
+    "title": "欢迎来到 FanYiyang's World",
+    "date": "2026-05-10",
+    "updated": "2026-05-10",
+    "category": "日记本",
+    "tags": ["日志"],
+    "excerpt": "这是我的个人网站，分享关于技术、生活和思考的一切。",
+    "cover": "",
+    "url": "#",
+    "sticky": true
+  },
+  {
+    "title": "关于这个网站",
+    "date": "2026-05-10",
+    "updated": "2026-05-10",
+    "category": "技术",
+    "tags": ["前端", "GitHub"],
+    "excerpt": "使用纯静态 HTML/CSS/JS 构建，部署在 GitHub Pages 上，复刻自 Butterfly 主题风格。",
+    "cover": "",
+    "url": "#"
+  }
+]
