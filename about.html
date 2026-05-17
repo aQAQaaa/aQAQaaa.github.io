@@ -436,12 +436,40 @@
       color: var(--font-color);
       font-style: italic;
     }
+    .timeline-image {
+      width: 100%;
+      height: 180px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .timeline-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .timeline-card:hover .timeline-image img {
+      transform: scale(1.08);
+    }
+    .timeline-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 40%;
+      background: linear-gradient(transparent, rgba(0,0,0,0.3));
+      pointer-events: none;
+    }
 
-    /* --- Interest Orbits --- */
+
+    /* --- Interest Orbits (Draggable) --- */
     .orbit-container {
       position: relative;
-      width: 340px; height: 340px;
+      width: 360px; height: 360px;
       margin: 0 auto 60px;
+      cursor: default;
+      user-select: none;
     }
     .orbit-center {
       position: absolute;
@@ -457,6 +485,7 @@
       color: #fff;
       box-shadow: 0 0 40px rgba(73,177,245,0.3);
       z-index: 3;
+      pointer-events: none;
     }
     .orbit-ring {
       position: absolute;
@@ -464,17 +493,15 @@
       border: 1.5px dashed var(--border-color);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      animation: orbitSpin linear infinite;
+      pointer-events: none;
+      transition: border-color 0.3s;
     }
-    .orbit-ring-1 { width: 200px; height: 200px; animation-duration: 20s; }
-    .orbit-ring-2 { width: 300px; height: 300px; animation-duration: 30s; }
-    @keyframes orbitSpin {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to   { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-    .orbit-item {
+    .orbit-ring-1 { width: 200px; height: 200px; }
+    .orbit-ring-2 { width: 320px; height: 320px; }
+    .orbit-container.dragging .orbit-ring { border-color: var(--link-color); }
+    .orbit-item.draggable-planet {
       position: absolute;
-      width: 52px; height: 52px;
+      width: 54px; height: 54px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -482,36 +509,34 @@
       font-size: 1.4rem;
       color: #fff;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      z-index: 2;
-      transition: transform 0.3s ease;
-      cursor: default;
+      z-index: 10;
+      cursor: grab;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+      touch-action: none;
     }
-    .orbit-item:hover {
-      transform: scale(1.25);
+    .orbit-item.draggable-planet:active {
+      cursor: grabbing;
+      box-shadow: 0 8px 30px rgba(73,177,245,0.4);
+      transform: scale(1.2);
+      z-index: 20;
     }
-    .orbit-item-label {
+    .orbit-item.draggable-planet .orbit-item-label {
       position: absolute;
       bottom: -22px;
       font-size: 0.72rem;
       color: var(--font-color);
       white-space: nowrap;
       font-weight: 600;
+      pointer-events: none;
     }
-    /* Ring 1 positions (3 items, 120° apart) */
-    .orbit-ring-1 .orbit-item:nth-child(1) { top: -26px; left: calc(50% - 26px); }
-    .orbit-ring-1 .orbit-item:nth-child(2) { bottom: 10%; right: -10%; }
-    .orbit-ring-1 .orbit-item:nth-child(3) { bottom: 10%; left: -10%; }
-    /* Ring 2 positions (3 items, 120° apart) */
-    .orbit-ring-2 .orbit-item:nth-child(1) { top: -26px; left: calc(50% - 26px); }
-    .orbit-ring-2 .orbit-item:nth-child(2) { bottom: 5%; right: -5%; }
-    .orbit-ring-2 .orbit-item:nth-child(3) { bottom: 5%; left: -5%; }
-
-    /* Counter-orbit for items to stay upright */
-    .orbit-ring .orbit-item {
-      animation: counterSpin linear infinite;
+    .orbit-hint {
+      text-align: center;
+      color: var(--dark-grey);
+      font-size: 0.82rem;
+      margin-top: -30px;
+      margin-bottom: 30px;
     }
-    .orbit-ring-1 .orbit-item { animation-duration: 20s; }
-    .orbit-ring-2 .orbit-item { animation-duration: 30s; }
+    .orbit-hint i { margin-right: 4px; }
     @keyframes counterSpin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(-360deg); }
@@ -774,6 +799,7 @@
       <div class="timeline-item left" data-animate>
         <div class="timeline-dot"></div>
         <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=600&h=300&fit=crop" alt="Harry Potter" loading="lazy"></div>
           <span class="timeline-era"><i class="fas fa-magic"></i> 小学时代</span>
           <div class="timeline-title">
             <span class="book-icon">⚡</span> 哈利 · 波特
@@ -792,6 +818,7 @@
       <div class="timeline-item right" data-animate>
         <div class="timeline-dot"></div>
         <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=300&fit=crop" alt="Three-Body Problem" loading="lazy"></div>
           <span class="timeline-era"><i class="fas fa-atom"></i> 初中时代</span>
           <div class="timeline-title">
             <span class="book-icon">🌌</span> 三体
@@ -810,6 +837,7 @@
       <div class="timeline-item left" data-animate>
         <div class="timeline-dot"></div>
         <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=300&fit=crop" alt="Stranger Things" loading="lazy"></div>
           <span class="timeline-era"><i class="fas fa-ghost"></i> 高中时代</span>
           <div class="timeline-title">
             <span class="book-icon">🔦</span> 怪奇物语
@@ -836,41 +864,41 @@
       <p class="section-subtitle">围绕热爱运转的小星球们</p>
     </div>
 
-    <!-- Orbit Visualization -->
-    <div class="orbit-container">
+    <!-- Orbit Visualization (Draggable) -->
+    <div class="orbit-container" id="orbitContainer">
       <div class="orbit-center">
         <i class="fas fa-star"></i>
       </div>
-      <div class="orbit-ring orbit-ring-1">
-        <div class="orbit-item" style="background: linear-gradient(135deg, #4caf50, #81c784);">
-          <i class="fas fa-cube"></i>
-          <span class="orbit-item-label">Minecraft</span>
-        </div>
-        <div class="orbit-item" style="background: linear-gradient(135deg, #2196f3, #64b5f6);">
-          <i class="fas fa-code"></i>
-          <span class="orbit-item-label">编程</span>
-        </div>
-        <div class="orbit-item" style="background: linear-gradient(135deg, #ff9800, #ffb74d);">
-          <i class="fas fa-puzzle-piece"></i>
-          <span class="orbit-item-label">模组开发</span>
-        </div>
+      <div class="orbit-ring orbit-ring-1" id="orbitRing1"></div>
+      <div class="orbit-ring orbit-ring-2" id="orbitRing2"></div>
+      <!-- Draggable items placed absolutely by JS -->
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="0" style="background: linear-gradient(135deg, #4caf50, #81c784);">
+        <i class="fas fa-cube"></i>
+        <span class="orbit-item-label">Minecraft</span>
       </div>
-      <div class="orbit-ring orbit-ring-2">
-        <div class="orbit-item" style="background: linear-gradient(135deg, #e91e63, #f48fb1);">
-          <i class="fas fa-running"></i>
-          <span class="orbit-item-label">跑步</span>
-        </div>
-        <div class="orbit-item" style="background: linear-gradient(135deg, #9c27b0, #ce93d8);">
-          <i class="fas fa-bicycle"></i>
-          <span class="orbit-item-label">骑行</span>
-        </div>
-        <div class="orbit-item" style="background: linear-gradient(135deg, #607d8b, #90a4ae);">
-          <i class="fas fa-book"></i>
-          <span class="orbit-item-label">阅读</span>
-        </div>
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="1" style="background: linear-gradient(135deg, #2196f3, #64b5f6);">
+        <i class="fas fa-code"></i>
+        <span class="orbit-item-label">编程</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="2" style="background: linear-gradient(135deg, #ff9800, #ffb74d);">
+        <i class="fas fa-puzzle-piece"></i>
+        <span class="orbit-item-label">模组开发</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="0" style="background: linear-gradient(135deg, #e91e63, #f48fb1);">
+        <i class="fas fa-running"></i>
+        <span class="orbit-item-label">跑步</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="1" style="background: linear-gradient(135deg, #9c27b0, #ce93d8);">
+        <i class="fas fa-bicycle"></i>
+        <span class="orbit-item-label">骑行</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="2" style="background: linear-gradient(135deg, #607d8b, #90a4ae);">
+        <i class="fas fa-book"></i>
+        <span class="orbit-item-label">阅读</span>
       </div>
     </div>
 
+    <p class="orbit-hint"><i class="fas fa-hand-pointer"></i>拖动星球改变轨道</p>
     <!-- Interest Detail Cards -->
     <div class="interest-cards">
       <div class="interest-card" data-animate>
@@ -902,6 +930,96 @@
   </section>
 
   <script>
+    // ===== Draggable Orbit Planets =====
+    (function() {
+      const container = document.getElementById('orbitContainer');
+      if (!container) return;
+      const cx = container.offsetWidth / 2;
+      const cy = container.offsetHeight / 2;
+      const radii = [100, 160]; // orbit ring radii
+      const items = container.querySelectorAll('.draggable-planet');
+      const totalItems = items.length;
+      const perOrbit = 3;
+      let angles = [0, (2*Math.PI/3), (4*Math.PI/3), 0.5, (0.5+2*Math.PI/3), (0.5+4*Math.PI/3)];
+      let animating = true;
+      let dragItem = null;
+      let dragAngle = 0;
+
+      function positionItems() {
+        items.forEach((item, i) => {
+          const orbitIdx = parseInt(item.dataset.orbit) - 1;
+          const r = radii[orbitIdx];
+          const angle = angles[i];
+          const x = cx + r * Math.cos(angle) - item.offsetWidth / 2;
+          const y = cy + r * Math.sin(angle) - item.offsetHeight / 2;
+          item.style.left = x + 'px';
+          item.style.top = y + 'px';
+        });
+      }
+
+      function animate() {
+        if (!animating || dragItem) { requestAnimationFrame(animate); return; }
+        for (let i = 0; i < totalItems; i++) {
+          const speed = i < perOrbit ? 0.003 : 0.002;
+          angles[i] += speed;
+        }
+        positionItems();
+        requestAnimationFrame(animate);
+      }
+
+      // Drag handling
+      function getAngleFromEvent(e, item) {
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const ix = item.offsetLeft + item.offsetWidth / 2;
+        const iy = item.offsetTop + item.offsetHeight / 2;
+        return Math.atan2(iy - cy, ix - cx);
+      }
+
+      items.forEach((item, i) => {
+        function startDrag(e) {
+          e.preventDefault();
+          dragItem = item;
+          container.classList.add('dragging');
+          item.style.zIndex = 20;
+          item.style.transition = 'none';
+        }
+        item.addEventListener('mousedown', startDrag);
+        item.addEventListener('touchstart', startDrag, {passive: false});
+      });
+
+      function onMove(e) {
+        if (!dragItem) return;
+        e.preventDefault();
+        const idx = Array.from(items).indexOf(dragItem);
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const mx = clientX - rect.left - cx;
+        const my = clientY - rect.top - cy;
+        angles[idx] = Math.atan2(my, mx);
+        positionItems();
+      }
+
+      function endDrag() {
+        if (!dragItem) return;
+        dragItem.style.transition = '';
+        dragItem.style.zIndex = '';
+        dragItem = null;
+        container.classList.remove('dragging');
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, {passive: false});
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+
+      // Initial position and start
+      positionItems();
+      animate();
+    })();
+
     // ===== Floating Particles =====
     (function() {
       const container = document.getElementById('particles');
