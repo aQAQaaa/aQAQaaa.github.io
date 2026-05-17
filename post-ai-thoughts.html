@@ -94,8 +94,22 @@
   </div>
 
   <script>
-    const theme = localStorage.getItem('theme');
-    if (theme) document.documentElement.setAttribute('data-theme', theme);
+    // Sync theme from main site
+    (function() {
+      try {
+        const raw = localStorage.getItem('theme');
+        if (raw) {
+          const { value, expiry } = JSON.parse(raw);
+          if (Date.now() <= expiry) {
+            document.documentElement.setAttribute('data-theme', value);
+          }
+        }
+      } catch(e) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    })();
   </script>
 </body>
 </html>

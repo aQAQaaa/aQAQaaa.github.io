@@ -1,6 +1,6 @@
 /**
  * FanYiyang's World - Main JavaScript
- * Replicating CXPLAY World Butterfly Theme Effects
+ * Enhanced with dynamic stats, category/tag filtering, glassmorphism effects
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,12 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     get: (key) => {
       const itemStr = localStorage.getItem(key);
       if (!itemStr) return undefined;
-      const { value, expiry } = JSON.parse(itemStr);
-      if (Date.now() > expiry) {
-        localStorage.removeItem(key);
-        return undefined;
-      }
-      return value;
+      try {
+        const { value, expiry } = JSON.parse(itemStr);
+        if (Date.now() > expiry) { localStorage.removeItem(key); return undefined; }
+        return value;
+      } catch { return undefined; }
     }
   };
 
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', '#1a1a1a');
-    // Update button icon
     const btn = document.getElementById('darkmode');
     if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
   };
@@ -50,12 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     theme === 'light' ? activateLightMode() : activateDarkMode();
   }
 
-  // Dark mode toggle with smooth transition
+  // Dark mode toggle
   const darkmodeBtn = document.getElementById('darkmode');
   if (darkmodeBtn) {
     darkmodeBtn.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme');
-      // Add transition class for smooth color change
       document.body.style.transition = 'background-color 0.5s ease, color 0.5s ease';
       if (currentTheme === 'light') {
         activateDarkMode();
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         activateLightMode();
         saveToLocal.set('theme', 'light', 365);
       }
-      // Remove transition after animation
       setTimeout(() => { document.body.style.transition = ''; }, 600);
     });
   }
@@ -129,6 +125,35 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { clearInterval(checkTyped); if (typeof Typed === 'undefined') initTyped(); }, 5000);
   }
 
+  // ==================== Calculate Word Count ====================
+  const countWords = (text) => {
+    if (!text) return 0;
+    // Count Chinese chars + English words
+    const chinese = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+    const english = (text.match(/[a-zA-Z]+/g) || []).length;
+    return chinese + english;
+  };
+
+  // ==================== Format Number ====================
+  const formatNumber = (num) => {
+    if (num >= 10000) return (num / 10000).toFixed(1) + 'w';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num.toString();
+  };
+
+  // ==================== Calculate Run Days ====================
+  const calcRunDays = () => {
+    const startDate = new Date('2026-05-10');
+    const now = new Date();
+    const diff = now - startDate;
+    return Math.max(1, Math.floor(diff / 86400000));
+  };
+
+  // ==================== State ====================
+  let allPosts = [];
+  let activeCategory = null;
+  let activeTag = null;
+
   // ==================== Load Posts from JSON ====================
   const loadPosts = async () => {
     const postList = document.getElementById('post-list');
@@ -137,111 +162,63 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch('data/posts.json');
       if (!res.ok) throw new Error('Failed to load posts');
-      const posts = await res.json();
+      allPosts = await res.json();
 
-      if (posts.length === 0) {
+      if (allPosts.length === 0) {
         postList.innerHTML = '<div class="post-empty"><i class="far fa-folder-open"></i><p>暂无文章，敬请期待</p></div>';
         return;
       }
 
       // Sort: sticky first, then by date desc
-      posts.sort((a, b) => {
+      allPosts.sort((a, b) => {
         if (a.sticky && !b.sticky) return -1;
         if (!a.sticky && b.sticky) return 1;
         return new Date(b.date) - new Date(a.date);
       });
 
-      // Update sidebar stats
-      const categories = new Set(posts.map(p => p.category));
-      const tags = new Set(posts.flatMap(p => p.tags || []));
+      // Calculate stats
+      const totalWords = allPosts.reduce((sum, p) => sum + countWords(p.excerpt || ''), 0);
+      const lastUpdate = allPosts.reduce((latest, p) => {
+        const d = p.updated || p.date;
+        return d > latest ? d : latest;
+      }, '');
+
+      // Update web info
+      const webinfoPosts = document.getElementById('webinfo-posts');
+      const webinfoWords = document.getElementById('webinfo-words');
+      const webinfoLastUpdate = document.getElementById('webinfo-last-update');
+      const webinfoRunDays = document.getElementById('webinfo-run-days');
+
+      if (webinfoPosts) webinfoPosts.textContent = allPosts.length;
+      if (webinfoWords) webinfoWords.textContent = formatNumber(totalWords);
+      if (webinfoLastUpdate) webinfoLastUpdate.textContent = lastUpdate;
+      if (webinfoRunDays) webinfoRunDays.textContent = calcRunDays() + ' 天';
+
+      // Update all site-data counters (sidebar + mobile)
+      const categories = new Set(allPosts.map(p => p.category));
+      const tags = new Set(allPosts.flatMap(p => p.tags || []));
 
       document.querySelectorAll('.site-data').forEach(el => {
         const nums = el.querySelectorAll('.length-num');
-        if (nums[0]) nums[0].textContent = posts.length;
+        if (nums[0]) nums[0].textContent = allPosts.length;
         if (nums[1]) nums[1].textContent = tags.size;
         if (nums[2]) nums[2].textContent = categories.size;
       });
 
-      // Update aside recent posts
-      const asideList = document.getElementById('aside-recent-posts');
-      if (asideList) {
-        asideList.innerHTML = posts.slice(0, 5).map(p => `
-          <div class="aside-list-item">
-            <div class="content">
-              <a class="title" href="${p.url || '#'}" title="${p.title}">${p.title}</a>
-              <time>${p.date}</time>
-            </div>
-          </div>
-        `).join('');
-      }
+      // Render aside recent posts
+      renderAsideRecentPosts(allPosts);
 
-      // Update aside categories
-      const catList = document.getElementById('aside-cat-list');
-      if (catList) {
-        const catCounts = {};
-        posts.forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
-        catList.innerHTML = Object.entries(catCounts).map(([name, count]) => `
-          <li class="card-category-list-item">
-            <a class="card-category-list-link" href="#">
-              <span class="card-category-list-name">${name}</span>
-              <span class="card-category-list-count">${count}</span>
-            </a>
-          </li>
-        `).join('');
-      }
+      // Render aside categories
+      renderAsideCategories(allPosts);
 
-      // Update aside tags
-      const tagList = document.getElementById('aside-tag-list');
-      if (tagList) {
-        const tagArr = [...tags];
-        tagList.innerHTML = tagArr.map(t => `<a href="#">${t}</a>`).join('');
-      }
+      // Render aside tags
+      renderAsideTags(allPosts);
 
-      // Render post cards
-      postList.innerHTML = posts.map((post, i) => {
-        const coverHtml = post.cover ? `
-          <div class="post_cover">
-            <a href="${post.url || '#'}" title="${post.title}">
-              <img class="post-bg" src="${post.cover}" alt="${post.title}" onerror="this.style.display='none'">
-            </a>
-          </div>` : '';
+      // Render aside archives
+      renderAsideArchives(allPosts);
 
-        const stickyIcon = post.sticky ? '<i class="fas fa-thumbtack sticky"></i>' : '';
-        const tagsHtml = (post.tags || []).map(t => `<a class="article-meta__categories" href="#">${t}</a>`).join('');
-
-        return `
-          <div class="recent-post-item" style="animation-delay: ${0.1 + i * 0.05}s">
-            ${coverHtml}
-            <div class="recent-post-info">
-              <a class="article-title" href="${post.url || '#'}" title="${post.title}">${stickyIcon}${post.title}</a>
-              <div class="article-meta-wrap">
-                <span class="post-meta-date">
-                  <i class="far fa-calendar-alt"></i>
-                  <span class="article-meta-label">发表于</span>
-                  <time>${post.date}</time>
-                  ${post.updated && post.updated !== post.date ? `
-                    <span class="article-meta-separator">|</span>
-                    <i class="fas fa-history"></i>
-                    <span class="article-meta-label">更新于</span>
-                    <time>${post.updated}</time>
-                  ` : ''}
-                </span>
-                <span class="article-meta">
-                  <span class="article-meta-separator">|</span>
-                  <i class="fas fa-inbox"></i>
-                  <a class="article-meta__categories" href="#">${post.category}</a>
-                  ${tagsHtml ? '<span class="article-meta-separator">|</span>' + tagsHtml : ''}
-                </span>
-              </div>
-              <div class="content">${post.excerpt || ''}</div>
-            </div>
-          </div>`;
-      }).join('');
-
-      // Re-observe new elements for animation
-      postList.querySelectorAll('.recent-post-item').forEach(el => {
-        el.style.animationPlayState = 'running';
-      });
+      // Initial render of posts
+      renderPosts(allPosts);
 
     } catch (err) {
       console.error('Error loading posts:', err);
@@ -249,6 +226,230 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ==================== Render Aside Recent Posts ====================
+  const renderAsideRecentPosts = (posts) => {
+    const asideList = document.getElementById('aside-recent-posts');
+    if (!asideList) return;
+    asideList.innerHTML = posts.slice(0, 5).map(p => `
+      <div class="aside-list-item">
+        <div class="content">
+          <a class="title" href="${p.url || '#'}" title="${p.title}">${p.title}</a>
+          <time>${p.date}</time>
+        </div>
+      </div>
+    `).join('');
+  };
+
+  // ==================== Render Aside Categories ====================
+  const renderAsideCategories = (posts) => {
+    const catList = document.getElementById('aside-cat-list');
+    if (!catList) return;
+    const catCounts = {};
+    posts.forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+    catList.innerHTML = Object.entries(catCounts).map(([name, count]) => `
+      <li class="card-category-list-item">
+        <a class="card-category-list-link${activeCategory === name ? ' active' : ''}" href="javascript:void(0)" data-category="${name}">
+          <span class="card-category-list-name">${name}</span>
+          <span class="card-category-list-count">${count}</span>
+        </a>
+      </li>
+    `).join('');
+
+    // Bind click events
+    catList.querySelectorAll('.card-category-list-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = link.dataset.category;
+        if (activeCategory === cat) {
+          activeCategory = null;
+        } else {
+          activeCategory = cat;
+          activeTag = null;
+        }
+        applyFilters();
+      });
+    });
+  };
+
+  // ==================== Render Aside Tags ====================
+  const renderAsideTags = (posts) => {
+    const tagList = document.getElementById('aside-tag-list');
+    if (!tagList) return;
+    const tagCounts = {};
+    posts.forEach(p => (p.tags || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
+    const maxCount = Math.max(...Object.values(tagCounts), 1);
+
+    tagList.innerHTML = Object.entries(tagCounts).map(([name, count]) => {
+      const size = Math.max(1, Math.min(4, Math.ceil((count / maxCount) * 4)));
+      return `<a href="javascript:void(0)" data-tag="${name}" data-size="${size}" class="${activeTag === name ? 'active' : ''}">${name}</a>`;
+    }).join('');
+
+    // Bind click events
+    tagList.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tag = link.dataset.tag;
+        if (activeTag === tag) {
+          activeTag = null;
+        } else {
+          activeTag = tag;
+          activeCategory = null;
+        }
+        applyFilters();
+      });
+    });
+  };
+
+  // ==================== Render Aside Archives ====================
+  const renderAsideArchives = (posts) => {
+    const archiveList = document.querySelector('.card-archive-list');
+    if (!archiveList) return;
+    const monthCounts = {};
+    posts.forEach(p => {
+      const d = p.date.substring(0, 7); // YYYY-MM
+      monthCounts[d] = (monthCounts[d] || 0) + 1;
+    });
+    const sorted = Object.entries(monthCounts).sort((a, b) => b[0].localeCompare(a[0]));
+    archiveList.innerHTML = sorted.map(([month, count]) => {
+      const [y, m] = month.split('-');
+      return `
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="javascript:void(0)" data-month="${month}">
+            <span class="card-archive-list-date">${y} 年 ${parseInt(m)} 月</span>
+            <span class="card-archive-list-count">${count}</span>
+          </a>
+        </li>`;
+    }).join('');
+  };
+
+  // ==================== Apply Filters ====================
+  const applyFilters = () => {
+    // Update filter indicator
+    const indicator = document.getElementById('filter-indicator');
+    const filterText = document.getElementById('filter-text');
+
+    if (activeCategory || activeTag) {
+      indicator.classList.add('show');
+      if (activeCategory) {
+        filterText.textContent = `分类: ${activeCategory}`;
+      } else if (activeTag) {
+        filterText.textContent = `标签: ${activeTag}`;
+      }
+    } else {
+      indicator.classList.remove('show');
+    }
+
+    // Update sidebar active states
+    document.querySelectorAll('.card-category-list-link').forEach(link => {
+      link.classList.toggle('active', link.dataset.category === activeCategory);
+    });
+    document.querySelectorAll('.card-tag-cloud a').forEach(link => {
+      link.classList.toggle('active', link.dataset.tag === activeTag);
+    });
+
+    // Filter posts
+    let filtered = allPosts;
+    if (activeCategory) {
+      filtered = filtered.filter(p => p.category === activeCategory);
+    }
+    if (activeTag) {
+      filtered = filtered.filter(p => (p.tags || []).includes(activeTag));
+    }
+
+    renderPosts(filtered);
+  };
+
+  // ==================== Render Posts ====================
+  const renderPosts = (posts) => {
+    const postList = document.getElementById('post-list');
+    if (!postList) return;
+
+    if (posts.length === 0) {
+      postList.innerHTML = '<div class="post-empty"><i class="far fa-folder-open"></i><p>没有找到匹配的文章</p></div>';
+      return;
+    }
+
+    postList.innerHTML = posts.map((post, i) => {
+      const coverHtml = post.cover ? `
+        <div class="post_cover">
+          <a href="${post.url || '#'}" title="${post.title}">
+            <img class="post-bg" src="${post.cover}" alt="${post.title}" onerror="this.style.display='none'">
+          </a>
+        </div>` : '';
+
+      const stickyIcon = post.sticky ? '<i class="fas fa-thumbtack sticky"></i>' : '';
+      const tagsHtml = (post.tags || []).map(t =>
+        `<a class="article-meta__categories" href="javascript:void(0)" data-tag="${t}">${t}</a>`
+      ).join('');
+
+      const wordCount = countWords(post.excerpt || '');
+      const wordBadge = wordCount > 0 ? `<span class="post-word-count"><i class="fas fa-file-word"></i> ${wordCount} 字</span>` : '';
+
+      return `
+        <div class="recent-post-item" style="animation-delay: ${0.1 + i * 0.05}s">
+          ${coverHtml}
+          <div class="recent-post-info">
+            <a class="article-title" href="${post.url || '#'}" title="${post.title}">${stickyIcon}${post.title}</a>
+            <div class="article-meta-wrap">
+              <span class="post-meta-date">
+                <i class="far fa-calendar-alt"></i>
+                <span class="article-meta-label">发表于</span>
+                <time>${post.date}</time>
+                ${post.updated && post.updated !== post.date ? `
+                  <span class="article-meta-separator">|</span>
+                  <i class="fas fa-history"></i>
+                  <span class="article-meta-label">更新于</span>
+                  <time>${post.updated}</time>
+                ` : ''}
+              </span>
+              <span class="article-meta">
+                <span class="article-meta-separator">|</span>
+                <i class="fas fa-inbox"></i>
+                <a class="article-meta__categories" href="javascript:void(0)" data-category="${post.category}">${post.category}</a>
+                ${tagsHtml ? '<span class="article-meta-separator">|</span>' + tagsHtml : ''}
+                ${wordBadge}
+              </span>
+            </div>
+            <div class="content">${post.excerpt || ''}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Bind inline tag/category clicks
+    postList.querySelectorAll('.article-meta__categories[data-tag]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tag = el.dataset.tag;
+        activeTag = activeTag === tag ? null : tag;
+        activeCategory = null;
+        applyFilters();
+        window.scrollTo({ top: document.getElementById('content-inner').offsetTop - 70, behavior: 'smooth' });
+      });
+    });
+
+    postList.querySelectorAll('.article-meta__categories[data-category]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = el.dataset.category;
+        activeCategory = activeCategory === cat ? null : cat;
+        activeTag = null;
+        applyFilters();
+        window.scrollTo({ top: document.getElementById('content-inner').offsetTop - 70, behavior: 'smooth' });
+      });
+    });
+  };
+
+  // ==================== Clear Filter ====================
+  const clearFilter = document.getElementById('filter-clear');
+  if (clearFilter) {
+    clearFilter.addEventListener('click', () => {
+      activeCategory = null;
+      activeTag = null;
+      applyFilters();
+    });
+  }
+
+  // ==================== Init Posts ====================
   loadPosts();
 
   // ==================== Navigation Scroll Effect ====================
@@ -288,14 +489,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== Right Side Controls ====================
   const rightside = document.getElementById('rightside');
   const rightsideConfig = document.getElementById('rightside-config');
-  const rightsideConfigHide = document.getElementById('rightside-config-hide');
 
-  // Toggle settings panel
   rightsideConfig?.addEventListener('click', () => {
     rightside?.classList.toggle('open');
   });
 
-  // Go Up button with smooth scroll
   const goUpBtn = document.getElementById('go-up');
   const scrollPercent = document.querySelector('.scroll-percent');
 
@@ -303,7 +501,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Update scroll percentage and button visibility
   const updateScrollPercent = () => {
     const st = window.scrollY;
     const dh = document.documentElement.scrollHeight - window.innerHeight;
@@ -386,12 +583,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== Keyboard Shortcuts ====================
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    // T = toggle theme
     if (e.key === 't' || e.key === 'T') {
       const t = document.documentElement.getAttribute('data-theme');
       document.body.style.transition = 'background-color 0.5s ease, color 0.5s ease';
       t === 'light' ? (activateDarkMode(), saveToLocal.set('theme', 'dark', 365)) : (activateLightMode(), saveToLocal.set('theme', 'light', 365));
       setTimeout(() => { document.body.style.transition = ''; }, 600);
+    }
+    // Escape to clear filter
+    if (e.key === 'Escape' && (activeCategory || activeTag)) {
+      activeCategory = null;
+      activeTag = null;
+      applyFilters();
     }
   });
 
@@ -420,4 +622,17 @@ document.addEventListener('DOMContentLoaded', () => {
       progressBar.style.width = p + '%';
     }, { passive: true });
   }
+
+  // ==================== Card Entrance Animation Observer ====================
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card-widget').forEach(card => {
+    cardObserver.observe(card);
+  });
 });

@@ -129,8 +129,13 @@
     <main class="layout" id="content-inner">
       <!-- Recent Posts -->
       <div class="recent-posts" id="recent-posts">
+        <div class="filter-indicator" id="filter-indicator">
+          <i class="fas fa-filter"></i>
+          <span id="filter-text">筛选中</span>
+          <span class="filter-clear" id="filter-clear"><i class="fas fa-times"></i> 清除筛选</span>
+        </div>
         <div class="recent-post-items" id="post-list">
-          <!-- Posts will be dynamically loaded or left empty per user request -->
+          <!-- Posts will be dynamically loaded -->
         </div>
       </div>
 
@@ -240,15 +245,19 @@
             <div class="webinfo">
               <div class="webinfo-item">
                 <div class="item-name">文章数目 :</div>
-                <div class="item-count">0</div>
+                <div class="item-count" id="webinfo-posts">0</div>
               </div>
               <div class="webinfo-item">
                 <div class="item-name">本站总字数 :</div>
-                <div class="item-count">0</div>
+                <div class="item-count" id="webinfo-words">0</div>
               </div>
               <div class="webinfo-item">
                 <div class="item-name">最后更新时间 :</div>
-                <div class="item-count" id="last-push-date">2026-05-10</div>
+                <div class="item-count" id="webinfo-last-update">-</div>
+              </div>
+              <div class="webinfo-item">
+                <div class="item-name">运行天数 :</div>
+                <div class="item-count" id="webinfo-run-days">0</div>
               </div>
             </div>
           </div>
