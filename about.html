@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>关于我 - FanYiyang's World</title>
+  <meta name="author" content="FanYiyang">
+  <meta name="description" content="关于 FanYiyang — 一个热爱编程与游戏的高中生">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="//cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/season-theme.css">
+  <style>
+    /* ===== About Page Specific Styles ===== */
+
+    /* --- Floating Particles --- */
+    .particles-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* --- Hero Section --- */
+    .about-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(73,177,245,0.08), rgba(255,114,66,0.06));
+      z-index: 0;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      z-index: 0;
+      animation: glowPulse 8s ease-in-out infinite alternate;
+    }
+    .hero-glow-1 { top: -100px; left: -100px; background: var(--link-color); }
+    .hero-glow-2 { bottom: -100px; right: -100px; background: var(--link-hover-color); animation-delay: 4s; }
+    @keyframes glowPulse {
+      0% { transform: scale(1); opacity: 0.12; }
+      100% { transform: scale(1.2); opacity: 0.2; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .hero-avatar {
+      width: 140px; height: 140px; object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--card-bg);
+      box-shadow: 0 0 40px rgba(73,177,245,0.3);
+      margin-bottom: 24px;
+      animation: avatarFloat 6s ease-in-out infinite;
+      transition: transform 0.4s ease;
+    }
+    .hero-avatar:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+    @keyframes avatarFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .hero-name {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--link-color), var(--link-hover-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .hero-tagline {
+      font-size: 1.1rem;
+      color: var(--dark-grey);
+      margin-bottom: 24px;
+      font-family: 'Fira Code', monospace;
+    }
+    .hero-tagline .typed-cursor {
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .hero-badges {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--font-color);
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .hero-badge:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(73,177,245,0.2);
+      border-color: var(--link-color);
+    }
+    .hero-badge i {
+      color: var(--link-color);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: scrollBounce 2s ease-in-out infinite;
+      color: var(--dark-grey);
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .scroll-hint i {
+      font-size: 1.2rem;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* --- Section Base --- */
+    .about-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-highlight-color);
+      margin-bottom: 8px;
+    }
+    .section-subtitle {
+      color: var(--dark-grey);
+      font-size: 0.95rem;
+    }
+
+    /* --- Identity Cards Grid --- */
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .identity-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .identity-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .identity-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+    }
+    .identity-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      border-radius: 16px 16px 0 0;
+    }
+    .identity-card:nth-child(1)::before { background: linear-gradient(90deg, #49b1f5, #69c0ff); }
+    .identity-card:nth-child(2)::before { background: linear-gradient(90deg, #ff7242, #ff9a6c); }
+    .identity-card:nth-child(3)::before { background: linear-gradient(90deg, #36d399, #6ee7b7); }
+    .identity-card:nth-child(4)::before { background: linear-gradient(90deg, #a78bfa, #c4b5fd); }
+
+    .identity-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .identity-card:nth-child(1) .identity-icon { background: linear-gradient(135deg, #49b1f5, #69c0ff); }
+    .identity-card:nth-child(2) .identity-icon { background: linear-gradient(135deg, #ff7242, #ff9a6c); }
+    .identity-card:nth-child(3) .identity-icon { background: linear-gradient(135deg, #36d399, #6ee7b7); }
+    .identity-card:nth-child(4) .identity-icon { background: linear-gradient(135deg, #a78bfa, #c4b5fd); }
+
+    .identity-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-highlight-color);
+      margin-bottom: 8px;
+    }
+    .identity-desc {
+      font-size: 0.9rem;
+      color: var(--font-color);
+      line-height: 1.7;
+    }
+
+    /* --- Coding Terminal --- */
+    .terminal-block {
+      background: #1e1e2e;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    .terminal-block.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      background: #181825;
+      gap: 8px;
+    }
+    .terminal-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-dot:nth-child(1) { background: #f38ba8; }
+    .terminal-dot:nth-child(2) { background: #f9e2af; }
+    .terminal-dot:nth-child(3) { background: #a6e3a1; }
+    .terminal-title {
+      color: #6c7086;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      margin-left: 8px;
+    }
+    .terminal-body {
+      padding: 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: #cdd6f4;
+    }
+    .terminal-line {
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.4s ease;
+    }
+    .terminal-line.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .terminal-prompt { color: #89b4fa; }
+    .terminal-key { color: #f9e2af; }
+    .terminal-value { color: #a6e3a1; }
+    .terminal-bracket { color: #6c7086; }
+    .terminal-comment { color: #585b70; font-style: italic; }
+
+    /* --- Timeline --- */
+    .timeline {
+      position: relative;
+      padding: 20px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--link-color), var(--link-hover-color), var(--link-color));
+      border-radius: 3px;
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      position: relative;
+      width: 45%;
+      padding: 0;
+      margin-bottom: 50px;
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .timeline-item.left {
+      margin-left: 0;
+      transform: translateX(-40px);
+    }
+    .timeline-item.right {
+      margin-left: 55%;
+      transform: translateX(40px);
+    }
+    .timeline-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .timeline-dot {
+      position: absolute;
+      top: 24px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--link-color);
+      background: var(--card-bg);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    .timeline-item.left .timeline-dot { right: -32px; }
+    .timeline-item.right .timeline-dot { left: -32px; }
+    .timeline-item:hover .timeline-dot {
+      background: var(--link-color);
+      box-shadow: 0 0 20px rgba(73,177,245,0.4);
+      transform: scale(1.3);
+    }
+    .timeline-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .timeline-card:hover {
+      box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+    .timeline-era {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+    .timeline-item:nth-child(1) .timeline-era { background: linear-gradient(135deg, #f9a825, #ffca28); }
+    .timeline-item:nth-child(2) .timeline-era { background: linear-gradient(135deg, #42a5f5, #64b5f6); }
+    .timeline-item:nth-child(3) .timeline-era { background: linear-gradient(135deg, #ab47bc, #ce93d8); }
+
+    .timeline-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-highlight-color);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-title .book-icon {
+      font-size: 1.4rem;
+    }
+    .timeline-meta {
+      font-size: 0.82rem;
+      color: var(--dark-grey);
+      margin-bottom: 12px;
+    }
+    .timeline-desc {
+      font-size: 0.92rem;
+      color: var(--font-color);
+      line-height: 1.8;
+    }
+    .timeline-quote {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(73,177,245,0.06), rgba(255,114,66,0.04));
+      border-left: 3px solid var(--link-color);
+      border-radius: 0 10px 10px 0;
+      font-size: 0.88rem;
+      color: var(--font-color);
+      font-style: italic;
+    }
+    .timeline-image {
+      width: 100%;
+      height: 180px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .timeline-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .timeline-card:hover .timeline-image img {
+      transform: scale(1.08);
+    }
+    .timeline-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 40%;
+      background: linear-gradient(transparent, rgba(0,0,0,0.3));
+      pointer-events: none;
+    }
+
+
+    /* --- Interest Orbits (Draggable) --- */
+    .orbit-container {
+      position: relative;
+      width: 360px; height: 360px;
+      margin: 0 auto 60px;
+      cursor: default;
+      user-select: none;
+    }
+    .orbit-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--link-color), var(--link-hover-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #fff;
+      box-shadow: 0 0 40px rgba(73,177,245,0.3);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .orbit-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border: 1.5px dashed var(--border-color);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: border-color 0.3s;
+    }
+    .orbit-ring-1 { width: 200px; height: 200px; }
+    .orbit-ring-2 { width: 320px; height: 320px; }
+    .orbit-container.dragging .orbit-ring { border-color: var(--link-color); }
+    .orbit-item.draggable-planet {
+      position: absolute;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      z-index: 10;
+      cursor: grab;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+      touch-action: none;
+    }
+    .orbit-item.draggable-planet:active {
+      cursor: grabbing;
+      box-shadow: 0 8px 30px rgba(73,177,245,0.4);
+      transform: scale(1.2);
+      z-index: 20;
+    }
+    .orbit-item.draggable-planet .orbit-item-label {
+      position: absolute;
+      bottom: -22px;
+      font-size: 0.72rem;
+      color: var(--font-color);
+      white-space: nowrap;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .orbit-hint {
+      text-align: center;
+      color: var(--dark-grey);
+      font-size: 0.82rem;
+      margin-top: -30px;
+      margin-bottom: 30px;
+    }
+    .orbit-hint i { margin-right: 4px; }
+    @keyframes counterSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
+    }
+
+    /* --- Interest Details Cards --- */
+    .interest-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .interest-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-card);
+      text-align: center;
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .interest-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .interest-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+    .interest-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      display: block;
+      animation: emojiWiggle 3s ease-in-out infinite;
+    }
+    @keyframes emojiWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .interest-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-highlight-color);
+      margin-bottom: 8px;
+    }
+    .interest-card-desc {
+      font-size: 0.88rem;
+      color: var(--font-color);
+      line-height: 1.7;
+    }
+
+    /* --- Closing Section --- */
+    .about-closing {
+      text-align: center;
+      padding: 60px 20px 100px;
+      position: relative;
+      z-index: 1;
+    }
+    .closing-text {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-highlight-color);
+      margin-bottom: 12px;
+    }
+    .closing-sub {
+      color: var(--dark-grey);
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
+    .back-home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 32px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, var(--link-color), var(--link-hover-color));
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(73,177,245,0.3);
+      transition: all 0.3s ease;
+    }
+    .back-home-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(73,177,245,0.4);
+      color: #fff;
+    }
+
+    /* --- Nav (reuse from main) --- */
+    #nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 100;
+      background: transparent;
+      transition: all 0.4s ease;
+    }
+    #nav.scrolled {
+      background: var(--card-bg);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-site-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-highlight-color);
+      text-decoration: none;
+    }
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--font-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+    .nav-back:hover { color: var(--link-color); }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .hero-name { font-size: 2rem; }
+      .timeline::before { left: 20px; }
+      .timeline-item { width: calc(100% - 50px); margin-left: 50px !important; }
+      .timeline-item.left .timeline-dot,
+      .timeline-item.right .timeline-dot { left: -38px; right: auto; }
+      .orbit-container { width: 280px; height: 280px; }
+      .orbit-ring-1 { width: 160px; height: 160px; }
+      .orbit-ring-2 { width: 250px; height: 250px; }
+      .identity-grid { grid-template-columns: 1fr; }
+    }
+
+    /* --- Reading Progress (about page) --- */
+    #reading-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--link-color), var(--link-hover-color));
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+  <!-- Reading Progress -->
+  <div id="reading-progress"></div>
+
+  <!-- Floating Particles -->
+  <div class="particles-container" id="particles"></div>
+
+  <!-- Nav -->
+  <nav id="nav">
+    <a class="nav-back" href="/">
+      <i class="fas fa-arrow-left"></i>
+      <span>返回首页</span>
+    </a>
+    <a class="nav-site-title" href="/">
+      <span>FanYiyang's World</span>
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-content">
+      <img class="hero-avatar" src="img/avatar.png" alt="FanYiyang Avatar">
+      <h1 class="hero-name">FanYiyang</h1>
+      <div class="hero-tagline">
+        <span id="typed-text"></span><span class="typed-cursor">|</span>
+      </div>
+      <div class="hero-badges">
+        <span class="hero-badge"><i class="fas fa-graduation-cap"></i> 鹤山一中 · 高二</span>
+        <span class="hero-badge"><i class="fas fa-code"></i> 编程爱好者</span>
+        <span class="hero-badge"><i class="fas fa-cube"></i> Minecraft 模组开发</span>
+        <span class="hero-badge"><i class="fas fa-running"></i> 跑步 & 骑行</span>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>向下探索</span>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- Section: Who Am I -->
+  <section class="about-section">
+    <div class="section-header">
+      <div class="section-icon" style="background: linear-gradient(135deg, #49b1f5, #69c0ff);">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <h2 class="section-title">我是谁</h2>
+      <p class="section-subtitle">一个在代码与现实之间穿梭的高中生</p>
+    </div>
+
+    <!-- Terminal -->
+    <div class="terminal-block" data-animate>
+      <div class="terminal-header">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">fan@heshan ~ $ cat profile.json</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line" data-animate-line>
+          <span class="terminal-bracket">{</span>
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"name"</span>: <span class="terminal-value">"FanYiyang"</span>,
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"school"</span>: <span class="terminal-value">"鹤山市第一中学"</span>,
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"grade"</span>: <span class="terminal-value">"高二"</span>,
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"superpower"</span>: <span class="terminal-value">"放学后独自留在学校的安静时光"</span>,
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"passion"</span>: [<span class="terminal-value">"编程"</span>, <span class="terminal-value">"游戏模组开发"</span>],
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"favorite_game"</span>: <span class="terminal-value">"Minecraft"</span>,
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-key">"hobbies"</span>: [<span class="terminal-value">"跑步"</span>, <span class="terminal-value">"骑行"</span>],
+        </div>
+        <div class="terminal-line" data-animate-line>
+          &nbsp;&nbsp;<span class="terminal-comment">// 最大的爱好：放学后一个人留在学校，享受属于自己的世界</span>
+        </div>
+        <div class="terminal-line" data-animate-line>
+          <span class="terminal-bracket">}</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Section: Reading Journey -->
+  <section class="about-section">
+    <div class="section-header">
+      <div class="section-icon" style="background: linear-gradient(135deg, #ff7242, #ff9a6c);">
+        <i class="fas fa-book-open"></i>
+      </div>
+      <h2 class="section-title">阅读时光轴</h2>
+      <p class="section-subtitle">三本书，三段成长，三个世界</p>
+    </div>
+
+    <div class="timeline">
+      <!-- Harry Potter -->
+      <div class="timeline-item left" data-animate>
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=600&h=300&fit=crop" alt="Harry Potter" loading="lazy"></div>
+          <span class="timeline-era"><i class="fas fa-magic"></i> 小学时代</span>
+          <div class="timeline-title">
+            <span class="book-icon">⚡</span> 哈利 · 波特
+          </div>
+          <div class="timeline-meta">J.K. Rowling · 魔法世界的启蒙</div>
+          <div class="timeline-desc">
+            九又四分之三站台的汽笛声，是童年最动听的旋律。那时候总幻想自己也能收到一封猫头鹰送来的录取通知书，挥舞魔杖念出一句咒语。
+          </div>
+          <div class="timeline-quote">
+            "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light."
+          </div>
+        </div>
+      </div>
+
+      <!-- Three-Body Problem -->
+      <div class="timeline-item right" data-animate>
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=300&fit=crop" alt="Three-Body Problem" loading="lazy"></div>
+          <span class="timeline-era"><i class="fas fa-atom"></i> 初中时代</span>
+          <div class="timeline-title">
+            <span class="book-icon">🌌</span> 三体
+          </div>
+          <div class="timeline-meta">刘慈欣 · 宇宙观的重塑</div>
+          <div class="timeline-desc">
+            当"黑暗森林法则"第一次映入眼帘，整个宇宙突然变得既冰冷又迷人。从魔法世界毕业，开始仰望真正的星空——原来恐惧和敬畏可以同时存在。
+          </div>
+          <div class="timeline-quote">
+            "给岁月以文明，而不是给文明以岁月。"
+          </div>
+        </div>
+      </div>
+
+      <!-- Stranger Things -->
+      <div class="timeline-item left" data-animate>
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-image"><img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=300&fit=crop" alt="Stranger Things" loading="lazy"></div>
+          <span class="timeline-era"><i class="fas fa-ghost"></i> 高中时代</span>
+          <div class="timeline-title">
+            <span class="book-icon">🔦</span> 怪奇物语
+          </div>
+          <div class="timeline-meta">Stranger Things · 友情与冒险的交响</div>
+          <div class="timeline-desc">
+            Hawkins 小镇的那群孩子，骑着自行车穿越黑暗，用勇气和友谊对抗未知。看着他们，仿佛看到了自己——一群普通少年，做着不普通的事。
+          </div>
+          <div class="timeline-quote">
+            "Friends don't lie."
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Interests -->
+  <section class="about-section">
+    <div class="section-header">
+      <div class="section-icon" style="background: linear-gradient(135deg, #36d399, #6ee7b7);">
+        <i class="fas fa-heart"></i>
+      </div>
+      <h2 class="section-title">兴趣星系</h2>
+      <p class="section-subtitle">围绕热爱运转的小星球们</p>
+    </div>
+
+    <!-- Orbit Visualization (Draggable) -->
+    <div class="orbit-container" id="orbitContainer">
+      <div class="orbit-center">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="orbit-ring orbit-ring-1" id="orbitRing1"></div>
+      <div class="orbit-ring orbit-ring-2" id="orbitRing2"></div>
+      <!-- Draggable items placed absolutely by JS -->
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="0" style="background: linear-gradient(135deg, #4caf50, #81c784);">
+        <i class="fas fa-cube"></i>
+        <span class="orbit-item-label">Minecraft</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="1" style="background: linear-gradient(135deg, #2196f3, #64b5f6);">
+        <i class="fas fa-code"></i>
+        <span class="orbit-item-label">编程</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="1" data-index="2" style="background: linear-gradient(135deg, #ff9800, #ffb74d);">
+        <i class="fas fa-puzzle-piece"></i>
+        <span class="orbit-item-label">模组开发</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="0" style="background: linear-gradient(135deg, #e91e63, #f48fb1);">
+        <i class="fas fa-running"></i>
+        <span class="orbit-item-label">跑步</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="1" style="background: linear-gradient(135deg, #9c27b0, #ce93d8);">
+        <i class="fas fa-bicycle"></i>
+        <span class="orbit-item-label">骑行</span>
+      </div>
+      <div class="orbit-item draggable-planet" data-orbit="2" data-index="2" style="background: linear-gradient(135deg, #607d8b, #90a4ae);">
+        <i class="fas fa-book"></i>
+        <span class="orbit-item-label">阅读</span>
+      </div>
+    </div>
+
+    <p class="orbit-hint"><i class="fas fa-hand-pointer"></i>拖动星球改变轨道</p>
+    <!-- Interest Detail Cards -->
+    <div class="interest-cards">
+      <div class="interest-card" data-animate>
+        <span class="interest-emoji">⛏️</span>
+        <div class="interest-card-title">Minecraft</div>
+        <div class="interest-card-desc">不只是一个游戏，更是一个创造的平台。在这里，想象力是唯一的限制。从红石电路到命令方块，从生存到创造。</div>
+      </div>
+      <div class="interest-card" data-animate>
+        <span class="interest-emoji">🛠️</span>
+        <div class="interest-card-title">模组开发</div>
+        <div class="interest-card-desc">用 Java 为 Minecraft 注入新的灵魂。设计新的方块、生物、机制——当玩家说"这个模组真好玩"的时候，一切都值了。</div>
+      </div>
+      <div class="interest-card" data-animate>
+        <span class="interest-emoji">🏃</span>
+        <div class="interest-card-title">跑步 & 骑行</div>
+        <div class="interest-card-desc">代码写累了就去跑几圈，Bug 调不出来就骑车兜风。身体在运动，思维在沉淀。很多灵感，都是在路上找到的。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="about-closing">
+    <div class="closing-text">Stay hungry, Stay foolish.</div>
+    <div class="closing-sub">在代码的世界里建造，在现实的世界里奔跑。</div>
+    <a class="back-home-btn" href="/">
+      <i class="fas fa-home"></i>
+      <span>回到首页</span>
+    </a>
+  </section>
+
+  <script>
+    // ===== Draggable Orbit Planets =====
+    (function() {
+      const container = document.getElementById('orbitContainer');
+      if (!container) return;
+      const cx = container.offsetWidth / 2;
+      const cy = container.offsetHeight / 2;
+      const radii = [100, 160]; // orbit ring radii
+      const items = container.querySelectorAll('.draggable-planet');
+      const totalItems = items.length;
+      const perOrbit = 3;
+      let angles = [0, (2*Math.PI/3), (4*Math.PI/3), 0.5, (0.5+2*Math.PI/3), (0.5+4*Math.PI/3)];
+      let animating = true;
+      let dragItem = null;
+      let dragAngle = 0;
+
+      function positionItems() {
+        items.forEach((item, i) => {
+          const orbitIdx = parseInt(item.dataset.orbit) - 1;
+          const r = radii[orbitIdx];
+          const angle = angles[i];
+          const x = cx + r * Math.cos(angle) - item.offsetWidth / 2;
+          const y = cy + r * Math.sin(angle) - item.offsetHeight / 2;
+          item.style.left = x + 'px';
+          item.style.top = y + 'px';
+        });
+      }
+
+      function animate() {
+        if (!animating || dragItem) { requestAnimationFrame(animate); return; }
+        for (let i = 0; i < totalItems; i++) {
+          const speed = i < perOrbit ? 0.003 : 0.002;
+          angles[i] += speed;
+        }
+        positionItems();
+        requestAnimationFrame(animate);
+      }
+
+      // Drag handling
+      function getAngleFromEvent(e, item) {
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const ix = item.offsetLeft + item.offsetWidth / 2;
+        const iy = item.offsetTop + item.offsetHeight / 2;
+        return Math.atan2(iy - cy, ix - cx);
+      }
+
+      items.forEach((item, i) => {
+        function startDrag(e) {
+          e.preventDefault();
+          dragItem = item;
+          container.classList.add('dragging');
+          item.style.zIndex = 20;
+          item.style.transition = 'none';
+        }
+        item.addEventListener('mousedown', startDrag);
+        item.addEventListener('touchstart', startDrag, {passive: false});
+      });
+
+      function onMove(e) {
+        if (!dragItem) return;
+        e.preventDefault();
+        const idx = Array.from(items).indexOf(dragItem);
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const mx = clientX - rect.left - cx;
+        const my = clientY - rect.top - cy;
+        angles[idx] = Math.atan2(my, mx);
+        positionItems();
+      }
+
+      function endDrag() {
+        if (!dragItem) return;
+        dragItem.style.transition = '';
+        dragItem.style.zIndex = '';
+        dragItem = null;
+        container.classList.remove('dragging');
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, {passive: false});
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+
+      // Initial position and start
+      positionItems();
+      animate();
+    })();
+
+    // ===== Floating Particles =====
+    (function() {
+      const container = document.getElementById('particles');
+      const colors = ['#49b1f5', '#ff7242', '#36d399', '#a78bfa', '#f9a825'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 8 + 3;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.animationDuration = (Math.random() * 15 + 15) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(p);
+      }
+    })();
+
+    // ===== Scroll Animations =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Stagger children for terminal lines
+          if (entry.target.classList.contains('terminal-block')) {
+            const lines = entry.target.querySelectorAll('.terminal-line');
+            lines.forEach((line, i) => {
+              setTimeout(() => line.classList.add('visible'), i * 120);
+            });
+          }
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+    // ===== Nav Scroll Effect =====
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+
+      // Reading progress
+      const winH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = Math.min((window.scrollY / winH) * 100, 100);
+      document.getElementById('reading-progress').style.width = pct + '%';
+    });
+
+    // ===== Typed Text Effect =====
+    (function() {
+      const texts = [
+        'console.log("Hello, World!");',
+        'System.out.println("Stay hungry.");',
+        'print("代码与梦想，都在编译中...")',
+        '// 放学后的教室，是最好的工作室'
+      ];
+      let textIdx = 0, charIdx = 0, deleting = false;
+      const el = document.getElementById('typed-text');
+
+      function tick() {
+        const current = texts[textIdx];
+        if (!deleting) {
+          el.textContent = current.substring(0, charIdx + 1);
+          charIdx++;
+          if (charIdx === current.length) {
+            setTimeout(() => { deleting = true; tick(); }, 2000);
+            return;
+          }
+          setTimeout(tick, 60 + Math.random() * 40);
+        } else {
+          el.textContent = current.substring(0, charIdx - 1);
+          charIdx--;
+          if (charIdx === 0) {
+            deleting = false;
+            textIdx = (textIdx + 1) % texts.length;
+            setTimeout(tick, 500);
+            return;
+          }
+          setTimeout(tick, 30);
+        }
+      }
+      tick();
+    })();
+
+    // ===== Theme Sync =====
+    // Respect system preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+  <script src="js/season-module.js"></script>
+  <script src="js/season-particles.js"></script>
+</body>
+</html>

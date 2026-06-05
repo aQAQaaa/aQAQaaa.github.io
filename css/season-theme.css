@@ -1,0 +1,209 @@
+/* ============================================
+   Seasonal Theme System — Glassmorphism Only
+   不改变字体颜色，只改变背景、毛玻璃、半透明效果
+   ============================================ */
+
+/* --- Spring (2-4月) --- */
+[data-season="spring"] {
+  --season-glow: rgba(123, 198, 126, 0.35);
+  --season-card-tint: rgba(123, 198, 126, 0.06);
+  --season-card-border: rgba(123, 198, 126, 0.18);
+  --season-overlay-light: rgba(123, 198, 126, 0.08);
+  --season-btn-bg: #7bc67e;
+  --season-btn-hover: #e8a0bf;
+  --season-header-tint: rgba(123, 198, 126, 0.05);
+  --season-footer-tint: rgba(123, 198, 126, 0.05);
+  --season-tag-bg: rgba(123, 198, 126, 0.10);
+  --season-announcement-bg: rgba(123, 198, 126, 0.06);
+}
+[data-season="spring"][data-theme="dark"] {
+  --season-glow: rgba(142, 212, 145, 0.25);
+  --season-card-tint: rgba(142, 212, 145, 0.05);
+  --season-card-border: rgba(142, 212, 145, 0.12);
+  --season-overlay-light: rgba(142, 212, 145, 0.06);
+  --season-btn-bg: #8ed491;
+  --season-btn-hover: #eba4c1;
+  --season-header-tint: rgba(142, 212, 145, 0.04);
+  --season-footer-tint: rgba(142, 212, 145, 0.04);
+  --season-tag-bg: rgba(142, 212, 145, 0.08);
+  --season-announcement-bg: rgba(142, 212, 145, 0.05);
+}
+
+/* --- Summer (5-7月) --- */
+[data-season="summer"] {
+  --season-glow: rgba(245, 166, 35, 0.35);
+  --season-card-tint: rgba(245, 166, 35, 0.06);
+  --season-card-border: rgba(245, 166, 35, 0.18);
+  --season-overlay-light: rgba(245, 166, 35, 0.08);
+  --season-btn-bg: #f5a623;
+  --season-btn-hover: #ff6b6b;
+  --season-header-tint: rgba(245, 166, 35, 0.05);
+  --season-footer-tint: rgba(245, 166, 35, 0.05);
+  --season-tag-bg: rgba(245, 166, 35, 0.10);
+  --season-announcement-bg: rgba(245, 166, 35, 0.06);
+}
+[data-season="summer"][data-theme="dark"] {
+  --season-glow: rgba(247, 184, 78, 0.25);
+  --season-card-tint: rgba(247, 184, 78, 0.05);
+  --season-card-border: rgba(247, 184, 78, 0.12);
+  --season-overlay-light: rgba(247, 184, 78, 0.06);
+  --season-btn-bg: #f7b84e;
+  --season-btn-hover: #ff8585;
+  --season-header-tint: rgba(247, 184, 78, 0.04);
+  --season-footer-tint: rgba(247, 184, 78, 0.04);
+  --season-tag-bg: rgba(247, 184, 78, 0.08);
+  --season-announcement-bg: rgba(247, 184, 78, 0.05);
+}
+
+/* --- Autumn (8-10月) --- */
+[data-season="autumn"] {
+  --season-glow: rgba(212, 118, 60, 0.35);
+  --season-card-tint: rgba(212, 118, 60, 0.06);
+  --season-card-border: rgba(212, 118, 60, 0.18);
+  --season-overlay-light: rgba(212, 118, 60, 0.08);
+  --season-btn-bg: #d4763c;
+  --season-btn-hover: #c0392b;
+  --season-header-tint: rgba(212, 118, 60, 0.05);
+  --season-footer-tint: rgba(212, 118, 60, 0.05);
+  --season-tag-bg: rgba(212, 118, 60, 0.10);
+  --season-announcement-bg: rgba(212, 118, 60, 0.06);
+}
+[data-season="autumn"][data-theme="dark"] {
+  --season-glow: rgba(224, 138, 82, 0.25);
+  --season-card-tint: rgba(224, 138, 82, 0.05);
+  --season-card-border: rgba(224, 138, 82, 0.12);
+  --season-overlay-light: rgba(224, 138, 82, 0.06);
+  --season-btn-bg: #e08a52;
+  --season-btn-hover: #d4463a;
+  --season-header-tint: rgba(224, 138, 82, 0.04);
+  --season-footer-tint: rgba(224, 138, 82, 0.04);
+  --season-tag-bg: rgba(224, 138, 82, 0.08);
+  --season-announcement-bg: rgba(224, 138, 82, 0.05);
+}
+
+/* --- Winter (11-1月) --- */
+[data-season="winter"] {
+  --season-glow: rgba(91, 155, 213, 0.35);
+  --season-card-tint: rgba(91, 155, 213, 0.06);
+  --season-card-border: rgba(91, 155, 213, 0.18);
+  --season-overlay-light: rgba(91, 155, 213, 0.08);
+  --season-btn-bg: #5b9bd5;
+  --season-btn-hover: #9b59b6;
+  --season-header-tint: rgba(91, 155, 213, 0.05);
+  --season-footer-tint: rgba(91, 155, 213, 0.05);
+  --season-tag-bg: rgba(91, 155, 213, 0.10);
+  --season-announcement-bg: rgba(91, 155, 213, 0.06);
+}
+[data-season="winter"][data-theme="dark"] {
+  --season-glow: rgba(122, 179, 228, 0.25);
+  --season-card-tint: rgba(122, 179, 228, 0.05);
+  --season-card-border: rgba(122, 179, 228, 0.12);
+  --season-overlay-light: rgba(122, 179, 228, 0.06);
+  --season-btn-bg: #7ab3e4;
+  --season-btn-hover: #b07cc6;
+  --season-header-tint: rgba(122, 179, 228, 0.04);
+  --season-footer-tint: rgba(122, 179, 228, 0.04);
+  --season-tag-bg: rgba(122, 179, 228, 0.08);
+  --season-announcement-bg: rgba(122, 179, 228, 0.05);
+}
+
+/* ============================================
+   Apply: 只改背景/毛玻璃/边框，不动字体颜色
+   ============================================ */
+
+/* 背景覆盖层色调 — 春夏秋冬 */
+.bg-animation::after {
+  background: var(--season-overlay-light, rgba(255, 255, 255, 0.3)) !important;
+}
+[data-theme='dark'] .bg-animation::after {
+  background: var(--season-overlay-light, rgba(0, 0, 0, 0.4)) !important;
+}
+
+/* 卡片公告 — 毛玻璃背景 + 边框 */
+.card-announcement {
+  background: var(--season-announcement-bg, rgba(73, 177, 245, 0.05)) !important;
+  border-color: var(--season-card-border, rgba(73, 177, 245, 0.2)) !important;
+}
+
+/* 头像光晕 */
+.card-info .avatar-img::after {
+  box-shadow: 0 0 30px var(--season-glow, rgba(73, 177, 245, 0.3)) !important;
+}
+
+/* GitHub 按钮背景色 */
+#card-info-btn {
+  background: var(--season-btn-bg, var(--card-info-btn-bg)) !important;
+}
+#card-info-btn:hover {
+  background: var(--season-btn-hover, var(--card-info-btn-hover)) !important;
+}
+
+/* 标签/分类背景色（不改文字色） */
+.article-meta__categories {
+  background: var(--season-tag-bg, rgba(73, 177, 245, 0.12)) !important;
+}
+
+/* 季节切换按钮高亮 */
+.season-btn.active {
+  border-color: var(--season-btn-bg, #49b1f5) !important;
+  background: var(--season-card-tint, rgba(73, 177, 245, 0.15)) !important;
+  box-shadow: 0 0 8px var(--season-glow, rgba(73, 177, 245, 0.3)) !important;
+}
+
+/* ============================================
+   Season Switcher UI
+   ============================================ */
+.season-switcher {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.season-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: var(--rightside-bg);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.season-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.season-btn[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  margin-bottom: 4px;
+}
+
+.season-btn:hover[title]::after {
+  opacity: 1;
+}
+
+/* 背景图切换过渡 */
+.bg-animation, #page-header, #footer {
+  transition: background-image 0.8s ease-in-out;
+}
