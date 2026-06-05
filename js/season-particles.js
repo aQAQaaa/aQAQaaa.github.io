@@ -21,11 +21,16 @@
   function getSeason() {
     const s = localStorage.getItem(STORAGE_KEY);
     if (s && s !== 'auto' && SEASON_NAMES.includes(s)) return s;
-    return detectSeason();
+    return 'auto';
+  }
+
+  function getActiveSeason() {
+    const choice = getSeason();
+    return choice === 'auto' ? detectSeason() : choice;
   }
 
   // ---- Particle counts per season ----
-  const COUNTS = { spring: 18, summer: 30, autumn: 18, winter: 35 };
+  const COUNTS = { spring: 20, summer: 30, autumn: 20, winter: 35 };
 
   // ---- Canvas ----
   const canvas = document.createElement('canvas');
@@ -41,7 +46,7 @@
   resize();
   window.addEventListener('resize', resize);
 
-  let season = getSeason();
+  let season = getActiveSeason();
   let particles = [];
 
   // ---- Stagger helper ----
@@ -61,11 +66,11 @@
       y: Math.random() * H * 0.3,  // upper 30% only
       vx: (Math.random()-0.5)*0.4,
       vy: (Math.random()-0.5)*0.15,
-      size: 2 + Math.random()*2,    // much smaller (2-4px)
+      size: 2 + Math.random()*2,    // smaller (2-4px)
       wing: 0, wingDir: 1,
       hue: Math.random()>0.5 ? 330+Math.random()*30 : 270+Math.random()*30,
       phase: Math.random()*Math.PI*2,
-      alpha: 0.15 + Math.random()*0.15, // very transparent (0.15-0.3)
+      alpha: 0.2 + Math.random()*0.1, // soft (0.2-0.3)
     };
   }
 
@@ -80,8 +85,8 @@
       frequency: 0.004 + Math.random()*0.008,
       phase: Math.random()*Math.PI*2,
       len: 100 + Math.random()*150,
-      alpha: 0.12 + Math.random()*0.15,  // more visible
-      thickness: 1.2 + Math.random()*1.5, // thicker
+      alpha: 0.15 + Math.random()*0.1,  // 0.15-0.25
+      thickness: 1.5 + Math.random()*1.0, // 1.5-2.5
     };
   }
 
@@ -107,7 +112,7 @@
       x: Math.random()*W,
       y: -20 - Math.random()*60,
       vx: (Math.random()-0.5)*0.3,
-      vy: 0.3 + Math.random()*0.5,  // slower fall
+      vy: 0.4 + Math.random()*0.4,  // 0.4-0.8 slower
       size: 5 + Math.random()*4,     // slightly smaller
       rot: Math.random()*Math.PI*2,
       rotV: (Math.random()-0.5)*0.02,
@@ -349,13 +354,13 @@
   // ============ LIVE SEASON SWITCH ============
   window.addEventListener('storage', (e) => {
     if (e.key !== STORAGE_KEY) return;
-    const ns = getSeason();
+    const ns = getActiveSeason();
     if (ns !== season) { season = ns; initParticles(); }
   });
 
-  let lastCheck = getSeason();
+  let lastCheck = getActiveSeason();
   setInterval(() => {
-    const cur = getSeason();
+    const cur = getActiveSeason();
     if (cur !== lastCheck) {
       lastCheck = cur;
       season = cur;
