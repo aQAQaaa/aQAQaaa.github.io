@@ -141,13 +141,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return num.toString();
   };
 
-  // ==================== Calculate Run Days ====================
-  const calcRunDays = () => {
-    const startDate = new Date('2026-05-10');
+  // ==================== Calculate Run Days (with h:m:s) ====================
+  const START_DATE = new Date('2026-05-10');
+
+  function formatRunTime() {
     const now = new Date();
-    const diff = now - startDate;
-    return Math.max(1, Math.floor(diff / 86400000));
-  };
+    const diff = now - START_DATE;
+    const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const pad = n => String(n).padStart(2, '0');
+    return `${days}天${pad(hours)}时${pad(minutes)}分${pad(seconds)}秒`;
+  }
 
   // ==================== State ====================
   let allPosts = [];
@@ -192,7 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (webinfoPosts) webinfoPosts.textContent = allPosts.length;
       if (webinfoWords) webinfoWords.textContent = formatNumber(totalWords);
       if (webinfoLastUpdate) webinfoLastUpdate.textContent = lastUpdate;
-      if (webinfoRunDays) webinfoRunDays.textContent = calcRunDays() + ' 天';
+      if (webinfoRunDays) {
+        webinfoRunDays.textContent = formatRunTime();
+        setInterval(() => { webinfoRunDays.textContent = formatRunTime(); }, 1000);
+      }
 
       // Update all site-data counters (sidebar + mobile)
       const categories = new Set(allPosts.map(p => p.category));

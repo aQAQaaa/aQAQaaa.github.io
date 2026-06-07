@@ -179,6 +179,8 @@
     .section-header {
       text-align: center;
       margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
     }
     .section-icon {
       width: 60px; height: 60px;
@@ -329,6 +331,44 @@
       position: relative;
       padding: 20px 0;
     }
+
+    /* --- Photo Wall Background --- */
+    .photo-wall-wrapper {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .photo-wall-track {
+      display: flex;
+      gap: 12px;
+      animation: photoScroll 40s linear infinite;
+      width: max-content;
+    }
+    .photo-wall-track-reverse {
+      animation-direction: reverse;
+      animation-duration: 45s;
+    }
+    .photo-wall-track img {
+      width: 180px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      filter: grayscale(0.3);
+    }
+    @keyframes photoScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .photo-wall-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
     .timeline::before {
       content: '';
       position: absolute;
@@ -338,6 +378,7 @@
       background: linear-gradient(to bottom, var(--link-color), var(--link-hover-color), var(--link-color));
       border-radius: 3px;
       transform: translateX(-50%);
+      z-index: 1;
     }
     .timeline-item {
       position: relative;
@@ -346,6 +387,7 @@
       margin-bottom: 50px;
       opacity: 0;
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
     }
     .timeline-item.left {
       margin-left: 0;
@@ -796,6 +838,56 @@
     </div>
 
     <div class="timeline">
+      <!-- Scrolling Photo Wall Background -->
+      <div class="photo-wall-wrapper">
+        <div class="photo-wall-track">
+          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog" loading="lazy">
+          <!-- duplicate for seamless loop -->
+          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog" loading="lazy">
+        </div>
+        <div class="photo-wall-track photo-wall-track-reverse" style="margin-top:12px;">
+          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milkyway" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="woods" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet" loading="lazy">
+          <!-- duplicate for seamless loop -->
+          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milkyway" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="woods" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet" loading="lazy">
+        </div>
+      </div>
+      <!-- Timeline content (positioned above photo wall) -->
       <!-- Harry Potter -->
       <div class="timeline-item left" data-animate>
         <div class="timeline-dot"></div>

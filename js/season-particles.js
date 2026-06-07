@@ -58,19 +58,36 @@
 
   // ============ FACTORIES ============
 
-  // 🌸 SPRING — delicate butterflies, stay in upper portion
+  // 🌸 SPRING — delicate butterflies + cherry blossom petals
   function mkButterfly() {
     return {
       type:'butterfly',
       x: Math.random() * W,
-      y: Math.random() * H * 0.3,  // upper 30% only
+      y: Math.random() * H * 0.3,
       vx: (Math.random()-0.5)*0.4,
       vy: (Math.random()-0.5)*0.15,
-      size: 2 + Math.random()*2,    // smaller (2-4px)
+      size: 2 + Math.random()*2,
       wing: 0, wingDir: 1,
       hue: Math.random()>0.5 ? 330+Math.random()*30 : 270+Math.random()*30,
       phase: Math.random()*Math.PI*2,
-      alpha: 0.2 + Math.random()*0.1, // soft (0.2-0.3)
+      alpha: 0.2 + Math.random()*0.1,
+    };
+  }
+
+  function mkPetal() {
+    return {
+      type:'petal',
+      x: Math.random() * W,
+      y: -10 - Math.random()*60,
+      vx: (Math.random()-0.5)*0.3,
+      vy: 0.3 + Math.random()*0.5,
+      size: 3 + Math.random()*3,
+      rot: Math.random()*Math.PI*2,
+      rotV: (Math.random()-0.5)*0.03,
+      sway: Math.random()*Math.PI*2,
+      swayAmp: 0.6 + Math.random()*0.5,
+      hue: 340 + Math.random()*20, // pink cherry blossom
+      alpha: 0.3 + Math.random()*0.3,
     };
   }
 
@@ -105,21 +122,23 @@
     };
   }
 
-  // 🍂 AUTUMN — fewer, slower, more colorful leaves
+  // 🍂 AUTUMN — mix of maple leaves and regular leaves, faster fall
   function mkLeaf() {
+    const isMaple = Math.random() < 0.5; // 50% maple, 50% regular
     return {
       type:'leaf',
       x: Math.random()*W,
       y: -20 - Math.random()*60,
-      vx: (Math.random()-0.5)*0.3,
-      vy: 0.4 + Math.random()*0.4,  // 0.4-0.8 slower
-      size: 5 + Math.random()*4,     // slightly smaller
+      vx: (Math.random()-0.5)*0.4,
+      vy: 0.7 + Math.random()*0.6,  // 0.7-1.3 faster
+      size: 5 + Math.random()*5,
       rot: Math.random()*Math.PI*2,
-      rotV: (Math.random()-0.5)*0.02,
+      rotV: (Math.random()-0.5)*0.035,
       sway: Math.random()*Math.PI*2,
-      swayAmp: 0.8 + Math.random()*0.6, // more sway
-      hue: [10, 20, 30, 40, 5, 35][Math.floor(Math.random()*6)], // varied colors
+      swayAmp: 0.8 + Math.random()*0.6,
+      hue: isMaple ? [0, 5, 10, 15][Math.floor(Math.random()*4)] : [20, 30, 40, 35][Math.floor(Math.random()*4)],
       alpha: 0.5 + Math.random()*0.3,
+      isMaple: isMaple,
     };
   }
 
@@ -148,9 +167,12 @@
     const fn = FACTORIES[season] || mkSnow;
 
     if (season === 'summer') {
-      // Mix: wind lines + fireflies
       for (let i = 0; i < 15; i++) particles.push(staggerY(mkWind));
       for (let i = 0; i < 15; i++) particles.push(staggerY(mkFirefly));
+    } else if (season === 'spring') {
+      // Mix: butterflies + cherry blossom petals
+      for (let i = 0; i < 8; i++) particles.push(staggerY(mkButterfly));
+      for (let i = 0; i < 14; i++) particles.push(staggerY(mkPetal));
     } else {
       for (let i = 0; i < count; i++) particles.push(staggerY(fn));
     }
@@ -196,7 +218,7 @@
   }
 
   function upLeaf(p) {
-    p.sway += 0.015;
+    p.sway += 0.02;
     p.x += p.vx + Math.sin(p.sway)*p.swayAmp;
     p.y += p.vy;
     p.rot += p.rotV;
@@ -208,6 +230,16 @@
     p.x += p.vx + Math.sin(p.sway)*0.3;
     p.y += p.vy;
     if (p.y > H+20) { p.y = -20; p.x = Math.random()*W; }
+  }
+
+  function upPetal(p) {
+    p.sway += 0.018;
+    p.x += p.vx + Math.sin(p.sway)*p.swayAmp;
+    p.y += p.vy;
+    p.rot += p.rotV;
+    if (p.y > H+20) { p.y = -20; p.x = Math.random()*W; }
+    if (p.x < -20) p.x = W+20;
+    if (p.x > W+20) p.x = -20;
   }
 
   // ============ DRAWERS ============
@@ -275,25 +307,57 @@
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rot);
-    ctx.fillStyle = `hsla(${p.hue},75%,45%,${p.alpha})`;
-    ctx.beginPath();
-    ctx.moveTo(0, -p.size);
-    ctx.bezierCurveTo(p.size*0.6, -p.size*0.3, p.size*0.4, p.size*0.35, 0, p.size);
-    ctx.bezierCurveTo(-p.size*0.4, p.size*0.35, -p.size*0.6, -p.size*0.3, 0, -p.size);
-    ctx.fill();
-    // Vein
-    ctx.strokeStyle = `hsla(${p.hue},60%,30%,${p.alpha * 0.4})`;
-    ctx.lineWidth = 0.5;
-    ctx.beginPath();
-    ctx.moveTo(0, -p.size * 0.8);
-    ctx.lineTo(0, p.size * 0.8);
-    ctx.stroke();
+    if (p.isMaple) {
+      // 🍁 Maple leaf — 5-pointed star shape
+      const s = p.size;
+      ctx.fillStyle = `hsla(${p.hue},80%,45%,${p.alpha})`;
+      ctx.beginPath();
+      // Draw 5-pointed maple leaf
+      const points = 5;
+      for (let i = 0; i < points * 2; i++) {
+        const angle = (i * Math.PI) / points - Math.PI / 2;
+        const r = i % 2 === 0 ? s : s * 0.45;
+        const px = Math.cos(angle) * r;
+        const py = Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      // Center vein
+      ctx.strokeStyle = `hsla(${p.hue},60%,25%,${p.alpha * 0.5})`;
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.7);
+      ctx.lineTo(0, s * 0.7);
+      ctx.stroke();
+      // Side veins
+      for (let i = -1; i <= 1; i += 2) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(i * s * 0.4, -s * 0.3);
+        ctx.stroke();
+      }
+    } else {
+      // Regular leaf
+      ctx.fillStyle = `hsla(${p.hue},75%,45%,${p.alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size);
+      ctx.bezierCurveTo(p.size*0.6, -p.size*0.3, p.size*0.4, p.size*0.35, 0, p.size);
+      ctx.bezierCurveTo(-p.size*0.4, p.size*0.35, -p.size*0.6, -p.size*0.3, 0, -p.size);
+      ctx.fill();
+      ctx.strokeStyle = `hsla(${p.hue},60%,30%,${p.alpha * 0.4})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size * 0.8);
+      ctx.lineTo(0, p.size * 0.8);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
   function drSnow(p) {
     if (p.isLarge) {
-      // Larger snowflakes with slight sparkle
       ctx.save();
       ctx.globalAlpha = p.alpha;
       const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
@@ -312,6 +376,28 @@
     }
   }
 
+  function drPetal(p) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    const s = p.size;
+    // Cherry blossom petal — soft rounded shape
+    ctx.fillStyle = `hsla(${p.hue},60%,80%,${p.alpha})`;
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.8);
+    ctx.bezierCurveTo(s * 0.5, -s * 0.5, s * 0.5, s * 0.2, 0, s * 0.8);
+    ctx.bezierCurveTo(-s * 0.5, s * 0.2, -s * 0.5, -s * 0.5, 0, -s * 0.8);
+    ctx.fill();
+    // Light vein
+    ctx.strokeStyle = `hsla(${p.hue},50%,70%,${p.alpha * 0.3})`;
+    ctx.lineWidth = 0.3;
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.6);
+    ctx.lineTo(0, s * 0.6);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   // ============ DISPATCH ============
 
   function updateAndDraw(p) {
@@ -321,6 +407,7 @@
       case 'firefly': upFirefly(p); drFirefly(p); break;
       case 'leaf': upLeaf(p); drLeaf(p); break;
       case 'snow': upSnow(p); drSnow(p); break;
+      case 'petal': upPetal(p); drPetal(p); break;
     }
   }
 
