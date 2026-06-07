@@ -339,35 +339,72 @@
       width: 100%; height: 100%;
       overflow: hidden;
       z-index: 0;
-      opacity: 0.08;
-      pointer-events: none;
+      pointer-events: auto;
     }
-    .photo-wall-track {
+    .photo-wall-row {
       display: flex;
-      gap: 12px;
-      animation: photoScroll 40s linear infinite;
+      gap: 10px;
+      margin-bottom: 10px;
+      will-change: transform;
+    }
+    .photo-wall-row .pw-track {
+      display: flex;
+      gap: 10px;
+      animation: photoScroll var(--pw-dur, 35s) linear infinite;
       width: max-content;
     }
-    .photo-wall-track-reverse {
+    .photo-wall-row.reverse .pw-track {
       animation-direction: reverse;
-      animation-duration: 45s;
     }
-    .photo-wall-track img {
-      width: 180px;
-      height: 120px;
+    .photo-wall-wrapper:hover .pw-track {
+      animation-play-state: paused;
+    }
+    .photo-wall-row .pw-track img {
+      width: 160px;
+      height: 105px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 6px;
       flex-shrink: 0;
-      filter: grayscale(0.3);
+      opacity: 0.35;
+      filter: grayscale(0.2) brightness(0.9);
+      transition: opacity 0.3s, transform 0.3s, filter 0.3s;
+      cursor: pointer;
+    }
+    .photo-wall-row .pw-track img:hover {
+      opacity: 0.9;
+      transform: scale(1.15);
+      filter: grayscale(0) brightness(1);
+      z-index: 5;
     }
     @keyframes photoScroll {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
-    .photo-wall-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
+    /* Lightbox */
+    .pw-lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      backdrop-filter: blur(8px);
+    }
+    .pw-lightbox.active { display: flex; }
+    .pw-lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+      animation: lbIn 0.3s ease;
+    }
+    @keyframes lbIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
     .timeline::before {
       content: '';
@@ -839,55 +876,95 @@
 
     <div class="timeline">
       <!-- Scrolling Photo Wall Background -->
-      <div class="photo-wall-wrapper">
-        <div class="photo-wall-track">
-          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog" loading="lazy">
-          <!-- duplicate for seamless loop -->
-          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog" loading="lazy">
+      <div class="photo-wall-wrapper" id="photoWall">
+        <!-- Row 1: cosmos / space (三体) -->
+        <div class="photo-wall-row" style="--pw-dur:32s">
+          <div class="pw-track">
+            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos">
+            <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry sky">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth from space">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space shuttle">
+            <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy">
+            <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milky way">
+            <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet">
+            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="cosmos">
+            <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=260&fit=crop" alt="starry sky">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth from space">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space shuttle">
+            <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=260&fit=crop" alt="galaxy">
+            <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milky way">
+            <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet">
+          </div>
         </div>
-        <div class="photo-wall-track photo-wall-track-reverse" style="margin-top:12px;">
-          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milkyway" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="woods" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet" loading="lazy">
-          <!-- duplicate for seamless loop -->
-          <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=400&h=260&fit=crop" alt="milkyway" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="woods" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=400&h=260&fit=crop" alt="planet" loading="lazy">
+        <!-- Row 2: castle / magic (哈利波特) -->
+        <div class="photo-wall-row reverse" style="--pw-dur:38s">
+          <div class="pw-track">
+            <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic light">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains night">
+            <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora">
+            <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon">
+            <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic light">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="mountains night">
+            <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora">
+            <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=400&h=260&fit=crop" alt="moon">
+          </div>
+        </div>
+        <!-- Row 3: neon / dark (怪奇物语) -->
+        <div class="photo-wall-row" style="--pw-dur:28s">
+          <div class="pw-track">
+            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon city">
+            <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark abstract">
+            <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="foggy forest">
+            <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning">
+            <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract light">
+            <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="dark woods">
+            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon city">
+            <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark abstract">
+            <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="foggy forest">
+            <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=400&h=260&fit=crop" alt="lightning">
+            <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=400&h=260&fit=crop" alt="abstract light">
+            <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=400&h=260&fit=crop" alt="dark woods">
+          </div>
+        </div>
+        <!-- Row 4: mixed atmosphere -->
+        <div class="photo-wall-row reverse" style="--pw-dur:42s">
+          <div class="pw-track">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait">
+            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="nebula">
+            <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle">
+            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="stars">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=260&fit=crop" alt="sunset">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop" alt="portrait">
+            <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=260&fit=crop" alt="nebula">
+            <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&h=260&fit=crop" alt="castle">
+            <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=400&h=260&fit=crop" alt="neon">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=260&fit=crop" alt="stars">
+          </div>
+        </div>
+        <!-- Row 5 -->
+        <div class="photo-wall-row" style="--pw-dur:36s">
+          <div class="pw-track">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth">
+            <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora">
+            <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic">
+            <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=260&fit=crop" alt="earth">
+            <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=400&h=260&fit=crop" alt="aurora">
+            <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400&h=260&fit=crop" alt="dark">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=260&fit=crop" alt="space">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=260&fit=crop" alt="magic">
+            <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=260&fit=crop" alt="fog">
+          </div>
         </div>
       </div>
-      <!-- Timeline content (positioned above photo wall) -->
+      <!-- Lightbox overlay -->
+      <div class="pw-lightbox" id="pwLightbox"><img src="" alt="preview"></div>
       <!-- Harry Potter -->
       <div class="timeline-item left" data-animate>
         <div class="timeline-dot"></div>
@@ -1198,6 +1275,71 @@
         }
       }
       tick();
+    })();
+
+    // ===== Photo Wall: Drag to Accelerate + Lightbox =====
+    (function() {
+      const wall = document.getElementById('photoWall');
+      const lightbox = document.getElementById('pwLightbox');
+      if (!wall) return;
+
+      // Click to open lightbox
+      wall.addEventListener('click', function(e) {
+        if (e.target.tagName === 'IMG' && e.target.closest('.pw-track')) {
+          // Use higher res for lightbox
+          const src = e.target.src.replace(/w=\d+&h=\d+/, 'w=1200&h=800');
+          lightbox.querySelector('img').src = src;
+          lightbox.classList.add('active');
+        }
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+
+      // Drag to accelerate scrolling
+      let isDragging = false;
+      let startX = 0;
+      let dragAccel = 0;
+      const rows = wall.querySelectorAll('.photo-wall-row');
+
+      wall.addEventListener('mousedown', function(e) {
+        if (e.target.tagName === 'IMG') return; // let click through
+        isDragging = true;
+        startX = e.clientX;
+        dragAccel = 0;
+        wall.style.cursor = 'grabbing';
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        dragAccel = dx * 0.5;
+        rows.forEach(row => {
+          const track = row.querySelector('.pw-track');
+          if (track) {
+            track.style.animationDuration = Math.max(5, 35 - Math.abs(dragAccel)) + 's';
+            if (dragAccel > 0) {
+              track.style.animationDirection = row.classList.contains('reverse') ? 'normal' : 'reverse';
+            } else {
+              track.style.animationDirection = row.classList.contains('reverse') ? 'reverse' : 'normal';
+            }
+          }
+        });
+      });
+      document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        wall.style.cursor = '';
+        // Gradually return to normal speed
+        rows.forEach(row => {
+          const track = row.querySelector('.pw-track');
+          if (track) {
+            track.style.transition = 'animation-duration 2s ease';
+            track.style.animationDuration = '';
+            track.style.animationDirection = '';
+            setTimeout(() => { track.style.transition = ''; }, 2000);
+          }
+        });
+      });
     })();
 
     // ===== Theme Sync =====
