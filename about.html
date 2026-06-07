@@ -473,19 +473,22 @@
       pointer-events: none;
     }
     .book-gallery-strip {
-      display: flex;
-      gap: 6px;
+      position: relative;
       padding: 6px;
       background: rgba(0,0,0,0.04);
-      overflow-x: auto;
+      overflow: hidden;
       cursor: grab;
       user-select: none;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+      touch-action: pan-y;
     }
-    .book-gallery-strip::-webkit-scrollbar { display: none; }
     .book-gallery-strip:active { cursor: grabbing; }
-    .book-gallery-strip img {
+    .pw-track-inner {
+      display: flex;
+      gap: 6px;
+      width: max-content;
+      will-change: transform;
+    }
+    .pw-track-inner img {
       width: 72px;
       height: 50px;
       object-fit: cover;
@@ -493,11 +496,12 @@
       flex-shrink: 0;
       opacity: 0.55;
       filter: grayscale(0.3);
-      transition: all 0.3s ease;
+      transition: opacity 0.3s, filter 0.3s, transform 0.3s;
       cursor: pointer;
+      pointer-events: auto;
     }
-    .book-gallery-strip img:hover,
-    .book-gallery-strip img.active {
+    .pw-track-inner img:hover,
+    .pw-track-inner img.active {
       opacity: 1;
       filter: grayscale(0);
       transform: scale(1.08);
@@ -869,15 +873,28 @@
         <div class="timeline-card">
           <div class="book-gallery">
             <div class="book-gallery-main">
-              <img src="https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=600&h=400&fit=crop" alt="Harry Potter" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&h=400&fit=crop" alt="Hogwarts Castle" loading="lazy">
             </div>
-            <div class="book-gallery-strip">
-              <img src="https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=200&h=140&fit=crop" alt="Harry Potter" class="active" data-full="https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=200&h=140&fit=crop" alt="Castle" data-full="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&h=140&fit=crop" alt="Magic light" data-full="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&h=140&fit=crop" alt="Mountains night" data-full="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=200&h=140&fit=crop" alt="Aurora" data-full="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=200&h=140&fit=crop" alt="Moon" data-full="https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=600&h=400&fit=crop">
+            <div class="book-gallery-strip" data-dur="28">
+              <div class="pw-track-inner">
+                <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=200&h=140&fit=crop" alt="Hogwarts Castle" class="active" data-full="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=200&h=140&fit=crop" alt="Magic Forest" data-full="https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=200&h=140&fit=crop" alt="Owl" data-full="https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=140&fit=crop" alt="Candles" data-full="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1572883454114-ef1a5a650449?w=200&h=140&fit=crop" alt="Gothic Window" data-full="https://images.unsplash.com/photo-1572883454114-ef1a5a650449?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=140&fit=crop" alt="Magic Wand" data-full="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&h=140&fit=crop" alt="Dark Mountains" data-full="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=200&h=140&fit=crop" alt="Foggy Forest" data-full="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=600&h=400&fit=crop">
+                <!-- duplicate for seamless loop -->
+                <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=200&h=140&fit=crop" alt="Hogwarts Castle" data-full="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=200&h=140&fit=crop" alt="Magic Forest" data-full="https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=200&h=140&fit=crop" alt="Owl" data-full="https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=140&fit=crop" alt="Candles" data-full="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1572883454114-ef1a5a650449?w=200&h=140&fit=crop" alt="Gothic Window" data-full="https://images.unsplash.com/photo-1572883454114-ef1a5a650449?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=140&fit=crop" alt="Magic Wand" data-full="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&h=140&fit=crop" alt="Dark Mountains" data-full="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=200&h=140&fit=crop" alt="Foggy Forest" data-full="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=600&h=400&fit=crop">
+              </div>
             </div>
           </div>
           <span class="timeline-era"><i class="fas fa-magic"></i> 小学时代</span>
@@ -902,13 +919,26 @@
             <div class="book-gallery-main">
               <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=400&fit=crop" alt="Three-Body Problem" loading="lazy">
             </div>
-            <div class="book-gallery-strip">
-              <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=200&h=140&fit=crop" alt="Cosmos" class="active" data-full="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=200&h=140&fit=crop" alt="Starry sky" data-full="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&h=140&fit=crop" alt="Earth from space" data-full="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=200&h=140&fit=crop" alt="Space shuttle" data-full="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=200&h=140&fit=crop" alt="Galaxy" data-full="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=200&h=140&fit=crop" alt="Milky way" data-full="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=600&h=400&fit=crop">
+            <div class="book-gallery-strip" data-dur="32">
+              <div class="pw-track-inner">
+                <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=200&h=140&fit=crop" alt="Nebula" class="active" data-full="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=200&h=140&fit=crop" alt="Space Shuttle" data-full="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&h=140&fit=crop" alt="Earth Orbit" data-full="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=200&h=140&fit=crop" alt="Solar Flare" data-full="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=200&h=140&fit=crop" alt="Star Field" data-full="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=200&h=140&fit=crop" alt="Milky Way" data-full="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=200&h=140&fit=crop" alt="Aurora" data-full="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=200&h=140&fit=crop" alt="Galaxy Cluster" data-full="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=600&h=400&fit=crop">
+                <!-- duplicate -->
+                <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=200&h=140&fit=crop" alt="Nebula" data-full="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=200&h=140&fit=crop" alt="Space Shuttle" data-full="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&h=140&fit=crop" alt="Earth Orbit" data-full="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=200&h=140&fit=crop" alt="Solar Flare" data-full="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=200&h=140&fit=crop" alt="Star Field" data-full="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=200&h=140&fit=crop" alt="Milky Way" data-full="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=200&h=140&fit=crop" alt="Aurora" data-full="https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=200&h=140&fit=crop" alt="Galaxy Cluster" data-full="https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=600&h=400&fit=crop">
+              </div>
             </div>
           </div>
           <span class="timeline-era"><i class="fas fa-atom"></i> 初中时代</span>
@@ -933,13 +963,26 @@
             <div class="book-gallery-main">
               <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=400&fit=crop" alt="Stranger Things" loading="lazy">
             </div>
-            <div class="book-gallery-strip">
-              <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&h=140&fit=crop" alt="Stranger Things" class="active" data-full="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=200&h=140&fit=crop" alt="Neon city" data-full="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=200&h=140&fit=crop" alt="Dark abstract" data-full="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=200&h=140&fit=crop" alt="Foggy forest" data-full="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=200&h=140&fit=crop" alt="Lightning" data-full="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=600&h=400&fit=crop">
-              <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=200&h=140&fit=crop" alt="Dark woods" data-full="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=600&h=400&fit=crop">
+            <div class="book-gallery-strip" data-dur="26">
+              <div class="pw-track-inner">
+                <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&h=140&fit=crop" alt="Neon Lights" class="active" data-full="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=200&h=140&fit=crop" alt="80s Neon" data-full="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=200&h=140&fit=crop" alt="Dark Foggy Forest" data-full="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=200&h=140&fit=crop" alt="Dark Woods" data-full="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&h=140&fit=crop" alt="Suburban Night" data-full="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=200&h=140&fit=crop" alt="Abstract Dark" data-full="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=200&h=140&fit=crop" alt="Lightning" data-full="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=200&h=140&fit=crop" alt="Light Trails" data-full="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=600&h=400&fit=crop">
+                <!-- duplicate -->
+                <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&h=140&fit=crop" alt="Neon Lights" data-full="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=200&h=140&fit=crop" alt="80s Neon" data-full="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=200&h=140&fit=crop" alt="Dark Foggy Forest" data-full="https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=200&h=140&fit=crop" alt="Dark Woods" data-full="https://images.unsplash.com/photo-1553095066-5cd1a729a22f?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&h=140&fit=crop" alt="Suburban Night" data-full="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=200&h=140&fit=crop" alt="Abstract Dark" data-full="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=200&h=140&fit=crop" alt="Lightning" data-full="https://images.unsplash.com/photo-1489549132488-d00b7eee80f1?w=600&h=400&fit=crop">
+                <img src="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=200&h=140&fit=crop" alt="Light Trails" data-full="https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=600&h=400&fit=crop">
+              </div>
             </div>
           </div>
           <span class="timeline-era"><i class="fas fa-ghost"></i> 高中时代</span>
@@ -1195,12 +1238,11 @@
       tick();
     })();
 
-    // ===== Book Gallery: thumbnail swap + drag-scroll + lightbox =====
+    // ===== Book Gallery: thumbnail swap + infinite scroll + drag inertia + lightbox =====
     (function() {
-      const lightbox = document.getElementById('pwLightbox');
+      var lightbox = document.getElementById('pwLightbox');
       if (!lightbox) return;
 
-      // Close lightbox on click
       lightbox.addEventListener('click', function() {
         lightbox.classList.remove('active');
       });
@@ -1208,64 +1250,137 @@
       document.querySelectorAll('.book-gallery').forEach(function(gallery) {
         var mainImg = gallery.querySelector('.book-gallery-main img');
         var strip = gallery.querySelector('.book-gallery-strip');
-        var thumbs = strip ? strip.querySelectorAll('img') : [];
+        if (!strip) return;
+        var track = strip.querySelector('.pw-track-inner');
+        if (!track) return;
 
         // Click thumbnail → swap main image
-        thumbs.forEach(function(thumb) {
-          thumb.addEventListener('click', function(e) {
-            e.stopPropagation();
+        track.querySelectorAll('img').forEach(function(thumb) {
+          thumb.addEventListener('click', function() {
             var fullSrc = thumb.getAttribute('data-full') || thumb.src;
             mainImg.src = fullSrc;
-            thumbs.forEach(function(t) { t.classList.remove('active'); });
+            track.querySelectorAll('img').forEach(function(t) { t.classList.remove('active'); });
             thumb.classList.add('active');
           });
         });
 
         // Click main image → open lightbox
-        if (mainImg) {
-          gallery.querySelector('.book-gallery-main').addEventListener('click', function() {
-            var hiRes = mainImg.src.replace(/w=\d+&h=\d+/, 'w=1200&h=800');
-            lightbox.querySelector('img').src = hiRes;
-            lightbox.classList.add('active');
-          });
+        gallery.querySelector('.book-gallery-main').addEventListener('click', function() {
+          var hiRes = mainImg.src.replace(/w=\d+&h=\d+/, 'w=1200&h=800');
+          lightbox.querySelector('img').src = hiRes;
+          lightbox.classList.add('active');
+        });
+
+        // --- Infinite auto-scroll with drag + inertia ---
+        var dur = parseInt(strip.getAttribute('data-dur')) || 30;
+        var allItems = track.children;
+        var halfCount = Math.floor(allItems.length / 2);
+        var gap = 6;
+        var halfWidth = 0;
+        for (var i = 0; i < halfCount; i++) {
+          halfWidth += allItems[i].offsetWidth + gap;
+        }
+        halfWidth -= gap;
+
+        var pos = 0;
+        var speed = -(halfWidth / (dur * 60));
+        var dragging = false;
+        var dragStartX = 0;
+        var dragStartPos = 0;
+        var lastDragX = 0;
+        var lastDragTime = 0;
+        var velocity = 0;
+        var momentumId = null;
+
+        function setPos(p) {
+          if (p <= -halfWidth) p += halfWidth;
+          if (p > 0) p -= halfWidth;
+          pos = p;
+          track.style.transform = 'translate3d(' + pos + 'px,0,0)';
         }
 
-        // Drag-scroll the thumbnail strip
-        if (!strip) return;
-        var isDragging = false, startX = 0, scrollStart = 0;
+        function autoScroll() {
+          if (!dragging && !momentumId) {
+            setPos(pos + speed);
+          }
+          requestAnimationFrame(autoScroll);
+        }
 
+        // Mouse drag
         strip.addEventListener('mousedown', function(e) {
-          isDragging = true;
-          startX = e.clientX;
-          scrollStart = strip.scrollLeft;
-          strip.style.cursor = 'grabbing';
           e.preventDefault();
-        });
-        document.addEventListener('mousemove', function(e) {
-          if (!isDragging) return;
-          var dx = e.clientX - startX;
-          strip.scrollLeft = scrollStart - dx;
-        });
-        document.addEventListener('mouseup', function() {
-          if (!isDragging) return;
-          isDragging = false;
-          strip.style.cursor = 'grab';
+          dragging = true;
+          dragStartX = e.clientX;
+          dragStartPos = pos;
+          lastDragX = e.clientX;
+          lastDragTime = Date.now();
+          velocity = 0;
+          if (momentumId) { cancelAnimationFrame(momentumId); momentumId = null; }
+          strip.style.cursor = 'grabbing';
         });
 
-        // Touch support for strip drag
-        strip.addEventListener('touchstart', function(e) {
-          isDragging = true;
-          startX = e.touches[0].clientX;
-          scrollStart = strip.scrollLeft;
-        }, {passive: true});
-        strip.addEventListener('touchmove', function(e) {
-          if (!isDragging) return;
-          var dx = e.touches[0].clientX - startX;
-          strip.scrollLeft = scrollStart - dx;
-        }, {passive: true});
-        strip.addEventListener('touchend', function() {
-          isDragging = false;
+        document.addEventListener('mousemove', function(e) {
+          if (!dragging) return;
+          var dx = e.clientX - dragStartX;
+          var now = Date.now();
+          var dt = now - lastDragTime;
+          if (dt > 0) velocity = (e.clientX - lastDragX) / dt;
+          lastDragX = e.clientX;
+          lastDragTime = now;
+          setPos(dragStartPos + dx);
         });
+
+        document.addEventListener('mouseup', function() {
+          if (!dragging) return;
+          dragging = false;
+          strip.style.cursor = 'grab';
+          if (Math.abs(velocity) > 0.1) {
+            var v = velocity * 16;
+            (function momentum() {
+              v *= 0.96;
+              if (Math.abs(v) < 0.3) { momentumId = null; return; }
+              setPos(pos + v);
+              momentumId = requestAnimationFrame(momentum);
+            })();
+          }
+        });
+
+        // Touch drag
+        strip.addEventListener('touchstart', function(e) {
+          dragging = true;
+          dragStartX = e.touches[0].clientX;
+          dragStartPos = pos;
+          lastDragX = e.touches[0].clientX;
+          lastDragTime = Date.now();
+          velocity = 0;
+          if (momentumId) { cancelAnimationFrame(momentumId); momentumId = null; }
+        }, {passive: true});
+
+        strip.addEventListener('touchmove', function(e) {
+          if (!dragging) return;
+          var dx = e.touches[0].clientX - dragStartX;
+          var now = Date.now();
+          var dt = now - lastDragTime;
+          if (dt > 0) velocity = (e.touches[0].clientX - lastDragX) / dt;
+          lastDragX = e.touches[0].clientX;
+          lastDragTime = now;
+          setPos(dragStartPos + dx);
+        }, {passive: true});
+
+        strip.addEventListener('touchend', function() {
+          dragging = false;
+          if (Math.abs(velocity) > 0.1) {
+            var v = velocity * 16;
+            (function momentum() {
+              v *= 0.96;
+              if (Math.abs(v) < 0.3) { momentumId = null; return; }
+              setPos(pos + v);
+              momentumId = requestAnimationFrame(momentum);
+            })();
+          }
+        });
+
+        requestAnimationFrame(autoScroll);
       });
     })();
 
