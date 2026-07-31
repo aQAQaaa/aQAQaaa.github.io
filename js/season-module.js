@@ -39,14 +39,10 @@ const SeasonManager = (() => {
     const info = SEASONS[season];
     if (!info) return;
 
-    // Update background images
+    // Update the fixed background layer only. Header/footer are transparent
+    // and rely on #web_bg, so scrolling never reveals a second background.
     const bgEl = document.getElementById('web_bg');
-    const header = document.getElementById('page-header');
-    const footer = document.getElementById('footer');
-
-    [bgEl, header, footer].forEach(el => {
-      if (el) el.style.backgroundImage = `url(${info.banner})`;
-    });
+    if (bgEl) bgEl.style.backgroundImage = `url(${info.banner})`;
   }
 
   function setSeason(season) {
