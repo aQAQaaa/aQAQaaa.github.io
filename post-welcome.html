@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>欢迎来到 FanYiyang's World - FanYiyang's World</title>
+  <meta name="description" content="这是我的个人网站，分享关于技术、生活和思考的一切。">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/season-theme.css">
+</head>
+<body>
+  <div class="bg-animation" id="web_bg" style="background-image: url(img/banner.png);"></div>
+
+  <div class="page" id="body-wrap">
+    <header class="full_page" id="page-header" style="background-image: url(img/banner.png); height: 40vh;">
+      <nav id="nav">
+        <span id="blog-info">
+          <a class="nav-site-title" href="/">
+            <span class="site-name">FanYiyang's World</span>
+          </a>
+        </span>
+      </nav>
+      <div id="site-info">
+        <h1 id="site-title">欢迎来到 FanYiyang's World</h1>
+        <div id="site-subtitle">
+          <span>2026-05-10 · 日记本</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout" id="content-inner">
+      <div class="recent-posts" id="recent-posts" style="max-width: 800px; margin: 0 auto;">
+        <div style="background: var(--card-bg); border-radius: 12px; padding: 2rem 2.5rem; box-shadow: var(--shadow-card); line-height: 1.9; color: var(--font-color);">
+
+          <p style="font-size: 1.1em; color: var(--dark-grey); margin-bottom: 2em;">
+            <i class="fas fa-calendar-alt"></i> 2026年5月10日 &nbsp;·&nbsp;
+            <i class="fas fa-folder"></i> 日记本 &nbsp;·&nbsp;
+            <i class="fas fa-tags"></i> 日志
+          </p>
+
+          <p>你好，我是 FanYiyang。欢迎来到我的个人网站。</p>
+          <p>这里分享关于技术、生活和思考的一切。也许是一段代码，也许是一点生活感悟，也许只是某天放学后在教室里发呆时冒出的奇怪念头。</p>
+
+          <h2 style="margin-top: 2em;">关于这个网站</h2>
+          <p>这个网站是我用纯静态 HTML/CSS/JS 从零搭建的，灵感来自 Butterfly 主题风格。没有复杂的框架，没有后端的负担，只是简单地记录、分享。</p>
+          <p>它部署在 GitHub Pages 上，免费、稳定、全球可访问。我会在这里持续更新，把值得留下的东西都放进来。</p>
+
+          <h2 style="margin-top: 2em;">你可能会在这里看到</h2>
+          <ul>
+            <li><strong>技术</strong> — 编程学习笔记、踩坑记录、项目分享</li>
+            <li><strong>生活</strong> — 跑步、骑行、那些值得记住的瞬间</li>
+            <li><strong>思考</strong> — 对世界的碎片化观察与想法</li>
+          </ul>
+
+          <h2 style="margin-top: 2em;">最后</h2>
+          <p>Stay hungry, Stay foolish. 保持好奇，永远探索。</p>
+          <p>如果你读到这里，感谢你的时间。希望这里能成为你偶尔愿意来看看的小角落。</p>
+
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <p style="color: var(--dark-grey); font-style: italic;">
+            <i class="fas fa-pen-fancy"></i> 首发于 2026年5月10日。
+          </p>
+
+          <div style="margin-top: 2em; text-align: center;">
+            <a href="/" style="display: inline-block; padding: 0.6em 2em; background: var(--link-color); color: #fff; border-radius: 8px; text-decoration: none; transition: background 0.3s;">
+              <i class="fas fa-arrow-left"></i> 返回首页
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" style="background-image: url(img/banner.png);">
+      <div class="footer-other">
+        <div class="footer-copyright">
+          <span class="copyright">&copy; 2024 - 2026 By FanYiyang</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Sync theme from main site
+    (function() {
+      try {
+        const raw = localStorage.getItem('theme');
+        if (raw) {
+          const { value, expiry } = JSON.parse(raw);
+          if (Date.now() <= expiry) {
+            document.documentElement.setAttribute('data-theme', value);
+          }
+        }
+      } catch(e) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    })();
+  </script>
+  <script src="js/season-module.js"></script>
+  <script src="js/season-particles.js"></script>
+</body>
+</html>

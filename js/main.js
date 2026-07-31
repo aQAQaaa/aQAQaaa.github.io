@@ -160,6 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let allPosts = [];
   let activeCategory = null;
   let activeTag = null;
+  let activeMonth = null;
+  let runTimeInterval = null;
 
   // ==================== Load Posts from JSON ====================
   const loadPosts = async () => {
@@ -201,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (webinfoLastUpdate) webinfoLastUpdate.textContent = lastUpdate;
       if (webinfoRunDays) {
         webinfoRunDays.textContent = formatRunTime();
-        setInterval(() => { webinfoRunDays.textContent = formatRunTime(); }, 1000);
+        if (runTimeInterval) clearInterval(runTimeInterval);
+        runTimeInterval = setInterval(() => { webinfoRunDays.textContent = formatRunTime(); }, 1000);
       }
 
       // Update all site-data counters (sidebar + mobile)
@@ -324,12 +327,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const [y, m] = month.split('-');
       return `
         <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="javascript:void(0)" data-month="${month}">
+          <a class="card-archive-list-link${activeMonth === month ? ' active' : ''}" href="javascript:void(0)" data-month="${month}">
             <span class="card-archive-list-date">${y} 年 ${parseInt(m)} 月</span>
             <span class="card-archive-list-count">${count}</span>
           </a>
         </li>`;
     }).join('');
+
+    // Bind click events: filter by month
+    archiveList.querySelectorAll('.card-archive-list-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const month = link.dataset.month;
+        if (activeMonth === month) {
+          activeMonth = null;
+        } else {
+          activeMonth = month;
+          activeCategory = null;
+          activeTag = null;
+        }
+        applyFilters();
+      });
+    });
   };
 
   // ==================== Apply Filters ====================
@@ -338,12 +357,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const indicator = document.getElementById('filter-indicator');
     const filterText = document.getElementById('filter-text');
 
-    if (activeCategory || activeTag) {
+    if (activeCategory || activeTag || activeMonth) {
       indicator.classList.add('show');
       if (activeCategory) {
         filterText.textContent = `分类: ${activeCategory}`;
       } else if (activeTag) {
         filterText.textContent = `标签: ${activeTag}`;
+      } else if (activeMonth) {
+        filterText.textContent = `归档: ${activeMonth}`;
       }
     } else {
       indicator.classList.remove('show');
@@ -356,6 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.card-tag-cloud a').forEach(link => {
       link.classList.toggle('active', link.dataset.tag === activeTag);
     });
+    document.querySelectorAll('.card-archive-list-link').forEach(link => {
+      link.classList.toggle('active', link.dataset.month === activeMonth);
+    });
 
     // Filter posts
     let filtered = allPosts;
@@ -364,6 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (activeTag) {
       filtered = filtered.filter(p => (p.tags || []).includes(activeTag));
+    }
+    if (activeMonth) {
+      filtered = filtered.filter(p => (p.date || '').substring(0, 7) === activeMonth);
     }
 
     renderPosts(filtered);
@@ -455,6 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearFilter.addEventListener('click', () => {
       activeCategory = null;
       activeTag = null;
+      activeMonth = null;
       applyFilters();
     });
   }
@@ -600,9 +628,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => { document.body.style.transition = ''; }, 600);
     }
     // Escape to clear filter
-    if (e.key === 'Escape' && (activeCategory || activeTag)) {
+    if (e.key === 'Escape' && (activeCategory || activeTag || activeMonth)) {
       activeCategory = null;
       activeTag = null;
+      activeMonth = null;
       applyFilters();
     }
   });

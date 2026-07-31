@@ -410,17 +410,6 @@ img {
   gap: 0;
 }
 
-#content-inner::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--global-bg);
-  z-index: -1;
-}
-
 #recent-posts {
   width: calc(100% - var(--aside-width) - 20px);
   min-height: 60vh;
@@ -995,9 +984,15 @@ img {
   transition: all 0.3s;
 }
 
-.card-archive-list-link:hover {
+.card-archive-list-link:hover,
+.card-archive-list-link.active {
   background: rgba(73, 177, 245, 0.1);
   color: var(--link-color);
+}
+
+.card-archive-list-link.active .card-archive-list-count {
+  background: var(--link-color);
+  color: #fff;
 }
 
 .card-archive-list-date {

@@ -519,7 +519,6 @@
       { name: "赛博琥珀博物馆", url: "https://sbhp.flowus.cn/", desc: "数字博物馆体验", cat: "other", icon: "fas fa-landmark" },
       { name: "Fan Blog", url: "https://fan-blog-nine.vercel.app/", desc: "FanYiyang 赛博朋克博客", cat: "other", icon: "fas fa-blog" },
       { name: "FanYiyang's World", url: "https://aqaqaaa.github.io/", desc: "个人主页 · Stay hungry, Stay foolish", cat: "other", icon: "fas fa-home" },
-      { name: "凹凸工坊", url: "https://www.autohanding.com/", desc: "手写字体在线转换", cat: "tool", icon: "fas fa-pen" },
       { name: "忙忙软件库", url: "https://xm.zykmm.com/?utm_source=user_profile_share", desc: "免费黑科技软件分享", cat: "download", icon: "fas fa-box-open" },
     ];
 
@@ -632,6 +631,8 @@
 
     // ===== Init =====
     document.getElementById('totalCount').textContent = data.length;
+    const catCount = new Set(data.map(b => b.cat)).size;
+    document.getElementById('catCount').textContent = catCount;
     render();
   </script>
   <script src="js/season-module.js"></script>

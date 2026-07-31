@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于这个网站 - FanYiyang's World</title>
+  <meta name="description" content="使用纯静态 HTML/CSS/JS 构建，部署在 GitHub Pages 上，复刻自 Butterfly 主题风格。">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/season-theme.css">
+</head>
+<body>
+  <div class="bg-animation" id="web_bg" style="background-image: url(img/banner.png);"></div>
+
+  <div class="page" id="body-wrap">
+    <header class="full_page" id="page-header" style="background-image: url(img/banner.png); height: 40vh;">
+      <nav id="nav">
+        <span id="blog-info">
+          <a class="nav-site-title" href="/">
+            <span class="site-name">FanYiyang's World</span>
+          </a>
+        </span>
+      </nav>
+      <div id="site-info">
+        <h1 id="site-title">关于这个网站</h1>
+        <div id="site-subtitle">
+          <span>2026-05-10 · 技术</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout" id="content-inner">
+      <div class="recent-posts" id="recent-posts" style="max-width: 800px; margin: 0 auto;">
+        <div style="background: var(--card-bg); border-radius: 12px; padding: 2rem 2.5rem; box-shadow: var(--shadow-card); line-height: 1.9; color: var(--font-color);">
+
+          <p style="font-size: 1.1em; color: var(--dark-grey); margin-bottom: 2em;">
+            <i class="fas fa-calendar-alt"></i> 2026年5月10日 &nbsp;·&nbsp;
+            <i class="fas fa-folder"></i> 技术 &nbsp;·&nbsp;
+            <i class="fas fa-tags"></i> 前端, GitHub
+          </p>
+
+          <p>这个网站使用纯静态 HTML/CSS/JS 构建，部署在 GitHub Pages 上，复刻自 Butterfly 主题风格。这篇文章记录它的技术细节。</p>
+
+          <h2 style="margin-top: 2em;">技术栈</h2>
+          <ul>
+            <li><strong>结构</strong> — 纯手写 HTML，无框架、无构建工具</li>
+            <li><strong>样式</strong> — CSS 变量驱动的主题系统，玻璃拟态（Glassmorphism）风格</li>
+            <li><strong>交互</strong> — 原生 JavaScript：文章数据驱动渲染、筛选、季节粒子特效</li>
+            <li><strong>托管</strong> — GitHub Pages，免费静态托管</li>
+          </ul>
+
+          <h2 style="margin-top: 2em;">特色功能</h2>
+          <ul>
+            <li><strong>四季主题</strong> — 根据月份自动切换春夏秋冬的主题色与背景，也可以手动切换</li>
+            <li><strong>季节粒子</strong> — 春天的蝴蝶、夏天的流萤、秋天的落叶、冬天的雪花</li>
+            <li><strong>深色 / 浅色模式</strong> — 一键切换，跟随系统偏好</li>
+            <li><strong>数据驱动</strong> — 文章列表存放在 <code>data/posts.json</code>，首页动态渲染</li>
+            <li><strong>分类 / 标签筛选</strong> — 点击侧边栏或文章卡片上的分类标签即可过滤</li>
+            <li><strong>响应式</strong> — 完整适配桌面端与移动端</li>
+          </ul>
+
+          <h2 style="margin-top: 2em;">设计灵感</h2>
+          <p>整体视觉风格参考了 Hexo 的 <strong>Butterfly</strong> 主题：毛玻璃卡片、圆角布局、柔和配色、首屏全屏横幅。我用纯 CSS 变量实现了它的核心观感，同时加入了季节变化的动态元素。</p>
+
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <p style="color: var(--dark-grey); font-style: italic;">
+            <i class="fas fa-pen-fancy"></i> 本文介绍网站本身的构建方式。
+          </p>
+
+          <div style="margin-top: 2em; text-align: center;">
+            <a href="/" style="display: inline-block; padding: 0.6em 2em; background: var(--link-color); color: #fff; border-radius: 8px; text-decoration: none; transition: background 0.3s;">
+              <i class="fas fa-arrow-left"></i> 返回首页
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" style="background-image: url(img/banner.png);">
+      <div class="footer-other">
+        <div class="footer-copyright">
+          <span class="copyright">&copy; 2024 - 2026 By FanYiyang</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Sync theme from main site
+    (function() {
+      try {
+        const raw = localStorage.getItem('theme');
+        if (raw) {
+          const { value, expiry } = JSON.parse(raw);
+          if (Date.now() <= expiry) {
+            document.documentElement.setAttribute('data-theme', value);
+          }
+        }
+      } catch(e) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    })();
+  </script>
+  <script src="js/season-module.js"></script>
+  <script src="js/season-particles.js"></script>
+</body>
+</html>
