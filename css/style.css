@@ -1349,17 +1349,6 @@ img {
   100% { opacity: 0; }
 }
 
-/* Header parallax effect */
-#page-header.full_page {
-  background-attachment: fixed;
-}
-
-@media (max-width: 768px) {
-  #page-header.full_page {
-    background-attachment: scroll;
-  }
-}
-
 /* --- Reading Progress Bar --- */
 #reading-progress {
   position: fixed;
