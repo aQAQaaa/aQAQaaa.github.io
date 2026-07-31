@@ -1584,3 +1584,28 @@ html {
 .announcement_content {
   padding-left: 12px;
 }
+
+/* --- Post page frosted hero & body --- */
+#page-header.post-hero {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: var(--glass-border);
+}
+
+#page-header.post-hero::before {
+  background: transparent;
+}
+
+#page-header.post-hero #site-title,
+#page-header.post-hero #site-subtitle,
+#page-header.post-hero .nav-site-title {
+  color: var(--text-highlight-color);
+  text-shadow: none;
+}
+
+.post-body {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+}
