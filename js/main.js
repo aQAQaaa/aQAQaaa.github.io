@@ -601,23 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleMenu?.addEventListener('click', openSidebar);
   menuMask?.addEventListener('click', closeSidebar);
 
-  // ==================== Parallax Effect for Hero ====================
-  const heroHeader = document.getElementById('page-header');
-  if (heroHeader?.classList.contains('full_page')) {
-    window.addEventListener('scroll', () => {
-      const st = window.scrollY;
-      if (st < window.innerHeight) {
-        const bgEl = document.getElementById('web_bg');
-        if (bgEl) bgEl.style.transform = `scale(1.1) translateY(${st * 0.3}px)`;
-        const si = document.getElementById('site-info');
-        if (si) {
-          si.style.transform = `translate(-50%, calc(-50% + ${st * 0.15}px))`;
-          si.style.opacity = Math.max(0, 1 - st / (window.innerHeight * 0.7));
-        }
-      }
-    }, { passive: true });
-  }
-
   // ==================== Keyboard Shortcuts ====================
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
