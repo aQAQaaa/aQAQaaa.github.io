@@ -17,28 +17,43 @@
 
 ## 🚀 部署
 
-1. Fork 或上传到 GitHub 仓库
-2. 进入 Settings → Pages
-3. Source 选择 `Deploy from a branch`
-4. Branch 选择 `main`，目录选择 `/ (root)`
-5. 保存后等待部署完成
+当前仓库已启用 GitHub Pages：**提交到 `main` 分支后会自动重新部署**（约 1~3 分钟），无需手动操作。
 
-## 📝 如何发表文章
+（如果是从零开始部署一个新仓库：Settings → Pages → Source 选择 `Deploy from a branch` → Branch 选择 `main`、目录 `/ (root)` → 保存）
 
-### 第一步：创建文章 HTML 文件
+---
 
-在项目根目录创建一个新的 HTML 文件，例如 `post-my-article.html`。可以复制已有的文章文件（如 `post-ai-thoughts.html`）作为模板。
+## ✍️ 如何发一篇博客（纯网页操作，不需要安装任何软件）
 
-修改以下内容：
-- `<title>` 标签：改成你的文章标题
-- `<h1 id="site-title">`：改成你的文章标题
-- `<span>日期 · 分类</span>`：改成你的发布日期和分类
-- 文章正文内容
+> 全程在 **GitHub 网页** 上点击操作，不需要本地安装 git，也不需要命令行。
 
-### 第二步：更新文章列表
+### 第 1 步：创建文章页面（在 GitHub 网页新建一个 HTML 文件）
 
-编辑 `data/posts.json` 文件，在数组中添加一条新记录：
+1. 用浏览器打开你的仓库首页：**https://github.com/aQAQaaa/aQAQaaa.github.io**
+2. 点击页面右侧上方的绿色 **`Add file`** 按钮，在弹出的下拉菜单里选择 **`Create new file`**
+3. 在页面顶部**输入文件名的输入框**里输入文章文件名，例如：`post-hello-world.html`
+   - 建议用英文小写命名，不要有空格（如 `post-my-first-post.html`）
+4. 把下面的**文章模板**粘贴进编辑框：
+   - 先在新标签页打开任意一篇文章的源码，例如：https://github.com/aQAQaaa/aQAQaaa.github.io/blob/main/post-ai-thoughts.html
+   - 点击该页面右上角的 **`Raw`** 按钮（此时浏览器里只有纯文本源码）
+   - 全选（Ctrl+A）→ 复制（Ctrl+C）
+   - 回到刚才「Create new file」的页面，在编辑框里粘贴（Ctrl+V）
+5. 修改模板中的这几处内容：
+   - **`<title>你的文章标题 - FanYiyang's World</title>`** → 改成你的文章标题
+   - **`<h1 id="site-title">你的文章标题</h1>`** → 改成你的文章标题
+   - **`<span>2026-06-05 · 分类名</span>`** → 改成你的发布日期和分类名
+   - 正文部分（`<div class="post-body">` 里的内容）→ 替换成你自己的文章内容
+6. 滚动到页面底部，找到 **`Commit changes`** 区域，在输入框里写一句说明，例如：`发布新文章：你好世界`
+7. 点击绿色的 **`Commit changes`** 按钮 ✅ —— 文章文件就保存好了
 
+### 第 2 步：把文章登记到首页列表（编辑 `data/posts.json`）
+
+1. 点击页面左上角的仓库名 **`aQAQaaa.github.io`** 回到仓库首页
+2. 点击仓库里的 **`data`** 文件夹，进入后点击 **`posts.json`** 文件
+3. 点击文件内容右上角的 **铅笔图标**（编辑此文件 / Edit this file）
+4. 滚动到文件末尾，找到最后一条数据的 `}`：
+   - 先在它后面加一个**英文逗号** `,`
+   - 然后换行，粘贴下面的新条目（把内容改成你的文章信息）：
 ```json
 {
   "title": "你的文章标题",
@@ -47,12 +62,22 @@
   "category": "分类名称",
   "tags": ["标签1", "标签2"],
   "excerpt": "文章摘要，会显示在首页卡片中。",
-  "cover": "img/your-cover.jpg",
-  "url": "post-my-article.html"
+  "cover": "",
+  "url": "post-hello-world.html"
 }
 ```
+5. **务必检查两件事**：
+   - `url` 字段的值**必须**和第 1 步创建的文件名**完全一致**（例如都是 `post-hello-world.html`）
+   - JSON 里**最后一条数据后面不能有多余的逗号**
+6. 滚动到底部，点击 **`Commit changes`** → 输入说明（如 `添加文章到列表`）→ 再次点击 **`Commit changes`** ✅
 
-**字段说明：**
+### 第 3 步：等待自动部署
+
+- 什么都不用做，GitHub Pages 会在 **1~3 分钟**内自动重新构建并部署
+- 打开 **https://aqaqaaa.github.io/** 刷新（或 Ctrl+F5 强制刷新），就能在首页看到新文章卡片了
+
+### 字段说明
+
 | 字段 | 说明 |
 |------|------|
 | `title` | 文章标题 |
@@ -60,25 +85,22 @@
 | `updated` | 更新日期 (可选) |
 | `category` | 分类名称 |
 | `tags` | 标签数组 |
-| `excerpt` | 文章摘要 |
+| `excerpt` | 文章摘要，显示在首页卡片中 |
 | `cover` | 封面图片路径 (可选，留空则不显示封面) |
-| `url` | 文章页面路径 |
+| `url` | 文章页面路径，必须与 HTML 文件名一致 |
 | `sticky` | 是否置顶 (可选，`true` 表示置顶) |
 
-### 第三步：提交并推送
-
-```bash
-git add .
-git commit -m "发布新文章：你的文章标题"
-git push origin main
-```
+---
 
 ## 🖼️ 如何在文章中添加图片
 
-### 方法一：使用本地图片
+### 方法一：上传图片到仓库再引用（网页操作）
 
-1. 将图片放入 `img/` 目录（推荐创建子目录如 `img/posts/`）
-2. 在文章 HTML 中引用：
+1. 回到仓库首页，点击 **`img`** 文件夹
+2. 点击右上角的 **`Add file`** 按钮 → 选择 **`Upload files`**
+3. 把图片文件**拖拽**进虚线区域（推荐先建子目录：在文件名处输入 `img/posts/` 前缀会自动归入该目录）
+4. 滚动到底部，点击 **`Commit changes`** 完成上传
+5. 在文章 HTML 中引用（路径就是相对路径）：
 
 ```html
 <img src="img/posts/my-image.jpg" alt="图片描述" style="max-width: 100%; border-radius: 8px; margin: 1em 0;">
@@ -108,6 +130,8 @@ git push origin main
 ```
 
 推荐封面图尺寸：**800×400 像素**或相近比例。
+
+---
 
 ## 🎨 自定义
 
