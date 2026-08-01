@@ -474,6 +474,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: document.getElementById('content-inner').offsetTop - 70, behavior: 'smooth' });
       });
     });
+
+    // Re-init scroll reveal + parallax for newly rendered cards
+    initReveal(postList);
+    collectParallax();
   };
 
   // ==================== Clear Filter ====================
@@ -498,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleNavScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    if (scrollTop > 100) {
+    if (scrollTop > 10) {
       if (!navFixed) { pageHeader.classList.add('nav-fixed'); navFixed = true; }
     } else {
       if (navFixed) { pageHeader.classList.remove('nav-fixed'); navFixed = false; }
@@ -645,16 +649,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // ==================== Card Entrance Animation Observer ====================
-  const cardObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
-      }
-    });
-  }, { threshold: 0.1 });
+  // ==================== Scroll Reveal (non-linear card entrance) ====================
+  const revealObserver = ('IntersectionObserver' in window)
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' })
+    : null;
 
-  document.querySelectorAll('.card-widget').forEach(card => {
-    cardObserver.observe(card);
-  });
+  const initReveal = (root) => {
+    if (!revealObserver) return;
+
+    // Post cards (stagger comes from the inline animation-delay in renderPosts)
+    root.querySelectorAll('.recent-post-item:not(.js-anim)').forEach(el => {
+      el.classList.add('js-anim');
+      revealObserver.observe(el);
+    });
+
+    // Aside widgets (slight cascade delay)
+    root.querySelectorAll('.aside-content .card-widget:not(.js-anim)').forEach((el, i) => {
+      el.classList.add('js-anim');
+      el.style.animationDelay = Math.min(0.06 + i * 0.05, 0.4) + 's';
+      revealObserver.observe(el);
+    });
+  };
+
+  // Init reveal for static aside widgets; post cards re-init inside renderPosts
+  initReveal(document);
+
+  // ==================== Scroll Parallax (spring-like inertia) ====================
+  // Each card / aside widget gets its own --parallax-offset (different speed);
+  // the CSS transform transition + per-item delay create the springy lag.
+  const POST_FACTORS = [1.3, 1.05, 0.82, 0.62, 0.42, 0.26];
+  const ASIDE_FACTORS = [1.0, 0.82, 0.65, 0.5, 0.36, 0.24, 0.15];
+  let parallaxItems = [];
+
+  const updateParallax = () => {
+    const y = (window.scrollY || document.documentElement.scrollTop) * 0.045;
+    parallaxItems.forEach((item) => {
+      item.el.style.setProperty('--parallax-offset', (y * item.factor).toFixed(2) + 'px');
+    });
+  };
+
+  const collectParallax = () => {
+    parallaxItems = [];
+    document.querySelectorAll('.recent-post-item').forEach((el, i) => {
+      parallaxItems.push({ el, factor: POST_FACTORS[Math.min(i, POST_FACTORS.length - 1)] });
+    });
+    document.querySelectorAll('.aside-content .card-widget').forEach((el, i) => {
+      parallaxItems.push({ el, factor: ASIDE_FACTORS[Math.min(i, ASIDE_FACTORS.length - 1)] });
+    });
+    updateParallax();
+  };
+
+  window.addEventListener('scroll', updateParallax, { passive: true });
+  collectParallax();
 });

@@ -157,7 +157,7 @@ img {
 /* --- Navigation --- */
 #page-header {
   position: relative;
-  width: 100%;
+  width: auto;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -187,44 +187,65 @@ img {
 #nav {
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 36px;
-  width: 100%;
+  width: auto;
   height: var(--nav-height);
-  border: none;
+  border: 0 solid transparent;
   background: transparent;
-  transition: all 0.5s;
+  backdrop-filter: blur(0) saturate(100%);
+  -webkit-backdrop-filter: blur(0) saturate(100%);
+  transition: top 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              left 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              right 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              border-radius 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              background-color 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              border-width 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              border-color 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              box-shadow 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              backdrop-filter 0.55s cubic-bezier(0.34, 1.4, 0.64, 1),
+              transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 #page-header.nav-fixed #nav {
   position: fixed;
-  top: 0;
-  background: var(--card-bg);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  top: 12px;
+  left: 24px;
+  right: 24px;
+  width: auto;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  border-bottom: var(--glass-border);
+  border: var(--glass-border);
+  border-radius: 16px;
+}
+
+[data-theme='dark'] #page-header.nav-fixed #nav {
+  background: rgba(30, 30, 30, 0.5);
 }
 
 #page-header.nav-visible #nav {
-  animation: nav-show 0.5s;
+  animation: nav-show 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 @keyframes nav-show {
-  0% { transform: translateY(-100%); }
+  0% { transform: translateY(calc(-100% - 12px)); }
   100% { transform: translateY(0); }
 }
 
 #page-header.nav-hidden #nav {
-  animation: nav-hide 0.5s forwards;
+  animation: nav-hide 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
 }
 
 @keyframes nav-hide {
   0% { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
+  100% { transform: translateY(calc(-100% - 12px)); }
 }
 
 #blog-info {
@@ -438,7 +459,6 @@ img {
 }
 
 .recent-post-item:hover {
-  transform: translateY(-6px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   border-color: rgba(73, 177, 245, 0.3);
 }
@@ -1074,9 +1094,15 @@ img {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 20px 0;
+  padding: 20px 24px;
   text-align: center;
-  margin-top: 20px;
+  width: fit-content;
+  max-width: calc(100% - 48px);
+  margin: 20px auto;
+  border: var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 #footer::before {
@@ -1086,9 +1112,10 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
 }
 
 .footer-other {
@@ -1367,8 +1394,7 @@ html {
 }
 
 .card-widget,
-.recent-post-item,
-#nav {
+.recent-post-item {
   transition: background-color 0.5s ease, box-shadow 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1587,10 +1613,18 @@ html {
 
 /* --- Post page frosted hero & body --- */
 #page-header.post-hero {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: var(--glass-border);
+  border: var(--glass-border);
+  border-radius: 20px;
+  margin: 20px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+[data-theme='dark'] #page-header.post-hero {
+  background: rgba(30, 30, 30, 0.5);
 }
 
 #page-header.post-hero::before {
@@ -1609,3 +1643,54 @@ html {
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
 }
+
+
+/* --- Scroll Reveal (non-linear entrance, triggered on scroll) --- */
+.js-anim {
+  animation: reveal-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-play-state: paused;
+}
+
+.js-anim.animate-in {
+  animation-play-state: running;
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* --- Scroll Parallax with spring-like inertia --- */
+/* JS sets --parallax-offset per card (different speed); the transform
+   transition + per-item delay create the springy lag while scrolling. */
+.recent-post-item,
+.aside-content .card-widget {
+  transform: translate3d(0, var(--parallax-offset, 0px), 0);
+  transition: background-color 0.5s ease, box-shadow 0.3s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Cards follow at slightly different times (spring lag) */
+.recent-post-item:nth-child(1) { transition-delay: 0s, 0s, 0s; }
+.recent-post-item:nth-child(2) { transition-delay: 0s, 0s, 0.09s; }
+.recent-post-item:nth-child(3) { transition-delay: 0s, 0s, 0.18s; }
+.recent-post-item:nth-child(4) { transition-delay: 0s, 0s, 0.27s; }
+.recent-post-item:nth-child(5) { transition-delay: 0s, 0s, 0.36s; }
+.recent-post-item:nth-child(6) { transition-delay: 0s, 0s, 0.45s; }
+
+.aside-content .card-widget:nth-child(1) { transition-delay: 0s, 0s, 0s; }
+.aside-content .card-widget:nth-child(2) { transition-delay: 0s, 0s, 0.08s; }
+.aside-content .card-widget:nth-child(3) { transition-delay: 0s, 0s, 0.16s; }
+.aside-content .card-widget:nth-child(4) { transition-delay: 0s, 0s, 0.24s; }
+.aside-content .card-widget:nth-child(5) { transition-delay: 0s, 0s, 0.32s; }
+.aside-content .card-widget:nth-child(6) { transition-delay: 0s, 0s, 0.4s; }
+.aside-content .card-widget:nth-child(7) { transition-delay: 0s, 0s, 0.48s; }
+
+/* Parallax cards keep their spring offset on hover (no lift) */
