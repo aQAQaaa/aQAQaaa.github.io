@@ -33,11 +33,12 @@
 2. 点击页面右侧上方的绿色 **`Add file`** 按钮，在弹出的下拉菜单里选择 **`Create new file`**
 3. 在页面顶部**输入文件名的输入框**里输入文章文件名，例如：`post-hello-world.html`
    - 建议用英文小写命名，不要有空格（如 `post-my-first-post.html`）
-4. 把下面的**文章模板**粘贴进编辑框：
-   - 先在新标签页打开任意一篇文章的源码，例如：https://github.com/aQAQaaa/aQAQaaa.github.io/blob/main/post-ai-thoughts.html
+4. 把**空白文章模板**粘贴进编辑框：
+   - 在新标签页打开模板文件：**https://github.com/aQAQaaa/aQAQaaa.github.io/blob/main/post-template.html**
    - 点击该页面右上角的 **`Raw`** 按钮（此时浏览器里只有纯文本源码）
    - 全选（Ctrl+A）→ 复制（Ctrl+C）
    - 回到刚才「Create new file」的页面，在编辑框里粘贴（Ctrl+V）
+   - 模板里用中文注释标好了 **5 处需要修改的位置**（网页标题、文章大标题、日期·分类、信息行、正文），照着改即可，不用的示例段落直接删掉
 5. 修改模板中的这几处内容：
    - **`<title>你的文章标题 - FanYiyang's World</title>`** → 改成你的文章标题
    - **`<h1 id="site-title">你的文章标题</h1>`** → 改成你的文章标题
@@ -146,6 +147,7 @@
 
 ```
 ├── index.html              # 首页
+├── post-template.html      # 空白文章模板（发文章时复制它）
 ├── post-*.html             # 文章页面
 ├── about.html              # 关于页面
 ├── treasure-box.html       # 百宝箱页面

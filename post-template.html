@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ========== 第 1 处：把下面改成你的文章标题 ========== -->
+  <title>你的文章标题 - FanYiyang's World</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/season-theme.css">
+</head>
+<body>
+  <div class="bg-animation" id="web_bg" style="background-image: url(img/banner.png);"></div>
+
+  <div class="page" id="body-wrap">
+    <header class="full_page post-hero" id="page-header" style="height: 40vh;">
+      <nav id="nav">
+        <span id="blog-info">
+          <a class="nav-site-title" href="/">
+            <span class="site-name">FanYiyang's World</span>
+          </a>
+        </span>
+      </nav>
+      <div id="site-info">
+        <!-- ========== 第 2 处：改成你的文章标题 ========== -->
+        <h1 id="site-title">你的文章标题</h1>
+        <div id="site-subtitle">
+          <!-- ========== 第 3 处：改成日期 · 分类 ========== -->
+          <span>2026-06-05 · 分类名</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout" id="content-inner">
+      <div class="recent-posts" id="recent-posts" style="max-width: 800px; margin: 0 auto;">
+        <div class="post-body" style="border-radius: 12px; padding: 2rem 2.5rem; box-shadow: var(--shadow-card); line-height: 1.9; color: var(--font-color);">
+
+          <!-- ========== 第 4 处：文章信息行（日期 / 分类 / 标签）========== -->
+          <p style="font-size: 1.1em; color: var(--dark-grey); margin-bottom: 2em;">
+            <i class="fas fa-calendar-alt"></i> 2026年6月5日 &nbsp;·&nbsp;
+            <i class="fas fa-folder"></i> 分类名 &nbsp;·&nbsp;
+            <i class="fas fa-tags"></i> 标签1, 标签2
+          </p>
+
+          <!-- ========== 第 5 处：从这里开始写正文（下面的内容都可以删除或替换）========== -->
+
+          <!-- 标题示例：二级标题 -->
+          <h2 style="margin-top: 2em;">小标题示例</h2>
+
+          <!-- 段落示例 -->
+          <p>在这里写你的第一段正文。可以直接复制下面的示例结构来使用：</p>
+
+          <!-- 引用示例 -->
+          <blockquote style="border-left: 4px solid var(--link-color); padding: 1rem 1.5rem; margin: 1.5rem 0; background: rgba(73, 177, 245, 0.05); border-radius: 0 8px 8px 0;">
+            "这里放一句引用的话。"
+          </blockquote>
+
+          <!-- 图片示例（本地图片：先把图片传到 img/ 目录，再写相对路径）-->
+          <!--
+          <img src="img/posts/your-image.jpg" alt="图片描述" style="max-width: 100%; border-radius: 8px; margin: 1em 0;">
+          -->
+
+          <!-- 加粗示例 -->
+          <p>普通文字，<strong>加粗文字</strong>，<a href="https://example.com" target="_blank" rel="noopener">链接文字</a>。</p>
+
+          <!-- 代码示例 -->
+          <!--
+          <pre style="background: rgba(0,0,0,0.05); padding: 1rem 1.5rem; border-radius: 8px; overflow-x: auto;"><code>console.log("hello");</code></pre>
+          -->
+
+          <!-- 分隔线示例 -->
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <!-- 结尾署名示例（可删） -->
+          <p style="color: var(--dark-grey); font-style: italic;">
+            <i class="fas fa-pen-fancy"></i> 本文由你撰写，发布于 2026年6月5日。
+          </p>
+
+          <!-- 返回首页按钮 -->
+          <div style="margin-top: 2em; text-align: center;">
+            <a href="/" style="display: inline-block; padding: 0.6em 2em; background: var(--link-color); color: #fff; border-radius: 8px; text-decoration: none; transition: background 0.3s;">
+              <i class="fas fa-arrow-left"></i> 返回首页
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <div class="footer-other">
+        <div class="footer-copyright">
+          <span class="copyright">&copy; 2024 - 2026 By FanYiyang</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Sync theme from main site
+    (function() {
+      try {
+        const raw = localStorage.getItem('theme');
+        if (raw) {
+          const { value, expiry } = JSON.parse(raw);
+          if (Date.now() <= expiry) {
+            document.documentElement.setAttribute('data-theme', value);
+          }
+        }
+      } catch(e) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    })();
+  </script>
+  <script src="js/season-module.js"></script>
+  <script src="js/season-particles.js"></script>
+</body>
+</html>
