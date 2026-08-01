@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ========== 第 1 处：把下面改成你的文章标题 ========== -->
+  <title>2026.7.31夜记 - FanYiyang's World</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/season-theme.css">
+</head>
+<body>
+  <div class="bg-animation" id="web_bg" style="background-image: url(img/banner.png);"></div>
+
+  <div class="page" id="body-wrap">
+    <header class="full_page post-hero" id="page-header" style="height: 40vh;">
+      <nav id="nav">
+        <span id="blog-info">
+          <a class="nav-site-title" href="/">
+            <span class="site-name">FanYiyang's World</span>
+          </a>
+        </span>
+      </nav>
+      <div id="site-info">
+        <!-- ========== 第 2 处：改成你的文章标题 ========== -->
+        <h1 id="site-title">2026.7.31夜记</h1>
+        <div id="site-subtitle">
+          <!-- ========== 第 3 处：改成日期 · 分类 ========== -->
+          <span>2026-07-31 · 日记本</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout" id="content-inner">
+      <div class="recent-posts" id="recent-posts" style="max-width: 800px; margin: 0 auto;">
+        <div class="post-body" style="border-radius: 12px; padding: 2rem 2.5rem; box-shadow: var(--shadow-card); line-height: 1.9; color: var(--font-color);">
+
+          <!-- ========== 第 4 处：文章信息行（日期 / 分类 / 标签）========== -->
+          <p style="font-size: 1.1em; color: var(--dark-grey); margin-bottom: 2em;">
+            <i class="fas fa-calendar-alt"></i> 2026年7月31日 &nbsp;·&nbsp;
+            <i class="fas fa-folder"></i> 日记本 &nbsp;·&nbsp;
+            <i class="fas fa-tags"></i> 随笔
+          </p>
+
+          <!-- ========== 第 5 处：从这里开始写正文（下面的内容都可以删除或替换）========== -->
+
+          <!-- 标题示例：二级标题 -->
+          <h2 style="margin-top: 2em;">拯救照片的曲折史</h2>
+
+          <!-- 段落示例 -->
+          <p>今日无事，心血来潮翻出两部旧手机，一是我爸的上上部手机，另一个是我爸的第一部手机。</p>
+          <p>赶紧给他们插上充电器，本以为多年不开机，电池早已饿死，没想到其中一部在充上电十几秒后猛然一震（给我吓一跳），宣告着他的重生。</p>
+          <p>然而，充上电只是其一，想到这是一台32位的超级老手机，不兼容非常多应用，因此想要完美救赎里面的几G照片并非易事。</p>
+          <p>我首先想到了localsend，这是我当今在不同设备之间传送文件的主要工具。正当我满怀欣喜的在旧手机浏览器中搜索localsend, 打开官网并点击安卓下载。。点击安卓下载。。。点击。。。。。。。</p>
+          <p>好吧，可能是旧手机webview版本太低，根本下载不了。这可没有难倒我，我当即掏出一台装有localsend的设备，提取安装包，开始<strong>蓝牙传输文件</strong>，在经历了七七三十六分钟的等待之后，安装包终于传到了旧手机上。</p>
+          
+          <p>点击安装</p>
+          
+          <p>安装失败，应用与CPU不兼容</p>
+          
+          <p>我***</p>
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <p>好吧，换个法子</p>
+          <p>又想到了文件传输网站，果不其然，上传不了文件</p>
+
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <p>好吧，再换个法子</p>
+          <p>我只能掏出杀手锏了————网盘</p>
+          <p>一开始想用不限速网盘，于是，123网盘，小飞机网盘，天翼云盘.......好嘛，全都闪退</p>
+          <p>又试了试大的网盘，想着他们总该兼容32位系统了吧</p>
+          <p>夸克网盘？真恶心，旧手机打开都要卡死</p>
+          <p>阿里云盘？呵呵，根本不兼容</p>
+          <p>只剩下一个百度网盘，难道真的要用这可恶的百度网盘了吗</p>
+          <p>哈哈，还真就能打开，能备份</p>
+          <p>没招了，乖乖向百度网盘屈服</p>
+          <p>我算是知道为什么那么臃肿了</p>
+          <p>原来是要适配各种稀奇古怪的东西</p>
+          
+
+          <!-- 分隔线示例 -->
+          <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2em 0;">
+
+          <!-- 结尾署名示例（可删） -->
+          <p style="color: var(--dark-grey); font-style: italic;">
+            <i class="fas fa-pen-fancy"></i> 本文由Fanyiyang撰写，发布于 2026年7月31日。
+          </p>
+
+          <!-- 返回首页按钮 -->
+          <div style="margin-top: 2em; text-align: center;">
+            <a href="/" style="display: inline-block; padding: 0.6em 2em; background: var(--link-color); color: #fff; border-radius: 8px; text-decoration: none; transition: background 0.3s;">
+              <i class="fas fa-arrow-left"></i> 返回首页
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <div class="footer-other">
+        <div class="footer-copyright">
+          <span class="copyright">&copy; 2024 - 2026 By FanYiyang</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Sync theme from main site
+    (function() {
+      try {
+        const raw = localStorage.getItem('theme');
+        if (raw) {
+          const { value, expiry } = JSON.parse(raw);
+          if (Date.now() <= expiry) {
+            document.documentElement.setAttribute('data-theme', value);
+          }
+        }
+      } catch(e) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      }
+    })();
+  </script>
+  <script src="js/season-module.js"></script>
+  <script src="js/season-particles.js"></script>
+</body>
+</html>
