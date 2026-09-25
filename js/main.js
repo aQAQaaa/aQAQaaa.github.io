@@ -733,7 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const initReveal = (root) => {
     if (!revealObserver) return;
-    root.querySelectorAll('.recent-post-item:not(.js-anim)').forEach(el => {
+    root.querySelectorAll('.recent-post-item:not(.js-anim), .card-fortune:not(.js-anim)').forEach(el => {
       el.classList.add('js-anim');
       revealObserver.observe(el);
     });
@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.classList.contains('spring-active')) return;
     el.classList.add('spring-active');
 
-    const group = el.classList.contains('recent-post-item') ? 'post' : 'aside';
+    const group = (el.classList.contains('recent-post-item') || el.classList.contains('card-fortune')) ? 'post' : 'aside';
     springNodes.push(new SpringNode(el, group));
   };
 
@@ -951,6 +951,161 @@ document.addEventListener('DOMContentLoaded', () => {
   const collectSprings = () => {
     springNodes = springNodes.filter(n => document.body.contains(n.el));
   };
+
+  // ==================== Daily Fortune & Check-in (洛谷风格签到系统) ====================
+  const initFortuneCard = () => {
+    const card = document.getElementById('card-fortune');
+    if (!card) return;
+
+    // All results are 100% positive, cheerful & auspicious
+    const RANKS = ['特大吉', '超级大吉', '大吉', '中吉', '诸事顺遂', '福星高照'];
+
+    // Non-programming daily life activities
+    const GOOD_THINGS = [
+      { name: '听首老歌', desc: '温柔旋律唤醒美好回忆' },
+      { name: '出去走走', desc: '偶遇路边的小猫和小花' },
+      { name: '早点睡觉', desc: '做一个香香甜甜的好梦' },
+      { name: '吃顿好的', desc: '美食能治愈一切疲惫' },
+      { name: '喝杯热奶茶', desc: '甜度刚好，温暖一整天' },
+      { name: '看一场晚霞', desc: '抬头看看天边的橘子海' },
+      { name: '发呆十分钟', desc: '给忙碌的心情放个小长假' },
+      { name: '整理书桌', desc: '整洁空间带来明亮心情' },
+      { name: '晒晒太阳', desc: '吸收大自然赠送的正能量' },
+      { name: '联系好友', desc: '一句简单的问候也是温暖' },
+      { name: '买束鲜花', desc: '生活需要触手可及的浪漫' },
+      { name: '读几页闲书', desc: '在平静文字中享受独处时光' },
+      { name: '拍下沿途风景', desc: '定格今天独一无二的瞬间' },
+      { name: '对自己微笑', desc: '今天也是值得被善待的一天' },
+      { name: '泡热水脚', desc: '卸下一整天的困倦与疲惫' },
+      { name: '大口深呼吸', desc: '吐出压力，吸入清新空气' }
+    ];
+
+    // Caring & humorous gentle reminders (no bad omens, purely positive tips)
+    const BAD_THINGS = [
+      { name: '生闷气', desc: '气出皱纹不划算，开心最重要' },
+      { name: '熬夜刷手机', desc: '眼睛会酸，明早起不来床' },
+      { name: '忘记喝水', desc: '多补水，身体代谢更健康' },
+      { name: '胡思乱想', desc: '很多烦恼其实都是自己脑补的' },
+      { name: '低头太久', desc: '颈椎抗议啦，记得转动脖子' },
+      { name: '吃太撑', desc: '肚子圆滚滚容易犯困' },
+      { name: '不吃早饭', desc: '肠胃会抗议，没精神开启新一天' },
+      { name: '犹豫不决', desc: '想做的事就勇敢迈出第一步' },
+      { name: '自我否定', desc: '你其实比自己想象中要优秀很多' },
+      { name: '宅着不动', desc: '站起来伸个懒腰，活动筋骨' },
+      { name: '变天不加衣', desc: '多带件外套，别着凉感冒' },
+      { name: '纠结琐事', desc: '大事化小小事化了，向前看是晴天' }
+    ];
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+    const dateDisplay = `${year}年${month}月${date}日 ${weekDays[today.getDay()]}`;
+
+    const dateEl = document.getElementById('fortune-date');
+    if (dateEl) dateEl.textContent = dateDisplay;
+
+    // Simple deterministic hash based on date string
+    const hashStr = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    };
+
+    const getDailyFortune = (seedDate) => {
+      const h = hashStr(seedDate + '_fortune_v1');
+      const rank = RANKS[h % RANKS.length];
+
+      const gIdx1 = (h >> 2) % GOOD_THINGS.length;
+      let gIdx2 = (h >> 5) % GOOD_THINGS.length;
+      if (gIdx2 === gIdx1) gIdx2 = (gIdx1 + 1) % GOOD_THINGS.length;
+
+      const bIdx1 = (h >> 8) % BAD_THINGS.length;
+      let bIdx2 = (h >> 11) % BAD_THINGS.length;
+      if (bIdx2 === bIdx1) bIdx2 = (bIdx1 + 1) % BAD_THINGS.length;
+
+      return {
+        rank,
+        good1: GOOD_THINGS[gIdx1],
+        good2: GOOD_THINGS[gIdx2],
+        bad1: BAD_THINGS[bIdx1],
+        bad2: BAD_THINGS[bIdx2]
+      };
+    };
+
+    const fortune = getDailyFortune(dateStr);
+
+    // Populate fortune DOM
+    const rankEl = document.getElementById('fortune-rank');
+    const g1Name = document.getElementById('fortune-good-1-name');
+    const g1Desc = document.getElementById('fortune-good-1-desc');
+    const g2Name = document.getElementById('fortune-good-2-name');
+    const g2Desc = document.getElementById('fortune-good-2-desc');
+    const b1Name = document.getElementById('fortune-bad-1-name');
+    const b1Desc = document.getElementById('fortune-bad-1-desc');
+    const b2Name = document.getElementById('fortune-bad-2-name');
+    const b2Desc = document.getElementById('fortune-bad-2-desc');
+    const streakEl = document.getElementById('fortune-streak');
+
+    if (rankEl) rankEl.textContent = fortune.rank;
+    if (g1Name) g1Name.textContent = fortune.good1.name;
+    if (g1Desc) g1Desc.textContent = fortune.good1.desc;
+    if (g2Name) g2Name.textContent = fortune.good2.name;
+    if (g2Desc) g2Desc.textContent = fortune.good2.desc;
+    if (b1Name) b1Name.textContent = fortune.bad1.name;
+    if (b1Desc) b1Desc.textContent = fortune.bad1.desc;
+    if (b2Name) b2Name.textContent = fortune.bad2.name;
+    if (b2Desc) b2Desc.textContent = fortune.bad2.desc;
+
+    // Streak calculation
+    const lastCheckDate = localStorage.getItem('blog_fortune_last_date');
+    let streak = parseInt(localStorage.getItem('blog_fortune_streak') || '0', 10);
+
+    const uncheckWrap = document.getElementById('fortune-uncheck');
+    const contentWrap = document.getElementById('fortune-content');
+    const checkBtn = document.getElementById('fortune-check-btn');
+
+    const showCheckedUI = (s) => {
+      if (streakEl) streakEl.textContent = s;
+      if (uncheckWrap) uncheckWrap.style.display = 'none';
+      if (contentWrap) contentWrap.style.display = 'block';
+    };
+
+    // If already checked in today
+    if (lastCheckDate === dateStr) {
+      showCheckedUI(streak > 0 ? streak : 1);
+    } else {
+      if (uncheckWrap) uncheckWrap.style.display = 'block';
+      if (contentWrap) contentWrap.style.display = 'none';
+    }
+
+    checkBtn?.addEventListener('click', () => {
+      // Calculate new streak
+      const yDate = new Date(today);
+      yDate.setDate(today.getDate() - 1);
+      const yStr = `${yDate.getFullYear()}-${String(yDate.getMonth() + 1).padStart(2, '0')}-${String(yDate.getDate()).padStart(2, '0')}`;
+
+      if (lastCheckDate === yStr) {
+        streak += 1;
+      } else if (lastCheckDate === dateStr) {
+        // Same day
+      } else {
+        streak = 1;
+      }
+
+      localStorage.setItem('blog_fortune_last_date', dateStr);
+      localStorage.setItem('blog_fortune_streak', String(streak));
+
+      showCheckedUI(streak);
+    });
+  };
+
+  initFortuneCard();
 
   window._collectSprings = collectSprings;
 });

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -123,6 +123,64 @@
           <span id="filter-text">筛选中</span>
           <span class="filter-clear" id="filter-clear"><i class="fas fa-times"></i> 清除筛选</span>
         </div>
+
+        <!-- Check-in / Fortune Card (洛谷风格签到卡片) -->
+        <div class="card-widget card-fortune" id="card-fortune">
+          <div class="fortune-header">
+            <span class="fortune-title"><i class="fas fa-calendar-check"></i> 今日运势</span>
+            <span class="fortune-date" id="fortune-date">加载中...</span>
+          </div>
+
+          <!-- Unchecked state: prompt user to check in -->
+          <div class="fortune-uncheck" id="fortune-uncheck">
+            <div class="fortune-uncheck-inner">
+              <div class="fortune-uncheck-icon"><i class="fas fa-gift fa-bounce"></i></div>
+              <div class="fortune-uncheck-tip">每天打卡签到，开启一整天的好心情</div>
+              <button class="fortune-check-btn" id="fortune-check-btn" type="button">
+                <i class="fas fa-stamp"></i> 点击打卡 · 抽取今日好运
+              </button>
+            </div>
+          </div>
+
+          <!-- Checked state: Luogu-style fortune result card -->
+          <div class="fortune-content" id="fortune-content" style="display: none;">
+            <div class="fortune-rank-wrap">
+              <span class="fortune-section-sign">§</span>
+              <span class="fortune-rank" id="fortune-rank">大吉</span>
+              <span class="fortune-section-sign">§</span>
+            </div>
+
+            <div class="fortune-events-grid">
+              <div class="fortune-event-col fortune-col-good">
+                <div class="fortune-event-item">
+                  <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-1-name">吃顿好的</span></div>
+                  <div class="fortune-event-desc" id="fortune-good-1-desc">美食能治愈一切疲惫</div>
+                </div>
+                <div class="fortune-event-item">
+                  <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-2-name">出去走走</span></div>
+                  <div class="fortune-event-desc" id="fortune-good-2-desc">偶遇路边的小猫和小花</div>
+                </div>
+              </div>
+
+              <div class="fortune-event-col fortune-col-bad">
+                <div class="fortune-event-item">
+                  <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-1-name">熬夜刷手机</span></div>
+                  <div class="fortune-event-desc" id="fortune-bad-1-desc">眼睛会酸，明早起不来床</div>
+                </div>
+                <div class="fortune-event-item">
+                  <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-2-name">生闷气</span></div>
+                  <div class="fortune-event-desc" id="fortune-bad-2-desc">气出皱纹不划算，开心最重要</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fortune-footer">
+              <span class="fortune-streak-text">你已经连续打卡了 <b class="fortune-streak-count" id="fortune-streak">1</b> 天</span>
+              <span class="fortune-badge-signed"><i class="fas fa-check-circle"></i> 今日已打卡</span>
+            </div>
+          </div>
+        </div>
+
         <div class="recent-post-items" id="post-list">
           <!-- Posts will be dynamically loaded -->
         </div>
