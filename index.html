@@ -114,21 +114,14 @@
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Content (Three-Column Layout: Left Sidebar + Center Posts + Right Sidebar) -->
     <main class="layout" id="content-inner">
-      <!-- Recent Posts -->
-      <div class="recent-posts" id="recent-posts">
-        <div class="filter-indicator" id="filter-indicator">
-          <i class="fas fa-filter"></i>
-          <span id="filter-text">筛选中</span>
-          <span class="filter-clear" id="filter-clear"><i class="fas fa-times"></i> 清除筛选</span>
-        </div>
-
-        <!-- Check-in / Fortune Card (洛谷风格签到卡片) -->
-        <div class="card-widget card-fortune" id="card-fortune">
+      <!-- Left Sidebar (主页左侧栏：每日签到/运势卡片) -->
+      <div class="aside-content aside-left" id="aside-content-left">
+        <div class="card-widget card-fortune sticky_layout" id="card-fortune">
           <div class="fortune-header">
             <span class="fortune-title"><i class="fas fa-calendar-check"></i> 今日运势</span>
-            <span class="fortune-date" id="fortune-date">加载中...</span>
+            <span class="fortune-date" id="fortune-date">今日运势</span>
           </div>
 
           <!-- Unchecked state: prompt user to check in -->
@@ -137,7 +130,7 @@
               <div class="fortune-uncheck-icon"><i class="fas fa-gift fa-bounce"></i></div>
               <div class="fortune-uncheck-tip">每天打卡签到，开启一整天的好心情</div>
               <button class="fortune-check-btn" id="fortune-check-btn" type="button">
-                <i class="fas fa-stamp"></i> 点击打卡 · 抽取今日好运
+                <i class="fas fa-stamp"></i> 点击打卡 · 抽取好运
               </button>
             </div>
           </div>
@@ -150,35 +143,164 @@
               <span class="fortune-section-sign">§</span>
             </div>
 
-            <div class="fortune-events-grid">
-              <div class="fortune-event-col fortune-col-good">
-                <div class="fortune-event-item">
-                  <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-1-name">吃顿好的</span></div>
-                  <div class="fortune-event-desc" id="fortune-good-1-desc">美食能治愈一切疲惫</div>
-                </div>
-                <div class="fortune-event-item">
-                  <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-2-name">出去走走</span></div>
-                  <div class="fortune-event-desc" id="fortune-good-2-desc">偶遇路边的小猫和小花</div>
-                </div>
+            <div class="fortune-events-list">
+              <div class="fortune-event-item">
+                <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-1-name">吃顿好的</span></div>
+                <div class="fortune-event-desc" id="fortune-good-1-desc">美食能治愈一切疲惫</div>
               </div>
-
-              <div class="fortune-event-col fortune-col-bad">
-                <div class="fortune-event-item">
-                  <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-1-name">熬夜刷手机</span></div>
-                  <div class="fortune-event-desc" id="fortune-bad-1-desc">眼睛会酸，明早起不来床</div>
-                </div>
-                <div class="fortune-event-item">
-                  <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-2-name">生闷气</span></div>
-                  <div class="fortune-event-desc" id="fortune-bad-2-desc">气出皱纹不划算，开心最重要</div>
-                </div>
+              <div class="fortune-event-item">
+                <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-1-name">熬夜刷手机</span></div>
+                <div class="fortune-event-desc" id="fortune-bad-1-desc">眼睛会酸，明早起不来床</div>
+              </div>
+              <div class="fortune-event-item">
+                <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-2-name">出去走走</span></div>
+                <div class="fortune-event-desc" id="fortune-good-2-desc">偶遇路边的小猫和小花</div>
+              </div>
+              <div class="fortune-event-item">
+                <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-2-name">生闷气</span></div>
+                <div class="fortune-event-desc" id="fortune-bad-2-desc">气出皱纹不划算，开心最重要</div>
               </div>
             </div>
 
             <div class="fortune-footer">
-              <span class="fortune-streak-text">你已经连续打卡了 <b class="fortune-streak-count" id="fortune-streak">1</b> 天</span>
-              <span class="fortune-badge-signed"><i class="fas fa-check-circle"></i> 今日已打卡</span>
+              <span class="fortune-streak-text">连续打卡 <b class="fortune-streak-count" id="fortune-streak">1</b> 天</span>
+              <span class="fortune-badge-signed"><i class="fas fa-check-circle"></i> 已打卡</span>
             </div>
           </div>
+        </div>
+
+        <script>
+          (function() {
+            try {
+              const RANKS = ['特大吉', '超级大吉', '大吉', '中吉', '诸事顺遂', '福星高照'];
+              const GOOD = [
+                { name: '听首老歌', desc: '温柔旋律唤醒美好回忆' },
+                { name: '出去走走', desc: '偶遇路边的小猫和小花' },
+                { name: '早点睡觉', desc: '做一个香香甜甜的好梦' },
+                { name: '吃顿好的', desc: '美食能治愈一切疲惫' },
+                { name: '喝杯热奶茶', desc: '甜度刚好，温暖一整天' },
+                { name: '看一场晚霞', desc: '抬头看看天边的橘子海' },
+                { name: '发呆十分钟', desc: '给忙碌的心情放个小长假' },
+                { name: '整理书桌', desc: '整洁空间带来明亮心情' },
+                { name: '晒晒太阳', desc: '吸收大自然赠送的正能量' },
+                { name: '联系好友', desc: '一句简单的问候也是温暖' },
+                { name: '买束鲜花', desc: '生活需要触手可及的浪漫' },
+                { name: '读几页闲书', desc: '在平静文字中享受独处时光' },
+                { name: '拍下沿途风景', desc: '定格今天独一无二的瞬间' },
+                { name: '对自己微笑', desc: '今天也是值得被善待的一天' },
+                { name: '泡热水脚', desc: '卸下一整天的困倦与疲惫' },
+                { name: '大口深呼吸', desc: '吐出压力，吸入清新空气' }
+              ];
+              const BAD = [
+                { name: '生闷气', desc: '气出皱纹不划算，开心最重要' },
+                { name: '熬夜刷手机', desc: '眼睛会酸，明早起不来床' },
+                { name: '忘记喝水', desc: '多补水，身体代谢更健康' },
+                { name: '胡思乱想', desc: '很多烦恼其实都是自己脑补的' },
+                { name: '低头太久', desc: '颈椎抗议啦，记得转动脖子' },
+                { name: '吃太撑', desc: '肚子圆滚滚容易犯困' },
+                { name: '不吃早饭', desc: '肠胃会抗议，没精神开启新一天' },
+                { name: '犹豫不决', desc: '想做的事就勇敢迈出第一步' },
+                { name: '自我否定', desc: '你其实比自己想象中要优秀很多' },
+                { name: '宅着不动', desc: '站起来伸个懒腰，活动筋骨' },
+                { name: '变天不加衣', desc: '多带件外套，别着凉感冒' },
+                { name: '纠结琐事', desc: '大事化小小事化了，向前看是晴天' }
+              ];
+
+              const today = new Date();
+              const y = today.getFullYear();
+              const m = today.getMonth() + 1;
+              const d = today.getDate();
+              const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+              const dateStr = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+              const dateDisplay = y + '年' + m + '月' + d + '日 ' + days[today.getDay()];
+
+              const dateEl = document.getElementById('fortune-date');
+              if (dateEl) dateEl.textContent = dateDisplay;
+
+              let hash = 0;
+              const seed = dateStr + '_fortune_v2';
+              for (let i = 0; i < seed.length; i++) {
+                hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                hash |= 0;
+              }
+              hash = Math.abs(hash);
+
+              const rank = RANKS[hash % RANKS.length];
+              const g1 = GOOD[(hash >> 2) % GOOD.length];
+              let g2 = GOOD[(hash >> 5) % GOOD.length];
+              if (g2.name === g1.name) g2 = GOOD[((hash >> 5) + 1) % GOOD.length];
+              const b1 = BAD[(hash >> 8) % BAD.length];
+              let b2 = BAD[(hash >> 11) % BAD.length];
+              if (b2.name === b1.name) b2 = BAD[((hash >> 11) + 1) % BAD.length];
+
+              const setTxt = (id, txt) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = txt;
+              };
+
+              setTxt('fortune-rank', rank);
+              setTxt('fortune-good-1-name', g1.name);
+              setTxt('fortune-good-1-desc', g1.desc);
+              setTxt('fortune-good-2-name', g2.name);
+              setTxt('fortune-good-2-desc', g2.desc);
+              setTxt('fortune-bad-1-name', b1.name);
+              setTxt('fortune-bad-1-desc', b1.desc);
+              setTxt('fortune-bad-2-name', b2.name);
+              setTxt('fortune-bad-2-desc', b2.desc);
+
+              const uncheckWrap = document.getElementById('fortune-uncheck');
+              const contentWrap = document.getElementById('fortune-content');
+              const checkBtn = document.getElementById('fortune-check-btn');
+              const streakEl = document.getElementById('fortune-streak');
+
+              const showChecked = (count) => {
+                if (streakEl) streakEl.textContent = count;
+                if (uncheckWrap) uncheckWrap.style.display = 'none';
+                if (contentWrap) contentWrap.style.display = 'block';
+              };
+
+              const lastCheck = localStorage.getItem('blog_fortune_last_date');
+              let curStreak = parseInt(localStorage.getItem('blog_fortune_streak') || '0', 10);
+
+              if (lastCheck === dateStr) {
+                showChecked(curStreak > 0 ? curStreak : 1);
+              } else {
+                if (uncheckWrap) uncheckWrap.style.display = 'block';
+                if (contentWrap) contentWrap.style.display = 'none';
+              }
+
+              if (checkBtn) {
+                checkBtn.addEventListener('click', function() {
+                  const yDate = new Date(today);
+                  yDate.setDate(today.getDate() - 1);
+                  const yStr = yDate.getFullYear() + '-' + String(yDate.getMonth() + 1).padStart(2, '0') + '-' + String(yDate.getDate()).padStart(2, '0');
+
+                  if (lastCheck === yStr) {
+                    curStreak += 1;
+                  } else if (lastCheck === dateStr) {
+                    // already checked
+                  } else {
+                    curStreak = 1;
+                  }
+
+                  localStorage.setItem('blog_fortune_last_date', dateStr);
+                  localStorage.setItem('blog_fortune_streak', String(curStreak));
+                  showChecked(curStreak);
+                });
+              }
+            } catch(e) {
+              console.error('Fortune check-in init error:', e);
+            }
+          })();
+        </script>
+      </div>
+
+      <!-- Recent Posts (中间文章主体) -->
+      <div class="recent-posts" id="recent-posts">
+        <div class="filter-indicator" id="filter-indicator">
+          <i class="fas fa-filter"></i>
+          <span id="filter-text">筛选中</span>
+          <span class="filter-clear" id="filter-clear"><i class="fas fa-times"></i> 清除筛选</span>
         </div>
 
         <div class="recent-post-items" id="post-list">
@@ -352,6 +474,6 @@
   <script src="https://cdn.jsdelivr.net/npm/typed.js@3.0.0/dist/typed.umd.min.js"></script>
   <script src="js/season-module.js"></script>
   <script src="js/season-particles.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=20260925c"></script>
 </body>
 </html>
