@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20260925e">
   <link rel="stylesheet" href="css/season-theme.css">
 </head>
 <body>
@@ -119,9 +119,9 @@
       <!-- Left Sidebar (主页左侧栏：每日签到/运势卡片) -->
       <div class="aside-content aside-left" id="aside-content-left">
         <div class="card-widget card-fortune" id="card-fortune">
-          <div class="fortune-header">
-            <span class="fortune-title"><i class="fas fa-calendar-check"></i> 今日运势</span>
-            <span class="fortune-date" id="fortune-date">今日运势</span>
+          <div class="fortune-header" style="display: flex; justify-content: space-between; align-items: center; white-space: nowrap !important; overflow: hidden;">
+            <span class="fortune-title" style="white-space: nowrap !important; font-size: 0.88rem; font-weight: 700; color: var(--link-color); flex-shrink: 0;"><i class="fas fa-calendar-check"></i> 运势</span>
+            <span class="fortune-date" id="fortune-date" style="white-space: nowrap !important; font-size: 0.74rem; color: var(--dark-grey);"></span>
           </div>
 
           <!-- Unchecked state: prompt user to check in -->
@@ -135,12 +135,10 @@
             </div>
           </div>
 
-          <!-- Checked state: Luogu-style fortune result card (精致小巧版) -->
+          <!-- Checked state: Luogu-style fortune result card (精致小巧版 - 单行不换行) -->
           <div class="fortune-content" id="fortune-content" style="display: none;">
-            <div class="fortune-rank-wrap">
-              <span class="fortune-section-sign">§</span>
-              <span class="fortune-rank" id="fortune-rank">大吉</span>
-              <span class="fortune-section-sign">§</span>
+            <div class="fortune-rank-wrap" style="white-space: nowrap !important; text-align: center; margin: 4px 0 10px;">
+              <span class="fortune-rank-single" id="fortune-rank" style="font-family: 'Noto Serif SC', serif; font-size: 1.55rem !important; font-weight: 900; color: #e74c3c; white-space: nowrap !important; letter-spacing: 2px; display: inline-block;">§ 特大吉 §</span>
             </div>
 
             <div class="fortune-events-list">
@@ -210,7 +208,7 @@
               if (dateEl) dateEl.textContent = dateDisplay;
 
               let hash = 0;
-              const seed = dateStr + '_fortune_v3';
+              const seed = dateStr + '_fortune_v4';
               for (let i = 0; i < seed.length; i++) {
                 hash = ((hash << 5) - hash) + seed.charCodeAt(i);
                 hash |= 0;
@@ -226,7 +224,7 @@
                 if (el) el.textContent = txt;
               };
 
-              setTxt('fortune-rank', rank);
+              setTxt('fortune-rank', '§ ' + rank + ' §');
               setTxt('fortune-good-1-name', g1.name);
               setTxt('fortune-good-1-desc', g1.desc);
               setTxt('fortune-bad-1-name', b1.name);

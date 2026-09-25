@@ -1040,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const b1Desc = document.getElementById('fortune-bad-1-desc');
     const streakEl = document.getElementById('fortune-streak');
 
-    if (rankEl) rankEl.textContent = fortune.rank;
+    if (rankEl) rankEl.textContent = '§ ' + fortune.rank + ' §';
     if (g1Name) g1Name.textContent = fortune.good1.name;
     if (g1Desc) g1Desc.textContent = fortune.good1.desc;
     if (b1Name) b1Name.textContent = fortune.bad1.name;
