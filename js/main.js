@@ -728,19 +728,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 900);
           }
         });
-      }, { threshold: 0.08, rootMargin: '0px 0px -10px 0px' })
+      }, { threshold: 0.01, rootMargin: '60px 0px 60px 0px' })
     : null;
 
   const initReveal = (root) => {
-    if (!revealObserver) return;
-    root.querySelectorAll('.recent-post-item:not(.js-anim), .card-fortune:not(.js-anim)').forEach(el => {
+    const targets = root.querySelectorAll(
+      '.recent-post-item:not(.js-anim), .card-widget:not(.js-anim), .card-fortune:not(.js-anim)'
+    );
+    targets.forEach(el => {
       el.classList.add('js-anim');
-      revealObserver.observe(el);
+      if (revealObserver) {
+        revealObserver.observe(el);
+      } else {
+        el.classList.add('animate-in');
+      }
     });
-    root.querySelectorAll('.aside-content .card-widget:not(.js-anim)').forEach(el => {
-      el.classList.add('js-anim');
-      revealObserver.observe(el);
-    });
+
+    // Ensure elements already in viewport or near fold reveal immediately on mobile/iPad
+    setTimeout(() => {
+      targets.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 100) {
+          el.classList.add('animate-in');
+        }
+      });
+    }, 100);
   };
 
   initReveal(document);
@@ -780,6 +792,15 @@ document.addEventListener('DOMContentLoaded', () => {
       mouseClientY = e.clientY;
     }
   }, { passive: true });
+
+  const onTouchCoord = (e) => {
+    if (e.touches && e.touches[0]) {
+      mouseClientX = e.touches[0].clientX;
+      mouseClientY = e.touches[0].clientY;
+    }
+  };
+  window.addEventListener('touchstart', onTouchCoord, { passive: true });
+  window.addEventListener('touchmove', onTouchCoord, { passive: true });
 
   class SpringNode {
     constructor(el, group) {

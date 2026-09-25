@@ -314,7 +314,7 @@ img {
 
 /* Hide menu on mobile */
 @media screen and (max-width: 768px) {
-  .menus_items {
+  #nav .menus_items {
     display: none;
   }
   #toggle-menu {
@@ -1657,26 +1657,57 @@ html {
 
 
 
-/* --- Responsive --- */
+/* --- Responsive Design for iPad & Mobile --- */
 @media screen and (max-width: 1200px) {
+  #content-inner {
+    width: 100%;
+    max-width: 1060px;
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  /* iPad / Tablet: Left sidebar cards sit side-by-side at the top in a balanced grid */
   #aside-content-left {
     width: 100%;
     margin-right: 0;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     order: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
   }
+
+  #aside-content-left .card-widget {
+    margin-bottom: 0;
+    height: 100%;
+  }
+
   #recent-posts {
     width: 100%;
     order: 2;
+    margin-bottom: 24px;
   }
+
+  /* iPad / Tablet: Right sidebar cards become a balanced modular grid at the bottom */
   #aside-content {
     width: 100%;
     margin-left: 0;
-    margin-top: 20px;
+    margin-top: 0;
     order: 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
   }
-  #content-inner {
-    max-width: 800px;
+
+  #aside-content .sticky_layout {
+    position: static;
+    display: contents;
+  }
+
+  #aside-content .card-widget {
+    margin-bottom: 0;
   }
 }
 
@@ -1686,70 +1717,169 @@ html {
   }
 
   #site-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
   }
 
   #subtitle {
     font-size: 0.95rem;
   }
 
-  .post_cover {
-    width: 140px;
-    min-width: 140px;
-    height: 100px;
-  }
-
-  .recent-post-info {
-    padding: 14px 16px;
-  }
-
-  .article-title {
-    font-size: 1rem;
-  }
-
-  .article-meta-wrap {
-    font-size: 0.75rem;
-  }
-
-  .content {
-    font-size: 0.8rem;
-    -webkit-line-clamp: 1;
+  #content-inner {
+    padding: 12px 10px;
+    max-width: 100%;
   }
 
   #sidebar {
     display: block;
   }
 
+  /* Crucial: Never hide aside cards on mobile/iPad! */
   .aside-content {
-    display: none;
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
   }
 
+  #aside-content-left {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 14px;
+    gap: 12px;
+    order: 1;
+  }
+
+  #aside-content-left .card-widget {
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  #recent-posts {
+    width: 100%;
+    order: 2;
+    margin-bottom: 14px;
+  }
+
+  #aside-content {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    gap: 12px;
+    order: 3;
+  }
+
+  #aside-content .sticky_layout {
+    position: static;
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #aside-content .card-widget {
+    margin-bottom: 0;
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  /* Right floating tools stay accessible on phone */
   #rightside {
-    right: -36px;
+    position: fixed;
+    right: 12px;
+    bottom: 24px;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  #rightside button {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-right: var(--glass-border);
+  }
+
+  .post-body {
+    padding: 1.25rem 1rem !important;
+    border-radius: 12px;
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 680px) {
+  /* Post items on mobile phones: sleek vertical card layout with top cover */
+  .recent-post-item {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
   .post_cover {
-    width: 120px;
-    min-width: 120px;
-    height: 80px;
+    width: 100%;
+    min-width: 100%;
+    height: 160px;
+    border-radius: 14px 14px 0 0;
   }
 
   .recent-post-info {
-    padding: 10px 12px;
+    padding: 14px 16px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .article-title {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
   }
 
-  .article-meta-separator:nth-child(n+3) {
-    display: none;
+  .article-meta-wrap {
+    font-size: 0.75rem;
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
   }
 
-  .article-meta .article-meta__categories:last-child {
-    display: none;
+  .content {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin-top: 8px;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .post_cover {
+    height: 140px;
+  }
+
+  .recent-post-info {
+    padding: 12px 14px;
+  }
+
+  .article-title {
+    font-size: 0.98rem;
+  }
+
+  .card-widget.card-fortune {
+    padding: 14px 12px;
+  }
+
+  .card-widget.card-music {
+    padding: 12px 10px !important;
+  }
+
+  .fortune-rank-single {
+    font-size: 1.35rem !important;
   }
 }
 
