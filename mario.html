@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>SUPER MARIO 3D BROS. - 3D精细建模高清重制版 (World 1-1)</title>
   <style>
     * {
@@ -236,6 +236,309 @@
       border: 1px solid #334155;
       margin: 12px 0;
     }
+
+    /* --- Mobile & iPad Touch Gamepad --- */
+    .touch-controls {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 25;
+      display: block;
+    }
+
+    .touch-controls.hidden {
+      display: none !important;
+    }
+
+    /* Left Cross D-Pad */
+    .touch-dpad-wrap {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 146px;
+      height: 146px;
+      pointer-events: auto;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .dpad-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.85) 100%);
+      border: 2px solid rgba(250, 204, 21, 0.45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .dpad-btn {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      background: rgba(51, 65, 85, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fde047;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: none;
+      cursor: pointer;
+      transition: background 0.1s, transform 0.08s, box-shadow 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    .dpad-btn:active, .dpad-btn.active {
+      background: #facc15;
+      color: #0f172a;
+      transform: scale(0.92);
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.85);
+    }
+
+    .dpad-up {
+      top: 4px;
+      left: 49px;
+      border-radius: 12px 12px 4px 4px;
+    }
+
+    .dpad-down {
+      bottom: 4px;
+      left: 49px;
+      border-radius: 4px 4px 12px 12px;
+    }
+
+    .dpad-left {
+      top: 49px;
+      left: 4px;
+      border-radius: 12px 4px 4px 12px;
+    }
+
+    .dpad-right {
+      top: 49px;
+      right: 4px;
+      border-radius: 4px 12px 12px 4px;
+    }
+
+    .dpad-center {
+      top: 49px;
+      left: 49px;
+      background: rgba(30, 41, 59, 0.95);
+      border: none;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 10px;
+      pointer-events: none;
+    }
+
+    /* Right Action Buttons */
+    .touch-action-wrap {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 176px;
+      height: 156px;
+      pointer-events: auto;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .action-btn {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), inset 0 2px 5px rgba(255, 255, 255, 0.25);
+      user-select: none;
+      touch-action: none;
+      cursor: pointer;
+      transition: transform 0.08s, box-shadow 0.1s, filter 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .action-btn .btn-key {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .action-btn .btn-name {
+      font-size: 10px;
+      font-weight: 700;
+      opacity: 0.95;
+      line-height: 1;
+      margin-top: 2px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .action-btn:active, .action-btn.active {
+      transform: scale(0.90);
+      filter: brightness(1.25);
+    }
+
+    /* Jump (A) Button - Big Primary */
+    .btn-jump {
+      bottom: 4px;
+      right: 4px;
+      width: 68px;
+      height: 68px;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      border-color: #86efac;
+    }
+
+    .btn-jump:active, .btn-jump.active {
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.85);
+    }
+
+    /* Run / Dash (B) Button */
+    .btn-run {
+      bottom: 12px;
+      left: 18px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-color: #93c5fd;
+    }
+
+    .btn-run:active, .btn-run.active {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.85);
+    }
+
+    /* Fireball (X) Button */
+    .btn-fire {
+      top: 8px;
+      right: 44px;
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, #f97316, #dc2626);
+      border-color: #fca5a5;
+    }
+
+    .btn-fire:active, .btn-fire.active {
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.85);
+    }
+
+    /* --- Responsive Queries for iPad & Mobile --- */
+    @media (hover: none) and (pointer: coarse), (max-width: 900px) {
+      .controls-footer {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hud-bar {
+        top: 6px;
+        padding: 4px 8px;
+        gap: 6px;
+        border-radius: 10px;
+      }
+      .hud-label {
+        font-size: 10px;
+      }
+      .hud-value {
+        font-size: 12.5px;
+      }
+      .hud-btn {
+        font-size: 11px;
+        height: 24px;
+        line-height: 22px;
+        padding: 0 6px;
+      }
+      .touch-dpad-wrap {
+        bottom: 14px;
+        left: 14px;
+        width: 132px;
+        height: 132px;
+      }
+      .dpad-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+      }
+      .dpad-up { top: 3px; left: 44px; }
+      .dpad-down { bottom: 3px; left: 44px; }
+      .dpad-left { top: 44px; left: 3px; }
+      .dpad-right { top: 44px; right: 3px; }
+      .dpad-center { top: 44px; left: 44px; }
+
+      .touch-action-wrap {
+        bottom: 14px;
+        right: 14px;
+        width: 154px;
+        height: 140px;
+      }
+      .btn-jump {
+        width: 62px;
+        height: 62px;
+        right: 2px;
+        bottom: 2px;
+      }
+      .btn-run {
+        width: 50px;
+        height: 50px;
+        left: 10px;
+        bottom: 8px;
+      }
+      .btn-fire {
+        width: 48px;
+        height: 48px;
+        right: 38px;
+        top: 6px;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1200px) {
+      /* iPad / Tablet layout */
+      .touch-dpad-wrap {
+        bottom: 30px;
+        left: 30px;
+        width: 162px;
+        height: 162px;
+      }
+      .dpad-btn {
+        width: 54px;
+        height: 54px;
+        font-size: 20px;
+      }
+      .dpad-up { top: 4px; left: 54px; }
+      .dpad-down { bottom: 4px; left: 54px; }
+      .dpad-left { top: 54px; left: 4px; }
+      .dpad-right { top: 54px; right: 4px; }
+      .dpad-center { top: 54px; left: 54px; }
+
+      .touch-action-wrap {
+        bottom: 30px;
+        right: 30px;
+        width: 194px;
+        height: 174px;
+      }
+      .btn-jump {
+        width: 74px;
+        height: 74px;
+      }
+      .btn-run {
+        width: 60px;
+        height: 60px;
+        left: 18px;
+        bottom: 12px;
+      }
+      .btn-fire {
+        width: 58px;
+        height: 58px;
+        right: 50px;
+        top: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -268,14 +571,15 @@
       <span class="hud-value" id="hud-lives">❤️ x3</span>
     </div>
     <div class="hud-divider"></div>
-    <div class="hud-stat">
+    <div class="hud-stat" style="cursor:pointer;" onclick="window.game.cycleForm()" title="点击切换马里奥形态 (小/大/火)">
       <span class="hud-label">形态</span>
       <span class="hud-value" id="hud-form" style="color:#4ade80;">小马里奥</span>
     </div>
     <div class="hud-divider"></div>
     <div class="hud-actions">
-      <button class="hud-btn" id="btn-camera" onclick="window.game.cycleCameraMode()">🎥 2.5D视角 [C]</button>
-      <button class="hud-btn" id="btn-audio" onclick="const m=window.game.audio.toggleMute(); this.textContent=m?'🔇 音效: 关 [M]':'🔊 音效: 开 [M]'">🔊 音效: 开 [M]</button>
+      <button class="hud-btn" id="btn-touch-toggle" onclick="window.game.toggleTouchControls()" title="显示/隐藏虚拟触控按键">🎮 手柄</button>
+      <button class="hud-btn" id="btn-camera" onclick="window.game.cycleCameraMode()">🎥 视角 [C]</button>
+      <button class="hud-btn" id="btn-audio" onclick="const m=window.game.audio.toggleMute(); this.textContent=m?'🔇 关 [M]':'🔊 开 [M]'">🔊 开 [M]</button>
       <button class="hud-btn accent" onclick="window.inspector.toggle(true)">🔍 3D展台</button>
     </div>
   </header>
@@ -306,6 +610,50 @@
 
   <!-- Main WebGL Container -->
   <div id="game-canvas-container"></div>
+
+  <!-- Mobile & iPad Virtual Touch Gamepad -->
+  <div id="touch-controls" class="touch-controls">
+    <!-- Left Cross D-Pad -->
+    <div class="touch-dpad-wrap" id="touch-dpad">
+      <div class="dpad-bg"></div>
+      <button class="dpad-btn dpad-up" id="btn-touch-up" type="button" aria-label="上/跳跃">
+        <span>▲</span>
+      </button>
+      <button class="dpad-btn dpad-left" id="btn-touch-left" type="button" aria-label="向左走">
+        <span>◀</span>
+      </button>
+      <button class="dpad-btn dpad-center" type="button" tabindex="-1">
+        <span>●</span>
+      </button>
+      <button class="dpad-btn dpad-right" id="btn-touch-right" type="button" aria-label="向右走">
+        <span>▶</span>
+      </button>
+      <button class="dpad-btn dpad-down" id="btn-touch-down" type="button" aria-label="下蹲/钻管道">
+        <span>▼</span>
+      </button>
+    </div>
+
+    <!-- Right Action Buttons -->
+    <div class="touch-action-wrap">
+      <!-- Fireball (X) -->
+      <button class="action-btn btn-fire" id="btn-touch-fire" type="button" aria-label="发射火球">
+        <span class="btn-key">X</span>
+        <span class="btn-name">火球</span>
+      </button>
+
+      <!-- Dash / Run (B) -->
+      <button class="action-btn btn-run" id="btn-touch-run" type="button" aria-label="按住加速">
+        <span class="btn-key">B</span>
+        <span class="btn-name">加速</span>
+      </button>
+
+      <!-- Jump (A) -->
+      <button class="action-btn btn-jump" id="btn-touch-jump" type="button" aria-label="跳跃">
+        <span class="btn-key">A</span>
+        <span class="btn-name">跳跃</span>
+      </button>
+    </div>
+  </div>
 
   <!-- Bottom Controls Bar -->
   <footer class="controls-footer">
@@ -2763,7 +3111,7 @@ class SuperMario3DGame {
       if (e.code === 'KeyM') {
         const muted = this.audio.toggleMute();
         const btn = document.getElementById('btn-audio');
-        if (btn) btn.textContent = muted ? '🔇 音效: 关 [M]' : '🔊 音效: 开 [M]';
+        if (btn) btn.textContent = muted ? '🔇 关 [M]' : '🔊 开 [M]';
       }
       if (e.code === 'Digit1') { this.mario.setForm('small'); this.player.height = 0.95; this.updateHUD(); }
       if (e.code === 'Digit2') { this.mario.setForm('super'); this.player.height = 1.55; this.updateHUD(); }
@@ -2780,6 +3128,225 @@ class SuperMario3DGame {
       if (e.code === 'KeyS' || e.code === 'ArrowDown') this.keys.down = false;
       if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.keys.run = false;
       if (e.code === 'KeyJ' || e.code === 'KeyX') this.keys.fire = false;
+    });
+
+    this.bindTouchControls();
+  }
+
+  cycleForm() {
+    if (this.mario.form === 'small') {
+      this.mario.setForm('super');
+      this.player.height = 1.55;
+      this.audio.playPowerUp();
+    } else if (this.mario.form === 'super') {
+      this.mario.setForm('fire');
+      this.player.height = 1.55;
+      this.audio.playPowerUp();
+    } else {
+      this.mario.setForm('small');
+      this.player.height = 0.95;
+      this.audio.playPipe();
+    }
+    this.updateHUD();
+  }
+
+  toggleTouchControls() {
+    const ctrl = document.getElementById('touch-controls');
+    if (!ctrl) return;
+    ctrl.classList.toggle('hidden');
+  }
+
+  bindTouchControls() {
+    const controlsContainer = document.getElementById('touch-controls');
+    if (!controlsContainer) return;
+
+    const unlockAudio = () => {
+      this.audio.init();
+      if (!this.audio.bgmPlaying && !this.isStageClear && !this.player.dead) {
+        this.audio.startBGM(this.inUnderground ? 'underground' : 'overworld');
+      }
+    };
+
+    // Global touchstart on canvas unlocks audio on iOS Safari
+    const container = document.getElementById('game-canvas-container');
+    if (container) {
+      container.addEventListener('touchstart', unlockAudio, { passive: true, once: true });
+    }
+
+    // ---- D-PAD Continuous Vector & Swipe Tracking ----
+    const dpad = document.getElementById('touch-dpad');
+    const btnUp = document.getElementById('btn-touch-up');
+    const btnDown = document.getElementById('btn-touch-down');
+    const btnLeft = document.getElementById('btn-touch-left');
+    const btnRight = document.getElementById('btn-touch-right');
+
+    const updateDpadTouch = (e) => {
+      e.preventDefault();
+      unlockAudio();
+      const rect = dpad.getBoundingClientRect();
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
+
+      let touch = null;
+      for (let i = 0; i < e.touches.length; i++) {
+        const t = e.touches[i];
+        if (t.clientX >= rect.left - 25 && t.clientX <= rect.right + 25 &&
+            t.clientY >= rect.top - 25 && t.clientY <= rect.bottom + 25) {
+          touch = t;
+          break;
+        }
+      }
+      if (!touch) return;
+
+      const dx = touch.clientX - cx;
+      const dy = touch.clientY - cy;
+      const deadzone = 12;
+
+      // Left / Right
+      if (dx < -deadzone) {
+        this.keys.left = true;
+        this.keys.right = false;
+        btnLeft?.classList.add('active');
+        btnRight?.classList.remove('active');
+      } else if (dx > deadzone) {
+        this.keys.right = true;
+        this.keys.left = false;
+        btnRight?.classList.add('active');
+        btnLeft?.classList.remove('active');
+      } else {
+        this.keys.left = false;
+        this.keys.right = false;
+        btnLeft?.classList.remove('active');
+        btnRight?.classList.remove('active');
+      }
+
+      // Down (duck / pipe)
+      if (dy > deadzone * 1.2) {
+        this.keys.down = true;
+        btnDown?.classList.add('active');
+      } else {
+        this.keys.down = false;
+        btnDown?.classList.remove('active');
+      }
+
+      // Up (jump alternate)
+      if (dy < -deadzone * 1.4) {
+        if (!this.keys.upHeld) this.keys.up = true;
+        this.keys.upHeld = true;
+        btnUp?.classList.add('active');
+      } else {
+        btnUp?.classList.remove('active');
+      }
+    };
+
+    const endDpadTouch = (e) => {
+      const rect = dpad.getBoundingClientRect();
+      let hasTouch = false;
+      if (e.touches) {
+        for (let i = 0; i < e.touches.length; i++) {
+          const t = e.touches[i];
+          if (t.clientX >= rect.left - 25 && t.clientX <= rect.right + 25 &&
+              t.clientY >= rect.top - 25 && t.clientY <= rect.bottom + 25) {
+            hasTouch = true;
+            break;
+          }
+        }
+      }
+      if (!hasTouch) {
+        this.keys.left = false;
+        this.keys.right = false;
+        this.keys.down = false;
+        this.keys.up = false;
+        this.keys.upHeld = false;
+        btnLeft?.classList.remove('active');
+        btnRight?.classList.remove('active');
+        btnDown?.classList.remove('active');
+        btnUp?.classList.remove('active');
+      }
+    };
+
+    dpad.addEventListener('touchstart', updateDpadTouch, { passive: false });
+    dpad.addEventListener('touchmove', updateDpadTouch, { passive: false });
+    dpad.addEventListener('touchend', endDpadTouch, { passive: false });
+    dpad.addEventListener('touchcancel', endDpadTouch, { passive: false });
+
+    // Pointer fallback for testing
+    const setupPointerButton = (btn, onStart, onEnd) => {
+      if (!btn) return;
+      btn.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse') {
+          e.preventDefault();
+          unlockAudio();
+          btn.classList.add('active');
+          onStart();
+        }
+      });
+      const endFn = (e) => {
+        if (e.pointerType === 'mouse') {
+          btn.classList.remove('active');
+          onEnd();
+        }
+      };
+      btn.addEventListener('pointerup', endFn);
+      btn.addEventListener('pointercancel', endFn);
+      btn.addEventListener('pointerleave', endFn);
+    };
+
+    setupPointerButton(btnLeft, () => { this.keys.left = true; }, () => { this.keys.left = false; });
+    setupPointerButton(btnRight, () => { this.keys.right = true; }, () => { this.keys.right = false; });
+    setupPointerButton(btnDown, () => { this.keys.down = true; }, () => { this.keys.down = false; });
+    setupPointerButton(btnUp, () => { if (!this.keys.upHeld) this.keys.up = true; this.keys.upHeld = true; }, () => { this.keys.up = false; this.keys.upHeld = false; });
+
+    // ---- ACTION BUTTONS (Jump, Run, Fire) ----
+    const bindAction = (id, onStart, onEnd) => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+
+      const handleStart = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        unlockAudio();
+        btn.classList.add('active');
+        onStart();
+      };
+      const handleEnd = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        btn.classList.remove('active');
+        onEnd();
+      };
+
+      btn.addEventListener('touchstart', handleStart, { passive: false });
+      btn.addEventListener('touchend', handleEnd, { passive: false });
+      btn.addEventListener('touchcancel', handleEnd, { passive: false });
+
+      btn.addEventListener('mousedown', handleStart);
+      btn.addEventListener('mouseup', handleEnd);
+      btn.addEventListener('mouseleave', handleEnd);
+    };
+
+    // Jump (A)
+    bindAction('btn-touch-jump', () => {
+      if (!this.keys.upHeld) this.keys.up = true;
+      this.keys.upHeld = true;
+    }, () => {
+      this.keys.up = false;
+      this.keys.upHeld = false;
+    });
+
+    // Run / Dash (B)
+    bindAction('btn-touch-run', () => {
+      this.keys.run = true;
+    }, () => {
+      this.keys.run = false;
+    });
+
+    // Fireball (X)
+    bindAction('btn-touch-fire', () => {
+      this.keys.fire = true;
+      this.shootFireball();
+    }, () => {
+      this.keys.fire = false;
     });
   }
 
