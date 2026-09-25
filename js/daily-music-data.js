@@ -1,7 +1,7 @@
 /**
- * Daily Music Playlist Data - Automatically synchronized from NetEase Playlist
+ * Daily Music Playlist Data - Verified 100% Playable Tracks from NetEase Playlist
  * Playlist ID: 14317721939
- * Track Count: 56
+ * Playable Count: 27
  */
 window.BLOG_PLAYLIST_DATA = {
   "playlistId": "14317721939",
@@ -24,36 +24,12 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=1426112587.mp3"
     },
     {
-      "id": 1441758494,
-      "title": "晚风",
-      "artist": "Copy / BT07",
-      "album": "晚风",
-      "cover": "https://p1.music.126.net/lCblKUB1hLND5FxiVI1_Lw==/109951164919449758.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1441758494.mp3"
-    },
-    {
-      "id": 2054298885,
-      "title": "诀爱·尽 (LIVE版)",
-      "artist": "盛宇D-SHINE / Faye 詹雯婷",
-      "album": "中国说唱巅峰对决2023 第六期加更",
-      "cover": "https://p1.music.126.net/xpWGnSnuW91SsMFyxirHig==/109951168667656773.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2054298885.mp3"
-    },
-    {
       "id": 2041974276,
       "title": "风驶过的声音是",
       "artist": "海洋Bo / 费米Frieme / Zy",
       "album": "风驶过的声音是（说唱版）",
       "cover": "https://p1.music.126.net/gfLR-3TEncp1cOog8oUaFA==/109951168567036973.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=2041974276.mp3"
-    },
-    {
-      "id": 501133800,
-      "title": "Everybody Dies In Their Nightmares",
-      "artist": "XXXTENTACION",
-      "album": "17",
-      "cover": "https://p1.music.126.net/9sTLpi_LneFP_FPcaNgnQQ==/109951168609412948.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=501133800.mp3"
     },
     {
       "id": 1847534609,
@@ -96,14 +72,6 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=500538107.mp3"
     },
     {
-      "id": 2061935517,
-      "title": "会魔法的老人 (LIVE版)",
-      "artist": "法老 / 李毅杰PISSY / 科科爆",
-      "album": "中国说唱巅峰对决2023 第十期",
-      "cover": "https://p1.music.126.net/c2X7MIjEAUqCMkjqKc5J8g==/109951168721774074.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2061935517.mp3"
-    },
-    {
       "id": 1913874332,
       "title": "帅特日记",
       "artist": "银河系长",
@@ -120,28 +88,12 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=2021434589.mp3"
     },
     {
-      "id": 2034187125,
-      "title": "沉溺 (你让我的心不再结冰）",
-      "artist": "邹沛沛 / Pank",
-      "album": "沉溺（你让我的心不再结冰）",
-      "cover": "https://p2.music.126.net/WhsaW6an5oI4XZN0KhQ5fA==/109951168502947956.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2034187125.mp3"
-    },
-    {
       "id": 2124518108,
       "title": "戒不掉 （欧阳耀莹热播版）",
       "artist": "符鑫",
       "album": "戒不掉",
       "cover": "https://p2.music.126.net/qKH5n8yNEF3XXpQWIQBm5g==/109951169317024826.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=2124518108.mp3"
-    },
-    {
-      "id": 1970396862,
-      "title": "忏悔录",
-      "artist": "KKECHO / 那奇沃夫 / REDBOI",
-      "album": "MOVE IN SILENCE",
-      "cover": "https://p2.music.126.net/huYun8jQ5N5wKi2Rsa_YPw==/109951167757521194.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1970396862.mp3"
     },
     {
       "id": 2028167900,
@@ -158,14 +110,6 @@ window.BLOG_PLAYLIST_DATA = {
       "album": "\"希望我们都是自由的——进击的巨人\"",
       "cover": "https://p2.music.126.net/oILl4K926GgYiu3il93AlQ==/109951167864630756.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=1980337835.mp3"
-    },
-    {
-      "id": 26092806,
-      "title": "Take Me Hand",
-      "artist": "DAISHI DANCE / Cécile Corbel",
-      "album": "WONDER Tourism",
-      "cover": "https://p2.music.126.net/AoVFMKkLVMOmTMo_A6x02g==/109951163403515653.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=26092806.mp3"
     },
     {
       "id": 1395222212,
@@ -200,14 +144,6 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=2138981894.mp3"
     },
     {
-      "id": 2034881346,
-      "title": "吻得太逼真",
-      "artist": "刘大拿 / Wiz_H张子豪",
-      "album": "吻得太逼真",
-      "cover": "https://p2.music.126.net/RK5XphghvWjbt742dAZkkw==/109951168507667265.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2034881346.mp3"
-    },
-    {
       "id": 2074440239,
       "title": "主 动",
       "artist": "加木",
@@ -222,14 +158,6 @@ window.BLOG_PLAYLIST_DATA = {
       "album": "东京不太热",
       "cover": "https://p2.music.126.net/MLXG0RCDpueah-aFiLUXLg==/109951168634454775.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=34723470.mp3"
-    },
-    {
-      "id": 27681762,
-      "title": "Cry For Me (feat. Ami)",
-      "artist": "Michita",
-      "album": "Pureness",
-      "cover": "https://p2.music.126.net/_H3e0aBI7J1HDxvRSiylEg==/109951170493312484.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=27681762.mp3"
     },
     {
       "id": 2155975891,
@@ -248,52 +176,12 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=2023591554.mp3"
     },
     {
-      "id": 574945270,
-      "title": "Wasted",
-      "artist": "Juice WRLD / Lil Uzi Vert",
-      "album": "Wasted",
-      "cover": "https://p2.music.126.net/47MSxBlpzCftcZlbfUDSPQ==/109951163401197424.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=574945270.mp3"
-    },
-    {
-      "id": 1437204419,
-      "title": "Toosie Slide",
-      "artist": "Drake",
-      "album": "Toosie Slide",
-      "cover": "https://p2.music.126.net/1NQMiv0HoJe0HOojDEQpmA==/109951164866536606.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1437204419.mp3"
-    },
-    {
-      "id": 1853776842,
-      "title": "MEMORIES!",
-      "artist": "347aidan",
-      "album": "TROUBLED MEMORIES!",
-      "cover": "https://p2.music.126.net/m7IVzWrcSykpcwfbWXkS_Q==/109951166092380690.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1853776842.mp3"
-    },
-    {
-      "id": 1410815174,
-      "title": "death bed (coffee for your head)",
-      "artist": "Powfu / beabadoobee",
-      "album": "death bed (coffee for your head)",
-      "cover": "https://p1.music.126.net/NLvxrDAeRtM3sJtspYok3w==/109951165988499274.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1410815174.mp3"
-    },
-    {
       "id": 1400227689,
       "title": "Rear View",
       "artist": "andrew spacey / Tommy Ice",
       "album": "Rear View",
       "cover": "https://p1.music.126.net/uUf9SOd2YbkKZopr6QEGSQ==/109951164459417393.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=1400227689.mp3"
-    },
-    {
-      "id": 520458166,
-      "title": "Sunflower Feelings",
-      "artist": "Kuzu Mellow / korou.",
-      "album": "Sunflower Feelings",
-      "cover": "https://p1.music.126.net/Y_GXcdb57cvpg8Zk6kNlkg==/109951164990006269.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=520458166.mp3"
     },
     {
       "id": 1295009639,
@@ -312,108 +200,12 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=2526625.mp3"
     },
     {
-      "id": 150561,
-      "title": "蝴蝶",
-      "artist": "陶喆",
-      "album": "黑色柳丁",
-      "cover": "https://p1.music.126.net/FLIHPqpkfUBimQZB370agQ==/109951169237251638.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=150561.mp3"
-    },
-    {
-      "id": 326942,
-      "title": "看得最远的地方",
-      "artist": "张韶涵",
-      "album": "第5季",
-      "cover": "https://p1.music.126.net/2rVZfPmq6-OzE-0jXP10vg==/109951167430275623.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=326942.mp3"
-    },
-    {
-      "id": 2141179254,
-      "title": "DREAM",
-      "artist": "BABYMONSTER",
-      "album": "BABYMONS7ER",
-      "cover": "https://p1.music.126.net/G6mufakVWoXlcXBDAFC-Dg==/109951169546450297.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2141179254.mp3"
-    },
-    {
-      "id": 406407033,
-      "title": "Scars To Your Beautiful",
-      "artist": "Alessia Cara",
-      "album": "Know-It-All (Deluxe Version)",
-      "cover": "https://p1.music.126.net/wzKWblCySnGJCaQumBc7sw==/109951170924298289.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=406407033.mp3"
-    },
-    {
-      "id": 2619125556,
-      "title": "才二十三",
-      "artist": "方大同",
-      "album": "梦想家 The Dreamer",
-      "cover": "https://p1.music.126.net/dlsDdLopwJrE8JlWgWbaOA==/109951170031584299.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2619125556.mp3"
-    },
-    {
-      "id": 1381290206,
-      "title": "Pull Up",
-      "artist": "Luh Kel",
-      "album": "Pull Up",
-      "cover": "https://p1.music.126.net/VWNymAD19tSGGIiO2jJX8Q==/109951164753022452.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1381290206.mp3"
-    },
-    {
-      "id": 409647388,
-      "title": "3 Strikes",
-      "artist": "Terror Jr",
-      "album": "3 Strikes",
-      "cover": "https://p1.music.126.net/iFZF7le6cQX_DpPY-udPoQ==/109951164000556824.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=409647388.mp3"
-    },
-    {
-      "id": 2083785152,
-      "title": "唯一",
-      "artist": "G.E.M.邓紫棋",
-      "album": "T.I.M.E.",
-      "cover": "https://p1.music.126.net/aJWtwvdYRXvKUpAE2C6NoA==/109951168919708423.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2083785152.mp3"
-    },
-    {
       "id": 1303027499,
       "title": "总有一天你会出现在我身边",
       "artist": "棱镜乐队",
       "album": "一次有预谋的初次相遇",
       "cover": "https://p1.music.126.net/RfUHXkanpxImcaGqFNWBeA==/109951163598901405.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=1303027499.mp3"
-    },
-    {
-      "id": 26060065,
-      "title": "Counting Stars",
-      "artist": "OneRepublic",
-      "album": "Native (Deluxe Version)",
-      "cover": "https://p1.music.126.net/TJf6QafYPoDm9jZOR444dg==/109951170517214706.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=26060065.mp3"
-    },
-    {
-      "id": 5100462,
-      "title": "Dilemma",
-      "artist": "Nelly / Kelly Rowland",
-      "album": "Ministry of Sound: R&B Anthems",
-      "cover": "https://p1.music.126.net/6NDp1rt-Ox9NyfHoGo64Gg==/1753721046314805.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=5100462.mp3"
-    },
-    {
-      "id": 17572422,
-      "title": "Stan",
-      "artist": "Eminem / Dido",
-      "album": "The Marshall Mathers LP",
-      "cover": "https://p1.music.126.net/cN7ugIWdY2RKGEf9RTUDKQ==/109951170271191404.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=17572422.mp3"
-    },
-    {
-      "id": 1498236566,
-      "title": "Call Me Now (Rob Adans Remix)",
-      "artist": "Michael Calfan / INNA / Rob Adans",
-      "album": "Call Me Now (Club Mixes)",
-      "cover": "https://p1.music.126.net/TGmgCyd1raJ-PWOO_a7hvA==/109951165497563572.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1498236566.mp3"
     },
     {
       "id": 1299557101,
@@ -424,36 +216,12 @@ window.BLOG_PLAYLIST_DATA = {
       "url": "https://music.163.com/song/media/outer/url?id=1299557101.mp3"
     },
     {
-      "id": 1485309632,
-      "title": "Call Me Now",
-      "artist": "Michael Calfan / INNA",
-      "album": "Call Me Now",
-      "cover": "https://p1.music.126.net/UZ8EUcmvo2z90Rmw5xu6yw==/109951165373625420.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1485309632.mp3"
-    },
-    {
       "id": 2610610209,
       "title": "暗流",
       "artist": "石凯 / 万妮达Vinida Weng",
       "album": "云海在唱歌",
       "cover": "https://p1.music.126.net/1KoFvbzFbE8WIuP3KcB0JQ==/109951171996198741.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=2610610209.mp3"
-    },
-    {
-      "id": 1481870914,
-      "title": "Careless Whisper",
-      "artist": "Boyce Avenue",
-      "album": "Careless Whisper",
-      "cover": "https://p1.music.126.net/JuiLP4-9d_SiSab-hFnCnA==/109951165340846574.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1481870914.mp3"
-    },
-    {
-      "id": 1362857141,
-      "title": "If I Can't Have You",
-      "artist": "Shawn Mendes",
-      "album": "If I Can't Have You",
-      "cover": "https://p1.music.126.net/u3ohwDPHFQ7Bnup6afTsig==/109951164045226062.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1362857141.mp3"
     }
   ]
 };

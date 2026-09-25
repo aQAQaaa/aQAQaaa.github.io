@@ -223,13 +223,10 @@
 
     // Error handling (e.g. VIP copyright limitation on outer URL)
     audio.addEventListener('error', (e) => {
-      console.warn('Audio playback error on track:', songs[currentIndex].title, e);
-      if (titleEl) {
-        titleEl.textContent = `${songs[currentIndex].title} (外链受限，自动切换...)`;
-      }
+      console.warn('Audio playback error on track:', songs[currentIndex]?.title, e);
       setTimeout(() => {
         loadSong(currentIndex + 1, isPlaying);
-      }, 1500);
+      }, 300);
     });
 
     // Seek Click
