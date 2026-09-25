@@ -149,12 +149,33 @@
       border: 1px solid #334155;
       margin: 12px 0;
     }
+    @media (max-width: 1024px) {
+      .hud-bar {
+        padding: 8px 14px;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .hud-stat {
+        transform: scale(0.9);
+      }
+      .controls-footer {
+        flex-wrap: wrap;
+        border-radius: 16px;
+        padding: 6px 14px;
+        gap: 10px;
+        font-size: 11px;
+        max-width: 95vw;
+        white-space: normal;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
   <!-- Top HUD -->
   <header class="hud-bar">
-    <a href="/" class="hud-btn btn-back-blog" title="返回博客首页">🏠 返回博客</a>
+    <a href="index.html" class="hud-btn btn-back-blog" title="返回博客首页">🏠 返回博客</a>
     <div class="hud-stat">
       <span class="hud-label">MARIO SCORE</span>
       <span class="hud-value" id="hud-score">000000</span>
