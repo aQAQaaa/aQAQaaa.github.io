@@ -123,7 +123,7 @@
           it.classList.toggle('active', i === currentIndex);
         });
         const activeItem = drawerList.querySelector('.music-list-item.active');
-        if (activeItem && drawerList.classList.contains('open')) {
+        if (activeItem && drawerList.style.display === 'block') {
           activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       }
@@ -247,11 +247,11 @@
     // Drawer toggle
     if (drawerToggle && drawerList) {
       drawerToggle.addEventListener('click', () => {
-        const isOpen = drawerList.classList.toggle('open');
-        drawerToggle.classList.toggle('open', isOpen);
+        const isHidden = drawerList.style.display === 'none';
+        drawerList.style.display = isHidden ? 'block' : 'none';
         const icon = drawerToggle.querySelector('.drawer-arrow');
         if (icon) {
-          icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+          icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
         }
       });
     }

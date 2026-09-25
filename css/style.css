@@ -1950,7 +1950,7 @@ html {
    Card Music - Vinyl Record Player Widget (每日音乐推荐)
    ========================================================================== */
 .card-music {
-  padding: 18px 16px;
+  padding: 13px 14px 10px !important;
   position: relative;
   overflow: hidden;
 }
@@ -1959,72 +1959,72 @@ html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .music-title {
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  color: var(--link-color);
+  color: var(--link-color, #425aef);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .music-random-btn {
-  background: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: var(--theme-color);
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  background: rgba(66, 90, 239, 0.08) !important;
+  border: 1px solid rgba(66, 90, 239, 0.22) !important;
+  color: var(--theme-color, #425aef) !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.70rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  outline: none !important;
 }
 
 .music-random-btn:hover {
-  background: var(--theme-color);
-  color: #fff;
+  background: var(--theme-color, #425aef) !important;
+  color: #fff !important;
   transform: translateY(-1px);
 }
 
 /* --- Vinyl Turntable Stage --- */
 .music-stage {
   position: relative;
-  height: 128px;
+  height: 94px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 /* Realistic Vinyl Disc */
 .music-vinyl-disc {
-  width: 114px;
-  height: 114px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #1e293b 0%, #0f172a 60%, #020617 100%);
+  width: 86px;
+  height: 86px;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, #1e293b 0%, #0f172a 65%, #020617 100%);
   position: relative;
   box-shadow: 0 0 0 2px #334155,
               0 0 0 4px #0f172a,
               0 0 0 6px #1e293b,
-              0 0 0 8px #0f172a,
-              0 8px 24px rgba(0, 0, 0, 0.5);
+              0 4px 14px rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.5s ease;
+  flex-shrink: 0;
 }
 
-/* Vinyl Grooves texture */
 .music-vinyl-disc::before {
   content: '';
   position: absolute;
-  inset: 6px;
+  inset: 5px;
   border-radius: 50%;
   border: 1px dashed rgba(255, 255, 255, 0.08);
   pointer-events: none;
@@ -2032,26 +2032,31 @@ html {
 
 /* Center Album Art */
 .music-vinyl-cover-wrap {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% !important;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
 }
 
 .music-vinyl-cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  display: block !important;
 }
 
 /* Center Spindle Hole */
 .music-vinyl-hole {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
   background: #0f172a;
   border: 2px solid #e2e8f0;
   border-radius: 50%;
@@ -2060,22 +2065,22 @@ html {
 }
 
 /* Spinning Animation */
-@keyframes vinylSpin {
+@keyframes vinylSpinAnim {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
 .music-vinyl-disc.spinning {
-  animation: vinylSpin 16s linear infinite;
+  animation: vinylSpinAnim 12s linear infinite;
 }
 
 /* Tonearm (唱针) */
 .music-tonearm {
   position: absolute;
-  top: 6px;
-  right: 28px;
-  width: 32px;
-  height: 56px;
+  top: 4px;
+  right: 48px;
+  width: 24px;
+  height: 46px;
   transform-origin: top right;
   transform: rotate(-26deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -2084,28 +2089,26 @@ html {
 }
 
 .music-tonearm.playing {
-  transform: rotate(2deg);
+  transform: rotate(4deg);
 }
 
 .tonearm-head {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 8px;
-  height: 14px;
-  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  width: 6px;
+  height: 11px;
+  background: #cbd5e1;
   border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .tonearm-arm {
   position: absolute;
-  top: 10px;
-  right: 8px;
-  width: 3px;
-  height: 44px;
-  background: linear-gradient(to bottom, #e2e8f0, #94a3b8);
-  border-radius: 2px;
+  top: 8px;
+  right: 5px;
+  width: 2px;
+  height: 36px;
+  background: #94a3b8;
   transform: rotate(18deg);
   transform-origin: top right;
 }
@@ -2114,32 +2117,31 @@ html {
   position: absolute;
   top: 0;
   right: 0;
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle, #f1f5f9, #64748b);
+  width: 11px;
+  height: 11px;
+  background: #e2e8f0;
   border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* --- Song Meta --- */
 .music-meta {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .music-title-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 3px;
+  gap: 5px;
+  margin-bottom: 2px;
 }
 
 .music-song-title {
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--font-color);
-  max-width: 180px;
+  max-width: 160px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2148,17 +2150,17 @@ html {
 .music-tag-badge {
   background: linear-gradient(135deg, #f59e0b, #ef4444);
   color: #fff;
-  font-size: 0.62rem;
+  font-size: 0.60rem;
   font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
   white-space: nowrap;
 }
 
 .music-song-artist {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--dark-grey);
-  max-width: 220px;
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2167,14 +2169,14 @@ html {
 
 /* --- Progress Bar --- */
 .music-progress-section {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .music-progress-bar-wrap {
   width: 100%;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  height: 4px;
+  background: rgba(120, 120, 120, 0.2);
+  border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -2184,16 +2186,16 @@ html {
   width: 0%;
   height: 100%;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-  border-radius: 10px;
+  border-radius: 6px;
   transition: width 0.1s linear;
 }
 
 .music-time-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--dark-grey);
-  margin-top: 4px;
+  margin-top: 3px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -2202,131 +2204,129 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 14px;
+  gap: 14px;
+  margin-bottom: 8px;
 }
 
 .music-ctrl-btn {
-  background: transparent;
-  border: none;
-  color: var(--font-color);
-  font-size: 0.95rem;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  background: transparent !important;
+  border: none !important;
+  color: var(--font-color) !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   opacity: 0.75;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .music-ctrl-btn:hover {
   opacity: 1;
-  color: var(--theme-color);
+  color: var(--theme-color, #425aef) !important;
   transform: scale(1.15);
 }
 
 .music-ctrl-play {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  width: 36px !important;
+  height: 36px !important;
+  background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
   color: #fff !important;
-  opacity: 1;
-  font-size: 1.05rem;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+  opacity: 1 !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35) !important;
 }
 
 .music-ctrl-play:hover {
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
-  transform: scale(1.08);
-  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.55);
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+  transform: scale(1.08) !important;
 }
 
 .music-link-btn {
   color: #ef4444 !important;
+  font-size: 0.82rem !important;
+  text-decoration: none !important;
 }
 
 /* --- Playlist Drawer --- */
 .music-drawer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 10px;
+  border-top: 1px solid rgba(120, 120, 120, 0.15);
+  padding-top: 6px;
 }
 
 .music-drawer-toggle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--dark-grey);
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 8px;
+  padding: 3px 4px;
+  border-radius: 6px;
   transition: background 0.2s;
 }
 
 .music-drawer-toggle:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(120, 120, 120, 0.08);
   color: var(--font-color);
 }
 
 .drawer-arrow {
   transition: transform 0.3s ease;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 
 .music-drawer-list {
-  max-height: 0;
+  max-height: 140px;
   overflow-y: auto;
-  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   margin-top: 4px;
   scrollbar-width: thin;
 }
 
-.music-drawer-list.open {
-  max-height: 180px;
-}
-
 .music-drawer-list::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 
 .music-drawer-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: rgba(120, 120, 120, 0.3);
+  border-radius: 3px;
 }
 
 .music-list-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  font-size: 0.75rem;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 0.72rem;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .music-list-item:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .music-list-item.active {
-  background: rgba(59, 130, 246, 0.18);
-  color: var(--theme-color);
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--theme-color, #425aef);
   font-weight: 700;
 }
 
 .ml-index {
   color: var(--dark-grey);
-  font-size: 0.68rem;
-  width: 18px;
+  font-size: 0.65rem;
+  width: 16px;
   text-align: right;
   flex-shrink: 0;
 }
 
 .music-list-item.active .ml-index {
-  color: var(--theme-color);
+  color: var(--theme-color, #425aef);
 }
 
 .ml-info {
@@ -2342,11 +2342,11 @@ html {
 }
 
 .music-list-item.active .ml-title {
-  color: var(--theme-color);
+  color: var(--theme-color, #425aef);
 }
 
 .ml-artist {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--dark-grey);
   white-space: nowrap;
   overflow: hidden;
@@ -2354,11 +2354,10 @@ html {
 }
 
 .ml-wave-icon {
-  font-size: 0.65rem;
+  font-size: 0.60rem;
   opacity: 0;
-  color: var(--theme-color);
+  color: var(--theme-color, #425aef);
   flex-shrink: 0;
-  transition: opacity 0.2s;
 }
 
 .music-list-item.active .ml-wave-icon {
