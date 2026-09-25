@@ -64,6 +64,9 @@
         <div class="menus_item">
           <a class="site-page" href="https://aQAQaaa.github.io/heshan-school/" target="_blank" rel="noopener"><i class="fa-fw fas fa-school"></i><span> 学校</span></a>
         </div>
+        <div class="menus_item">
+          <a class="site-page nav-game-btn" href="mario.html"><i class="fa-fw fas fa-gamepad"></i><span> 马里奥3D</span></a>
+        </div>
       </div>
     </div>
   </div>
@@ -91,6 +94,9 @@
             </div>
             <div class="menus_item">
               <a class="site-page" href="https://aQAQaaa.github.io/heshan-school/" target="_blank" rel="noopener"><i class="fa-fw fas fa-school"></i><span> 学校</span></a>
+            </div>
+            <div class="menus_item">
+              <a class="site-page nav-game-btn" id="open-mario-modal" href="javascript:void(0);" title="在线畅玩 3D 马里奥"><i class="fa-fw fas fa-gamepad fa-bounce"></i><span> 马里奥3D</span></a>
             </div>
           </div>
           <div id="toggle-menu">
@@ -452,10 +458,63 @@
     </div>
   </div>
 
+  <!-- Mario 3D Game Modal -->
+  <div id="mario-modal-backdrop" class="mario-modal-backdrop" style="display: none;">
+    <div class="mario-modal-window">
+      <div class="mario-modal-header">
+        <div class="mario-modal-title">
+          <i class="fas fa-gamepad"></i> SUPER MARIO 3D BROS. (World 1-1)
+        </div>
+        <div class="mario-modal-actions">
+          <a href="mario.html" target="_blank" class="mario-modal-btn" title="在新标签页全屏畅玩"><i class="fas fa-expand-arrows-alt"></i> 全屏玩</a>
+          <button class="mario-modal-btn mario-modal-close" id="close-mario-modal" type="button" title="关闭游戏"><i class="fas fa-times"></i> 关闭</button>
+        </div>
+      </div>
+      <div class="mario-modal-body">
+        <iframe id="mario-game-frame" src="about:blank" frameborder="0" allow="autoplay; fullscreen"></iframe>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/typed.js@3.0.0/dist/typed.umd.min.js"></script>
   <script src="js/season-module.js"></script>
   <script src="js/season-particles.js"></script>
-  <script src="js/main.js?v=20260925c"></script>
+  <script src="js/main.js?v=20260925e"></script>
+  <script>
+    (function() {
+      const openBtn = document.getElementById('open-mario-modal');
+      const closeBtn = document.getElementById('close-mario-modal');
+      const backdrop = document.getElementById('mario-modal-backdrop');
+      const frame = document.getElementById('mario-game-frame');
+
+      if (openBtn && backdrop && frame) {
+        openBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          backdrop.style.display = 'flex';
+          frame.src = 'mario.html';
+        });
+      }
+
+      const closeModal = () => {
+        if (backdrop && frame) {
+          backdrop.style.display = 'none';
+          frame.src = 'about:blank';
+        }
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (backdrop) {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) closeModal();
+        });
+      }
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && backdrop && backdrop.style.display === 'flex') {
+          closeModal();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

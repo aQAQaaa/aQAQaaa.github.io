@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SUPER MARIO 3D BROS. - 3D精细建模高清重制版 (World 1-1)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body, html {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #0f172a;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #ffffff;
+    }
+    #game-canvas-container {
+      width: 100%; height: 100%; position: relative;
+    }
+    /* Top Nintendo-Style Glassmorphic HUD */
+    .hud-bar {
+      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+      width: min(96vw, 1060px);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.82), rgba(30, 41, 59, 0.72));
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(250, 204, 21, 0.45);
+      border-radius: 18px;
+      padding: 10px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      z-index: 20;
+    }
+    .hud-stat {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .hud-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+      color: #fde047; text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    .hud-value {
+      font-size: 21px; font-weight: 900; color: #ffffff;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+    }
+    .hud-actions {
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff; font-weight: 700; font-size: 12px;
+      padding: 7px 12px; border-radius: 10px; cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .hud-btn:hover {
+      background: #facc15; color: #0f172a; border-color: #facc15;
+      transform: translateY(-1px);
+    }
+    .hud-btn.accent {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border-color: #fda4af;
+    }
+    .hud-btn.accent:hover {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: #fff;
+    }
+
+    /* Back to Blog Button */
+    .btn-back-blog {
+      background: rgba(14, 165, 233, 0.35);
+      border: 1px solid #38bdf8;
+      color: #e0f2fe;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-back-blog:hover {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    /* Bottom Control Hints Bar */
+    .controls-footer {
+      position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 8px 22px;
+      display: flex; gap: 18px; align-items: center;
+      font-size: 12.5px; color: #e2e8f0;
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      white-space: nowrap;
+    }
+    .key-badge {
+      display: inline-block;
+      background: #334155; color: #fde047;
+      border: 1px solid #64748b;
+      border-radius: 6px; padding: 2px 7px;
+      font-weight: 800; font-size: 11px; margin-right: 4px;
+    }
+
+    /* Floating 3D Score Text */
+    .floating-score {
+      position: fixed; pointer-events: none;
+      font-weight: 900; font-size: 20px;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.85), 0 0 2px #000;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+    }
+
+    /* Stage Clear Banner */
+    .victory-banner {
+      position: fixed; top: 22%; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.94), rgba(21, 128, 61, 0.94));
+      border: 3px solid #fde047;
+      border-radius: 22px; padding: 22px 42px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+      z-index: 30;
+    }
+    .victory-banner h1 {
+      font-size: 32px; font-weight: 900; color: #fde047;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.5); margin-bottom: 8px;
+    }
+    .hidden { display: none !important; }
+
+    /* 3D Model Turntable Inspector Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(2, 6, 23, 0.82);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50;
+    }
+    .inspector-card {
+      background: #1e293b;
+      border: 2px solid #facc15;
+      border-radius: 22px;
+      padding: 22px;
+      width: min(92vw, 570px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.75);
+      text-align: center;
+    }
+    #inspector-canvas {
+      width: 100%; height: 320px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top HUD -->
+  <header class="hud-bar">
+    <a href="/" class="hud-btn btn-back-blog" title="返回博客首页">🏠 返回博客</a>
+    <div class="hud-stat">
+      <span class="hud-label">MARIO SCORE</span>
+      <span class="hud-value" id="hud-score">000000</span>
+    </div>
+    <div class="hud-stat">
+      <span class="hud-label">🪙 COINS</span>
+      <span class="hud-value" id="hud-coins">x00</span>
+    </div>
+    <div class="hud-stat">
+      <span class="hud-label">🌍 WORLD</span>
+      <span class="hud-value" id="hud-world">1-1</span>
+    </div>
+    <div class="hud-stat">
+      <span class="hud-label">⏱️ TIME</span>
+      <span class="hud-value" id="hud-time">400</span>
+    </div>
+    <div class="hud-stat">
+      <span class="hud-label">❤️ LIVES</span>
+      <span class="hud-value" id="hud-lives">x3</span>
+    </div>
+    <div class="hud-stat">
+      <span class="hud-label">✨ 形态 (键1/2/3切换)</span>
+      <span class="hud-value" id="hud-form" style="font-size:15px; color:#4ade80;">小马里奥</span>
+    </div>
+    <div class="hud-actions">
+      <button class="hud-btn" id="btn-camera" onclick="window.game.cycleCameraMode()">🎥 视角: 2.5D 经典横版 [C]</button>
+      <button class="hud-btn accent" onclick="window.inspector.toggle(true)">🔍 3D精细建模鉴赏馆</button>
+      <button class="hud-btn" id="btn-audio" onclick="const m=window.game.audio.toggleMute(); this.textContent=m?'🔇 音效: 关 [M]':'🔊 音效: 开 [M]'">🔊 音效: 开 [M]</button>
+    </div>
+  </header>
+
+  <!-- Victory Banner -->
+  <div id="victory-banner" class="victory-banner hidden">
+    <h1>🎉 WORLD 1-1 STAGE CLEAR! 🎉</h1>
+    <p style="font-size:15px; margin-bottom:14px;">恭喜通关！礼花正在城堡上空绽放！</p>
+    <button class="hud-btn" style="background:#fde047; color:#0f172a; font-size:14px; padding:9px 20px;" onclick="document.getElementById('victory-banner').classList.add('hidden'); window.game.isStageClear=false; window.game.buildLevel(); window.game.resetPlayerPosition(2.5, 2.0);">🔄 再玩一次 (Replay World 1-1)</button>
+  </div>
+
+  <!-- 360° 3D Model Turntable Inspector Modal -->
+  <div id="inspector-modal" class="modal-backdrop hidden">
+    <div class="inspector-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="color:#fde047; font-size:18px;">🔍 360° 3D高精度角色与怪物建模展台</h3>
+        <button class="hud-btn" onclick="window.inspector.toggle(false)">✖ 关闭</button>
+      </div>
+      <canvas id="inspector-canvas" width="520" height="360"></canvas>
+      <h4 id="inspector-title" style="color:#38bdf8; font-size:16px; margin-bottom:6px;"></h4>
+      <p id="inspector-desc" style="color:#cbd5e1; font-size:13px; line-height:1.5; margin-bottom:14px;"></p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <button class="hud-btn" onclick="window.inspector.selectEntry(window.inspector.currentModelIndex - 1)">◀ 上一个模型</button>
+        <button class="hud-btn accent" onclick="window.inspector.selectEntry(window.inspector.currentModelIndex + 1)">下一个模型 ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main WebGL Container -->
+  <div id="game-canvas-container"></div>
+
+  <!-- Bottom Controls Bar -->
+  <footer class="controls-footer">
+    <span><b class="key-badge">A / D</b>或<b class="key-badge">◀ / ▶</b>移动</span>
+    <span><b class="key-badge">W / Space</b>跳跃</span>
+    <span><b class="key-badge">Shift</b>加速跑</span>
+    <span><b class="key-badge">J / X</b>发射3D火球</span>
+    <span><b class="key-badge">S / ▼</b>在第3根高水管进入<b>地下金币密室</b></span>
+    <span><b class="key-badge">1 / 2 / 3</b>秒切小/大/火焰马里奥形态</span>
+    <span><b class="key-badge">C</b>切换3D视角</span>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script>
+// ============================================================================
+// Super Mario 3D Bros - Web Audio API Chiptune & SFX Synthesizer
+// Authentic NES/SNES Multi-Channel Square + Triangle + Noise Synthesizer
+// ============================================================================
+
+class MarioAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+    this.bgmPlaying = false;
+    this.currentTheme = 'overworld'; // 'overworld' | 'underground' | 'star' | 'none'
+    this.bgmTimeout = null;
+    this.stepIndex = 0;
+    this.masterGain = null;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = 0.32;
+      this.masterGain.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    if (this.masterGain) {
+      this.masterGain.gain.value = this.muted ? 0 : 0.32;
+    }
+    return this.muted;
+  }
+
+  noteToFreq(note) {
+    if (!note || note === '-') return 0;
+    const notes = { 'C': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3, 'E': 4, 'F': 5, 'F#': 6, 'Gb': 6, 'G': 7, 'G#': 8, 'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11 };
+    const match = note.match(/^([A-G][#b]?)(\d)$/);
+    if (!match) return 0;
+    const semitone = notes[match[1]];
+    const octave = parseInt(match[2], 10);
+    return 440 * Math.pow(2, (octave - 4) + (semitone - 9) / 12);
+  }
+
+  playTone(freq, duration, type = 'square', volume = 0.25, delay = 0, slideTo = null) {
+    if (this.muted) return;
+    this.init();
+    if (!freq || freq <= 0) return;
+
+    const now = this.ctx.currentTime + delay;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    if (slideTo) {
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), now + duration);
+    }
+
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+
+    osc.start(now);
+    osc.stop(now + duration + 0.01);
+  }
+
+  playNoise(duration, volume = 0.2, delay = 0, filterFreq = 1200) {
+    if (this.muted) return;
+    this.init();
+    const now = this.ctx.currentTime + delay;
+    const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(filterFreq, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain);
+
+    noise.start(now);
+    noise.stop(now + duration);
+  }
+
+  // ---- Sound Effects ----
+  playJump(isBig = false) {
+    const base = isBig ? 160 : 220;
+    this.playTone(base, 0.12, 'square', 0.22, 0, base * 2.2);
+    this.playTone(base * 1.8, 0.18, 'square', 0.20, 0.08, base * 3.6);
+  }
+
+  playCoin() {
+    this.playTone(987.77, 0.08, 'square', 0.24, 0);       // B5
+    this.playTone(1318.51, 0.35, 'square', 0.24, 0.075);  // E6
+  }
+
+  playBump() {
+    this.playTone(150, 0.09, 'triangle', 0.35, 0, 75);
+  }
+
+  playBreakBlock() {
+    this.playNoise(0.22, 0.45, 0, 900);
+    this.playTone(180, 0.15, 'sawtooth', 0.28, 0, 55);
+    this.playNoise(0.18, 0.35, 0.08, 600);
+  }
+
+  playPowerUpAppear() {
+    const notes = ['C4', 'G4', 'C5', 'E5', 'G5', 'C6', 'G5', 'Ab4', 'C5', 'Eb5', 'Ab5', 'Eb5', 'Ab5', 'C6'];
+    notes.forEach((n, idx) => {
+      this.playTone(this.noteToFreq(n), 0.055, 'square', 0.2, idx * 0.038);
+    });
+  }
+
+  playPowerUpCollect() {
+    const notes = ['C4', 'E4', 'G4', 'C5', 'G4', 'C5', 'E5', 'G5', 'C6', 'G5', 'E4', 'Ab4', 'C5', 'Eb5', 'Ab5', 'C6'];
+    notes.forEach((n, idx) => {
+      this.playTone(this.noteToFreq(n), 0.06, 'square', 0.25, idx * 0.042);
+    });
+  }
+
+  playOneUp() {
+    const notes = ['E5', 'G5', 'E6', 'C6', 'D6', 'G6'];
+    notes.forEach((n, idx) => {
+      this.playTone(this.noteToFreq(n), 0.11, 'square', 0.28, idx * 0.095);
+    });
+  }
+
+  playPipeWarp() {
+    for (let i = 0; i < 6; i++) {
+      this.playTone(380 - i * 45, 0.06, 'square', 0.26, i * 0.07, 180 - i * 20);
+    }
+  }
+
+  playStomp() {
+    this.playTone(260, 0.06, 'square', 0.28, 0, 520);
+    this.playTone(520, 0.10, 'triangle', 0.25, 0.05, 840);
+  }
+
+  playKick() {
+    this.playTone(180, 0.05, 'square', 0.32, 0, 620);
+    this.playNoise(0.06, 0.25, 0, 1500);
+  }
+
+  playFireball() {
+    this.playTone(680, 0.07, 'square', 0.2, 0, 220);
+    this.playTone(420, 0.06, 'triangle', 0.18, 0.04, 920);
+  }
+
+  playFlagpole() {
+    const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
+    notes.forEach((n, idx) => {
+      this.playTone(this.noteToFreq(n), 0.07, 'square', 0.22, idx * 0.05);
+    });
+  }
+
+  playStageClear() {
+    this.stopBGM();
+    const melody = [
+      ['G4', 0.13], ['C5', 0.13], ['E5', 0.13], ['G5', 0.13], ['C6', 0.13], ['E6', 0.13],
+      ['G6', 0.36], ['E6', 0.34],
+      ['Ab4', 0.13], ['C5', 0.13], ['Eb5', 0.13], ['Ab5', 0.13], ['C6', 0.13], ['Eb6', 0.13],
+      ['Ab6', 0.36], ['Eb6', 0.34],
+      ['Bb4', 0.13], ['D5', 0.13], ['F5', 0.13], ['Bb5', 0.13], ['D6', 0.13], ['F6', 0.13],
+      ['Bb6', 0.38], ['Bb6', 0.12], ['Bb6', 0.12], ['Bb6', 0.12], ['C7', 0.65]
+    ];
+    let t = 0.1;
+    melody.forEach(([n, dur]) => {
+      this.playTone(this.noteToFreq(n), dur * 0.92, 'square', 0.26, t);
+      this.playTone(this.noteToFreq(n) * 0.5, dur * 0.92, 'triangle', 0.22, t);
+      t += dur;
+    });
+  }
+
+  playDeath() {
+    this.stopBGM();
+    const melody = [
+      ['B4', 0.12], ['F5', 0.16], ['-', 0.08], ['F5', 0.14],
+      ['F5', 0.15], ['E5', 0.15], ['D5', 0.15],
+      ['C5', 0.16], ['E4', 0.16], ['-', 0.08], ['E4', 0.16], ['C4', 0.35]
+    ];
+    let t = 0.05;
+    melody.forEach(([n, dur]) => {
+      if (n !== '-') {
+        this.playTone(this.noteToFreq(n), dur * 0.9, 'square', 0.26, t);
+      }
+      t += dur;
+    });
+  }
+
+  playFirework() {
+    this.playNoise(0.28, 0.38, 0, 1100);
+    this.playTone(540, 0.2, 'sine', 0.22, 0, 140);
+  }
+
+  // ---- Background Music Sequencer ----
+  startBGM(theme = 'overworld') {
+    this.init();
+    if (this.bgmPlaying && this.currentTheme === theme) return;
+    this.stopBGM();
+    this.currentTheme = theme;
+    this.bgmPlaying = true;
+    this.stepIndex = 0;
+    this.scheduleNextStep();
+  }
+
+  stopBGM() {
+    this.bgmPlaying = false;
+    if (this.bgmTimeout) {
+      clearTimeout(this.bgmTimeout);
+      this.bgmTimeout = null;
+    }
+  }
+
+  scheduleNextStep() {
+    if (!this.bgmPlaying) return;
+
+    // Overworld Theme (Koji Kondo classic motif)
+    const overworldSeq = [
+      // Intro
+      ['E5', 'D4'], ['E5', 'D4'], ['-', '-'], ['E5', 'D4'],
+      ['-', '-'], ['C5', 'D4'], ['E5', 'D4'], ['-', '-'],
+      ['G5', 'G3'], ['-', '-'], ['-', '-'], ['-', '-'],
+      ['G4', 'G3'], ['-', '-'], ['-', '-'], ['-', '-'],
+      // Phrase A1
+      ['C5', 'G3'], ['-', '-'], ['-', '-'], ['G4', 'E3'],
+      ['-', '-'], ['-', '-'], ['E4', 'C3'], ['-', '-'],
+      ['-', '-'], ['A4', 'F3'], ['-', '-'], ['B4', 'G3'],
+      ['-', '-'], ['Bb4', 'Gb3'], ['A4', 'F3'], ['-', '-'],
+      ['G4', 'E3'], ['E5', 'C4'], ['G5', 'E4'], ['A5', 'F4'],
+      ['-', '-'], ['F5', 'D4'], ['G5', 'E4'], ['-', '-'],
+      ['E5', 'C4'], ['-', '-'], ['C5', 'A3'], ['D5', 'B3'],
+      ['B4', 'G3'], ['-', '-'], ['-', '-'], ['-', '-'],
+      // Phrase A2
+      ['C5', 'G3'], ['-', '-'], ['-', '-'], ['G4', 'E3'],
+      ['-', '-'], ['-', '-'], ['E4', 'C3'], ['-', '-'],
+      ['-', '-'], ['A4', 'F3'], ['-', '-'], ['B4', 'G3'],
+      ['-', '-'], ['Bb4', 'Gb3'], ['A4', 'F3'], ['-', '-'],
+      ['G4', 'E3'], ['E5', 'C4'], ['G5', 'E4'], ['A5', 'F4'],
+      ['-', '-'], ['F5', 'D4'], ['G5', 'E4'], ['-', '-'],
+      ['E5', 'C4'], ['-', '-'], ['C5', 'A3'], ['D5', 'B3'],
+      ['B4', 'G3'], ['-', '-'], ['-', '-'], ['-', '-']
+    ];
+
+    // Underground Theme
+    const undergroundSeq = [
+      ['C4', 'C3'], ['C5', 'C4'], ['A3', 'A2'], ['A4', 'A3'],
+      ['Bb3', 'Bb2'], ['Bb4', 'Bb3'], ['-', '-'], ['-', '-'],
+      ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'],
+      ['F3', 'F2'], ['F4', 'F3'], ['D3', 'D2'], ['D4', 'D3'],
+      ['Eb3', 'Eb2'], ['Eb4', 'Eb3'], ['-', '-'], ['-', '-'],
+      ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-']
+    ];
+
+    // Starman Theme
+    const starSeq = [
+      ['C5', 'F3'], ['C5', 'F3'], ['C5', 'C4'], ['-', 'F3'],
+      ['C5', 'F3'], ['-', 'C4'], ['C5', 'F3'], ['D5', 'C4'],
+      ['C5', 'E3'], ['-', 'E3'], ['B4', 'B3'], ['-', 'E3'],
+      ['B4', 'E3'], ['-', 'B3'], ['B4', 'E3'], ['C5', 'B3']
+    ];
+
+    let seq = overworldSeq;
+    let stepMs = 125;
+    if (this.currentTheme === 'underground') {
+      seq = undergroundSeq;
+      stepMs = 135;
+    } else if (this.currentTheme === 'star') {
+      seq = starSeq;
+      stepMs = 95;
+    }
+
+    const [lead, bass] = seq[this.stepIndex % seq.length];
+    if (lead && lead !== '-') {
+      this.playTone(this.noteToFreq(lead), (stepMs / 1000) * 0.85, 'square', 0.12);
+    }
+    if (bass && bass !== '-') {
+      this.playTone(this.noteToFreq(bass), (stepMs / 1000) * 0.9, 'triangle', 0.16);
+    }
+
+    this.stepIndex++;
+    this.bgmTimeout = setTimeout(() => this.scheduleNextStep(), stepMs);
+  }
+}
+
+window.MarioAudioEngine = MarioAudioEngine;
+  </script>
+  <script>
+// ============================================================================
+// Super Mario 3D Bros - High-Detail Procedural 3D Modeling & Texture Engine
+// Built with Three.js PBR Materials (MeshStandardMaterial) & Articulated Rigs
+// ============================================================================
+
+class MarioModelFactory {
+  constructor() {
+    this.textures = {};
+    this.materials = {};
+    this.initTexturesAndMaterials();
+  }
+
+  initTexturesAndMaterials() {
+    // 1. Mario 'M' Cap Emblem Texture
+    const emblemCanvas = document.createElement('canvas');
+    emblemCanvas.width = 128;
+    emblemCanvas.height = 128;
+    const ectx = emblemCanvas.getContext('2d');
+    ectx.fillStyle = '#ffffff';
+    ectx.beginPath();
+    ectx.arc(64, 64, 60, 0, Math.PI * 2);
+    ectx.fill();
+    ectx.strokeStyle = '#e2e8f0';
+    ectx.lineWidth = 4;
+    ectx.stroke();
+    ectx.fillStyle = '#e11d48';
+    ectx.font = '900 78px "Arial Black", Impact, sans-serif';
+    ectx.textAlign = 'center';
+    ectx.textBaseline = 'middle';
+    ectx.fillText('M', 64, 68);
+    this.textures.emblem = new THREE.CanvasTexture(emblemCanvas);
+
+    // 2. Brick Block Albedo + Mortar Texture
+    const brickCanvas = document.createElement('canvas');
+    brickCanvas.width = 256;
+    brickCanvas.height = 256;
+    const bctx = brickCanvas.getContext('2d');
+    bctx.fillStyle = '#7c2d12'; // dark mortar
+    bctx.fillRect(0, 0, 256, 256);
+    const rows = 4;
+    const rowH = 256 / rows;
+    for (let r = 0; r < rows; r++) {
+      const offset = (r % 2) * 64;
+      for (let c = -1; c < 3; c++) {
+        const bx = c * 128 + offset + 5;
+        const by = r * rowH + 5;
+        const bw = 128 - 10;
+        const bh = rowH - 10;
+        const grad = bctx.createLinearGradient(bx, by, bx, by + bh);
+        grad.addColorStop(0, '#d97706');
+        grad.addColorStop(0.15, '#b45309');
+        grad.addColorStop(0.85, '#9a3412');
+        grad.addColorStop(1, '#7c2d12');
+        bctx.fillStyle = grad;
+        bctx.fillRect(bx, by, bw, bh);
+        bctx.fillStyle = 'rgba(255,220,160,0.28)';
+        bctx.fillRect(bx, by, bw, 4);
+      }
+    }
+    this.textures.brick = new THREE.CanvasTexture(brickCanvas);
+
+    // 3. Underground Blue Brick Texture
+    const uBrickCanvas = document.createElement('canvas');
+    uBrickCanvas.width = 256;
+    uBrickCanvas.height = 256;
+    const uctx = uBrickCanvas.getContext('2d');
+    uctx.fillStyle = '#0f172a';
+    uctx.fillRect(0, 0, 256, 256);
+    for (let r = 0; r < rows; r++) {
+      const offset = (r % 2) * 64;
+      for (let c = -1; c < 3; c++) {
+        const bx = c * 128 + offset + 5;
+        const by = r * rowH + 5;
+        const bw = 128 - 10;
+        const bh = rowH - 10;
+        const grad = uctx.createLinearGradient(bx, by, bx, by + bh);
+        grad.addColorStop(0, '#38bdf8');
+        grad.addColorStop(0.2, '#0284c7');
+        grad.addColorStop(1, '#0369a1');
+        uctx.fillStyle = grad;
+        uctx.fillRect(bx, by, bw, bh);
+      }
+    }
+    this.textures.undergroundBrick = new THREE.CanvasTexture(uBrickCanvas);
+
+    // 4. Question Block Face Texture
+    const qCanvas = document.createElement('canvas');
+    qCanvas.width = 256;
+    qCanvas.height = 256;
+    const qctx = qCanvas.getContext('2d');
+    const qGrad = qctx.createLinearGradient(0, 0, 256, 256);
+    qGrad.addColorStop(0, '#fde047');
+    qGrad.addColorStop(0.5, '#facc15');
+    qGrad.addColorStop(1, '#ca8a04');
+    qctx.fillStyle = qGrad;
+    qctx.fillRect(0, 0, 256, 256);
+    qctx.strokeStyle = '#fef08a';
+    qctx.lineWidth = 14;
+    qctx.strokeRect(10, 10, 236, 236);
+    qctx.strokeStyle = '#a16207';
+    qctx.lineWidth = 8;
+    qctx.strokeRect(22, 22, 212, 212);
+    const rivets = [[36, 36], [220, 36], [36, 220], [220, 220]];
+    rivets.forEach(([rx, ry]) => {
+      qctx.fillStyle = '#713f12';
+      qctx.beginPath();
+      qctx.arc(rx, ry, 9, 0, Math.PI * 2);
+      qctx.fill();
+      qctx.fillStyle = '#fef9c3';
+      qctx.beginPath();
+      qctx.arc(rx - 2, ry - 2, 3, 0, Math.PI * 2);
+      qctx.fill();
+    });
+    qctx.fillStyle = '#78350f';
+    qctx.font = '900 165px "Arial Black", Impact, sans-serif';
+    qctx.textAlign = 'center';
+    qctx.textBaseline = 'middle';
+    qctx.fillText('?', 134, 140);
+    qctx.fillStyle = '#ffffff';
+    qctx.fillText('?', 126, 132);
+    this.textures.question = new THREE.CanvasTexture(qCanvas);
+
+    // 5. Ground Cobble Grass Block Texture
+    const gCanvas = document.createElement('canvas');
+    gCanvas.width = 256;
+    gCanvas.height = 256;
+    const gctx = gCanvas.getContext('2d');
+    gctx.fillStyle = '#9a3412';
+    gctx.fillRect(0, 0, 256, 256);
+    const stones = [
+      [8, 42, 112, 96], [128, 42, 120, 96],
+      [8, 146, 76, 102], [92, 146, 84, 102], [184, 146, 64, 102]
+    ];
+    stones.forEach(([sx, sy, sw, sh]) => {
+      const sg = gctx.createLinearGradient(sx, sy, sx, sy + sh);
+      sg.addColorStop(0, '#ea580c');
+      sg.addColorStop(0.5, '#c2410c');
+      sg.addColorStop(1, '#7c2d12');
+      gctx.fillStyle = sg;
+      gctx.beginPath();
+      gctx.roundRect(sx, sy, sw, sh, 12);
+      gctx.fill();
+    });
+    const grassGrad = gctx.createLinearGradient(0, 0, 0, 48);
+    grassGrad.addColorStop(0, '#4ade80');
+    grassGrad.addColorStop(0.6, '#22c55e');
+    grassGrad.addColorStop(1, '#15803d');
+    gctx.fillStyle = grassGrad;
+    gctx.fillRect(0, 0, 256, 44);
+    this.textures.ground = new THREE.CanvasTexture(gCanvas);
+
+    // Shared PBR Materials
+    this.materials = {
+      marioRed: new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.42, metalness: 0.05 }),
+      marioBlue: new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.55, metalness: 0.05 }),
+      marioWhite: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.05 }),
+      skin: new THREE.MeshStandardMaterial({ color: 0xffcca8, roughness: 0.45, metalness: 0.02 }),
+      hairBrown: new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.65, metalness: 0.02 }),
+      bootBrown: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4, metalness: 0.1 }),
+      gold: new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.18, metalness: 0.85, emissive: 0x422006, emissiveIntensity: 0.25 }),
+      eyeBlue: new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.2 }),
+      black: new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 }),
+      pipeGreen: new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.22, metalness: 0.35 }),
+      pipeDark: new THREE.MeshStandardMaterial({ color: 0x052e16, roughness: 0.9 }),
+      brick: new THREE.MeshStandardMaterial({ map: this.textures.brick, roughness: 0.65 }),
+      undergroundBrick: new THREE.MeshStandardMaterial({ map: this.textures.undergroundBrick, roughness: 0.65 }),
+      question: new THREE.MeshStandardMaterial({ map: this.textures.question, roughness: 0.28, metalness: 0.25, emissive: 0x713f12, emissiveIntensity: 0.15 }),
+      emptyBlock: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.55, metalness: 0.3 }),
+      hardBlock: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4, metalness: 0.25 }),
+      ground: new THREE.MeshStandardMaterial({ map: this.textures.ground, roughness: 0.65 }),
+      goombaCap: new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.5 }),
+      goombaStem: new THREE.MeshStandardMaterial({ color: 0xfde68a, roughness: 0.55 }),
+      koopaGreen: new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.3, metalness: 0.15 }),
+      koopaYellow: new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.45 })
+    };
+  }
+
+  createMario() {
+    const root = new THREE.Group();
+    const model = new THREE.Group();
+    root.add(model);
+
+    const shirtMat = this.materials.marioRed.clone();
+    const overallMat = this.materials.marioBlue.clone();
+    const capMat = this.materials.marioRed.clone();
+
+    const torsoGroup = new THREE.Group();
+    torsoGroup.position.y = 0.62;
+    model.add(torsoGroup);
+
+    const shirtMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.30, 0.46, 20), shirtMat);
+    shirtMesh.castShadow = true;
+    torsoGroup.add(shirtMesh);
+
+    const pantsBelly = new THREE.Mesh(new THREE.SphereGeometry(0.305, 20, 16), overallMat);
+    pantsBelly.scale.set(1.02, 0.88, 0.96);
+    pantsBelly.position.y = -0.08;
+    pantsBelly.castShadow = true;
+    torsoGroup.add(pantsBelly);
+
+    const bibFront = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.26, 0.08), overallMat);
+    bibFront.position.set(0, 0.06, 0.25);
+    torsoGroup.add(bibFront);
+
+    [-0.12, 0.12].forEach(sx => {
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.34, 0.28), overallMat);
+      strap.position.set(sx, 0.14, 0);
+      torsoGroup.add(strap);
+
+      const btn = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.03, 14), this.materials.gold);
+      btn.rotation.x = Math.PI / 2;
+      btn.position.set(sx, 0.06, 0.30);
+      torsoGroup.add(btn);
+    });
+
+    const headGroup = new THREE.Group();
+    headGroup.position.y = 0.46;
+    torsoGroup.add(headGroup);
+
+    const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.285, 24, 24), this.materials.skin);
+    headMesh.scale.set(1.0, 0.96, 1.02);
+    headMesh.castShadow = true;
+    headGroup.add(headMesh);
+
+    const noseMesh = new THREE.Mesh(new THREE.SphereGeometry(0.115, 18, 18), this.materials.skin);
+    noseMesh.scale.set(1.15, 0.92, 1.25);
+    noseMesh.position.set(0, -0.02, 0.30);
+    noseMesh.castShadow = true;
+    headGroup.add(noseMesh);
+
+    const mustacheGroup = new THREE.Group();
+    mustacheGroup.position.set(0, -0.10, 0.255);
+    headGroup.add(mustacheGroup);
+    const lobes = [
+      [-0.15, 0.01, -0.02, 0.065],
+      [-0.09, -0.01, 0.01, 0.075],
+      [-0.03, -0.015, 0.02, 0.08],
+      [0.03, -0.015, 0.02, 0.08],
+      [0.09, -0.01, 0.01, 0.075],
+      [0.15, 0.01, -0.02, 0.065]
+    ];
+    lobes.forEach(([lx, ly, lz, lr]) => {
+      const lobe = new THREE.Mesh(new THREE.SphereGeometry(lr, 12, 12), this.materials.hairBrown);
+      lobe.scale.set(1.1, 0.75, 0.85);
+      lobe.position.set(lx, ly, lz);
+      mustacheGroup.add(lobe);
+    });
+
+    [-0.095, 0.095].forEach(ex => {
+      const eyeSclera = new THREE.Mesh(new THREE.SphereGeometry(0.062, 14, 14), this.materials.marioWhite);
+      eyeSclera.scale.set(0.85, 1.18, 0.55);
+      eyeSclera.position.set(ex, 0.055, 0.255);
+      headGroup.add(eyeSclera);
+
+      const iris = new THREE.Mesh(new THREE.SphereGeometry(0.042, 12, 12), this.materials.eyeBlue);
+      iris.scale.set(0.85, 1.15, 0.5);
+      iris.position.set(ex * 0.96, 0.055, 0.278);
+      headGroup.add(iris);
+
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 10), this.materials.black);
+      pupil.scale.set(0.85, 1.15, 0.5);
+      pupil.position.set(ex * 0.95, 0.055, 0.292);
+      headGroup.add(pupil);
+
+      const brow = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.025, 0.025), this.materials.hairBrown);
+      brow.position.set(ex, 0.145, 0.265);
+      brow.rotation.z = ex < 0 ? 0.15 : -0.15;
+      headGroup.add(brow);
+    });
+
+    [-0.275, 0.275].forEach(earX => {
+      const ear = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 12), this.materials.skin);
+      ear.scale.set(0.55, 1.0, 0.85);
+      ear.position.set(earX, 0.0, 0.02);
+      headGroup.add(ear);
+
+      const sideburn = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.14, 0.08), this.materials.hairBrown);
+      sideburn.position.set(earX * 0.92, 0.02, 0.11);
+      headGroup.add(sideburn);
+    });
+    const backHair = new THREE.Mesh(new THREE.SphereGeometry(0.285, 18, 14, 0, Math.PI * 2, 0.3, 1.8), this.materials.hairBrown);
+    backHair.position.set(0, -0.02, -0.04);
+    headGroup.add(backHair);
+
+    const capDome = new THREE.Mesh(
+      new THREE.SphereGeometry(0.305, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.58),
+      capMat
+    );
+    capDome.position.set(0, 0.08, -0.01);
+    capDome.rotation.x = -0.12;
+    capDome.castShadow = true;
+    headGroup.add(capDome);
+
+    const capVisor = new THREE.Mesh(new THREE.CylinderGeometry(0.29, 0.30, 0.045, 20, 1, false, -Math.PI * 0.42, Math.PI * 0.84), capMat);
+    capVisor.position.set(0, 0.125, 0.15);
+    capVisor.rotation.x = 0.22;
+    capVisor.castShadow = true;
+    headGroup.add(capVisor);
+
+    const emblemBadge = new THREE.Mesh(
+      new THREE.CircleGeometry(0.088, 20),
+      new THREE.MeshStandardMaterial({ map: this.textures.emblem, roughness: 0.3 })
+    );
+    emblemBadge.position.set(0, 0.22, 0.288);
+    emblemBadge.rotation.x = -0.18;
+    headGroup.add(emblemBadge);
+
+    const createArm = (isLeft) => {
+      const armPivot = new THREE.Group();
+      const side = isLeft ? -1 : 1;
+      armPivot.position.set(side * 0.34, 0.14, 0);
+
+      const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.085, 0.28, 14), shirtMat);
+      upperArm.position.y = -0.12;
+      upperArm.castShadow = true;
+      armPivot.add(upperArm);
+
+      const cuff = new THREE.Mesh(new THREE.TorusGeometry(0.092, 0.026, 10, 16), this.materials.marioWhite);
+      cuff.rotation.x = Math.PI / 2;
+      cuff.position.y = -0.25;
+      armPivot.add(cuff);
+
+      const glove = new THREE.Mesh(new THREE.SphereGeometry(0.125, 16, 16), this.materials.marioWhite);
+      glove.scale.set(1.0, 1.08, 1.12);
+      glove.position.y = -0.34;
+      glove.castShadow = true;
+      armPivot.add(glove);
+
+      const thumb = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 10), this.materials.marioWhite);
+      thumb.position.set(side * -0.08, -0.33, 0.08);
+      armPivot.add(thumb);
+
+      torsoGroup.add(armPivot);
+      return armPivot;
+    };
+    const leftArm = createArm(true);
+    const rightArm = createArm(false);
+
+    const createLeg = (isLeft) => {
+      const legPivot = new THREE.Group();
+      const side = isLeft ? -1 : 1;
+      legPivot.position.set(side * 0.145, 0.38, 0);
+
+      const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.105, 0.24, 14), overallMat);
+      thigh.position.y = -0.11;
+      thigh.castShadow = true;
+      legPivot.add(thigh);
+
+      const bootGroup = new THREE.Group();
+      bootGroup.position.set(0, -0.28, 0.04);
+
+      const bootBody = new THREE.Mesh(new THREE.SphereGeometry(0.135, 16, 14), this.materials.bootBrown);
+      bootBody.scale.set(0.95, 0.78, 1.38);
+      bootBody.castShadow = true;
+      bootGroup.add(bootBody);
+
+      const sole = new THREE.Mesh(
+        new THREE.BoxGeometry(0.22, 0.045, 0.34),
+        new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 })
+      );
+      sole.position.set(0, -0.08, 0.01);
+      bootGroup.add(sole);
+
+      legPivot.add(bootGroup);
+      model.add(legPivot);
+      return legPivot;
+    };
+    const leftLeg = createLeg(true);
+    const rightLeg = createLeg(false);
+
+    model.rotation.y = Math.PI / 2;
+
+    const rig = {
+      root,
+      model,
+      torsoGroup,
+      headGroup,
+      leftArm,
+      rightArm,
+      leftLeg,
+      rightLeg,
+      shirtMat,
+      overallMat,
+      capMat,
+      form: 'small',
+      setForm: (formName) => {
+        rig.form = formName;
+        if (formName === 'small') {
+          model.scale.set(0.76, 0.72, 0.76);
+          headGroup.scale.set(1.18, 1.18, 1.18);
+          shirtMat.color.setHex(0xe11d48);
+          capMat.color.setHex(0xe11d48);
+          overallMat.color.setHex(0x1d4ed8);
+        } else if (formName === 'super') {
+          model.scale.set(0.96, 1.05, 0.96);
+          headGroup.scale.set(1.0, 1.0, 1.0);
+          shirtMat.color.setHex(0xe11d48);
+          capMat.color.setHex(0xe11d48);
+          overallMat.color.setHex(0x1d4ed8);
+        } else if (formName === 'fire') {
+          model.scale.set(0.96, 1.05, 0.96);
+          headGroup.scale.set(1.0, 1.0, 1.0);
+          shirtMat.color.setHex(0xf8fafc);
+          capMat.color.setHex(0xf8fafc);
+          overallMat.color.setHex(0xdc2626);
+        }
+      },
+      animate: (vx, vy, onGround, time, starTimer = 0) => {
+        if (starTimer > 0) {
+          const hue = (time * 3.5) % 1;
+          shirtMat.emissive.setHSL(hue, 0.9, 0.35);
+          capMat.emissive.setHSL((hue + 0.3) % 1, 0.9, 0.35);
+          overallMat.emissive.setHSL((hue + 0.6) % 1, 0.9, 0.35);
+        } else {
+          shirtMat.emissive.setHex(0x000000);
+          capMat.emissive.setHex(0x000000);
+          overallMat.emissive.setHex(0x000000);
+        }
+
+        if (Math.abs(vx) > 0.05) {
+          const targetRotY = vx > 0 ? Math.PI / 2 : -Math.PI / 2;
+          model.rotation.y += (targetRotY - model.rotation.y) * 0.28;
+        }
+
+        if (!onGround) {
+          rightArm.rotation.x = -Math.PI * 0.82;
+          leftArm.rotation.x = Math.PI * 0.35;
+          leftLeg.rotation.x = -Math.PI * 0.35;
+          rightLeg.rotation.x = Math.PI * 0.42;
+          torsoGroup.position.y = 0.65;
+          torsoGroup.rotation.x = -0.12;
+        } else if (Math.abs(vx) > 0.2) {
+          const speed = Math.min(22, Math.abs(vx) * 2.4);
+          const phase = time * speed;
+          const swing = Math.sin(phase) * 0.85;
+          leftLeg.rotation.x = swing;
+          rightLeg.rotation.x = -swing;
+          leftArm.rotation.x = -swing * 0.95;
+          rightArm.rotation.x = swing * 0.95;
+          torsoGroup.position.y = 0.62 + Math.abs(Math.cos(phase)) * 0.055;
+          torsoGroup.rotation.x = 0.14;
+        } else {
+          const breath = Math.sin(time * 4) * 0.02;
+          leftLeg.rotation.x *= 0.8;
+          rightLeg.rotation.x *= 0.8;
+          leftArm.rotation.x = breath;
+          rightArm.rotation.x = -breath;
+          torsoGroup.position.y = 0.62 + breath * 0.5;
+          torsoGroup.rotation.x = 0;
+        }
+      }
+    };
+
+    rig.setForm('small');
+    return rig;
+  }
+
+  createGoomba() {
+    const root = new THREE.Group();
+    const body = new THREE.Group();
+    root.add(body);
+
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.42, 22, 18), this.materials.goombaCap);
+    cap.scale.set(1.08, 0.88, 1.05);
+    cap.position.y = 0.54;
+    cap.castShadow = true;
+    body.add(cap);
+
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.30, 18), this.materials.goombaStem);
+    stem.position.y = 0.24;
+    stem.castShadow = true;
+    body.add(stem);
+
+    [-0.13, 0.13].forEach(ex => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 12), this.materials.marioWhite);
+      eye.scale.set(0.8, 1.25, 0.5);
+      eye.position.set(ex, 0.52, 0.38);
+      body.add(eye);
+
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.042, 10, 10), this.materials.black);
+      pupil.position.set(ex * 0.88, 0.51, 0.41);
+      body.add(pupil);
+
+      const brow = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.04, 0.04), this.materials.black);
+      brow.position.set(ex, 0.63, 0.39);
+      brow.rotation.z = ex < 0 ? -0.38 : 0.38;
+      body.add(brow);
+
+      const fang = new THREE.Mesh(new THREE.ConeGeometry(0.038, 0.09, 10), this.materials.marioWhite);
+      fang.position.set(ex * 0.9, 0.39, 0.39);
+      body.add(fang);
+    });
+
+    const leftFoot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 14, 12), this.materials.black);
+    leftFoot.scale.set(0.95, 0.62, 1.35);
+    leftFoot.position.set(-0.16, 0.09, 0.05);
+    leftFoot.castShadow = true;
+    body.add(leftFoot);
+
+    const rightFoot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 14, 12), this.materials.black);
+    rightFoot.scale.set(0.95, 0.62, 1.35);
+    rightFoot.position.set(0.16, 0.09, 0.05);
+    rightFoot.castShadow = true;
+    body.add(rightFoot);
+
+    return {
+      root,
+      body,
+      leftFoot,
+      rightFoot,
+      animate: (time) => {
+        const waddle = Math.sin(time * 11);
+        leftFoot.position.z = 0.05 + waddle * 0.11;
+        leftFoot.position.y = 0.09 + Math.max(0, waddle) * 0.05;
+        rightFoot.position.z = 0.05 - waddle * 0.11;
+        rightFoot.position.y = 0.09 + Math.max(0, -waddle) * 0.05;
+        body.rotation.z = waddle * 0.09;
+      }
+    };
+  }
+
+  createKoopa() {
+    const root = new THREE.Group();
+    const bodyGroup = new THREE.Group();
+    root.add(bodyGroup);
+
+    const shellGroup = new THREE.Group();
+    shellGroup.position.y = 0.44;
+    bodyGroup.add(shellGroup);
+
+    const shellDome = new THREE.Mesh(new THREE.SphereGeometry(0.36, 20, 18), this.materials.koopaGreen);
+    shellDome.scale.set(0.92, 1.05, 1.15);
+    shellDome.castShadow = true;
+    shellGroup.add(shellDome);
+
+    const shellRim = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.045, 10, 20), this.materials.marioWhite);
+    shellRim.rotation.x = Math.PI / 2;
+    shellRim.scale.set(0.92, 1.15, 1);
+    shellGroup.add(shellRim);
+
+    const limbsGroup = new THREE.Group();
+    bodyGroup.add(limbsGroup);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.21, 18, 16), this.materials.koopaYellow);
+    head.scale.set(0.9, 1.0, 1.25);
+    head.position.set(0, 0.85, 0.28);
+    head.castShadow = true;
+    limbsGroup.add(head);
+
+    [-0.07, 0.07].forEach(ex => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 10), this.materials.marioWhite);
+      eye.position.set(ex, 0.92, 0.43);
+      limbsGroup.add(eye);
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), this.materials.black);
+      pupil.position.set(ex, 0.92, 0.47);
+      limbsGroup.add(pupil);
+    });
+
+    const leftBoot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), this.materials.koopaYellow);
+    leftBoot.scale.set(0.9, 0.65, 1.35);
+    leftBoot.position.set(-0.16, 0.10, 0.08);
+    limbsGroup.add(leftBoot);
+
+    const rightBoot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), this.materials.koopaYellow);
+    rightBoot.scale.set(0.9, 0.65, 1.35);
+    rightBoot.position.set(0.16, 0.10, 0.08);
+    limbsGroup.add(rightBoot);
+
+    bodyGroup.rotation.y = -Math.PI / 2;
+
+    return {
+      root,
+      bodyGroup,
+      shellGroup,
+      limbsGroup,
+      leftBoot,
+      rightBoot,
+      inShell: false,
+      setShellMode: (inShell) => {
+        limbsGroup.visible = !inShell;
+        shellGroup.position.y = inShell ? 0.32 : 0.44;
+        shellGroup.rotation.x = inShell ? Math.PI / 2 : 0;
+      },
+      animate: (vx, time, inShell) => {
+        if (inShell) {
+          if (Math.abs(vx) > 0.5) {
+            shellGroup.rotation.z += vx * 0.08;
+          }
+        } else {
+          bodyGroup.rotation.y = vx > 0 ? Math.PI / 2 : -Math.PI / 2;
+          const step = Math.sin(time * 10);
+          leftBoot.position.z = 0.08 + step * 0.12;
+          rightBoot.position.z = 0.08 - step * 0.12;
+        }
+      }
+    };
+  }
+
+  createPiranhaPlant() {
+    const root = new THREE.Group();
+
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.75, 14), this.materials.pipeGreen);
+    stem.position.y = 0.36;
+    root.add(stem);
+
+    [-1, 1].forEach(side => {
+      const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 10), this.materials.pipeGreen);
+      leaf.scale.set(1.4, 0.25, 0.65);
+      leaf.position.set(side * 0.22, 0.22, 0);
+      leaf.rotation.z = side * 0.35;
+      root.add(leaf);
+    });
+
+    const headPivot = new THREE.Group();
+    headPivot.position.y = 0.78;
+    root.add(headPivot);
+
+    const createJaw = (isUpper) => {
+      const jaw = new THREE.Group();
+      const sign = isUpper ? 1 : -1;
+      const dome = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.5),
+        this.materials.marioRed
+      );
+      if (!isUpper) dome.rotation.x = Math.PI;
+      jaw.add(dome);
+
+      const spots = [[0, 0.22, 0.22], [-0.22, 0.18, 0.12], [0.22, 0.18, 0.12], [0, 0.24, -0.18]];
+      spots.forEach(([sx, sy, sz]) => {
+        const dot = new THREE.Mesh(new THREE.SphereGeometry(0.068, 10, 10), this.materials.marioWhite);
+        dot.position.set(sx, sign * sy, sz);
+        jaw.add(dot);
+      });
+
+      const lip = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.052, 10, 20), this.materials.marioWhite);
+      lip.rotation.x = Math.PI / 2;
+      jaw.add(lip);
+
+      for (let t = -2; t <= 2; t++) {
+        const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.042, 0.11, 8), this.materials.marioWhite);
+        tooth.position.set(t * 0.11, sign * -0.04, 0.26);
+        if (isUpper) tooth.rotation.x = Math.PI;
+        jaw.add(tooth);
+      }
+      return jaw;
+    };
+
+    const upperJaw = createJaw(true);
+    const lowerJaw = createJaw(false);
+    headPivot.add(upperJaw);
+    headPivot.add(lowerJaw);
+
+    return {
+      root,
+      upperJaw,
+      lowerJaw,
+      animate: (time) => {
+        const chomp = (Math.sin(time * 9) + 1) * 0.26;
+        upperJaw.rotation.x = -0.35 - chomp;
+        lowerJaw.rotation.x = 0.35 + chomp;
+      }
+    };
+  }
+
+  createBlock(type = 'brick') {
+    const group = new THREE.Group();
+    let mat = this.materials.brick;
+    if (type === 'question') mat = this.materials.question;
+    else if (type === 'empty') mat = this.materials.emptyBlock;
+    else if (type === 'ground') mat = this.materials.ground;
+    else if (type === 'hard') mat = this.materials.hardBlock;
+    else if (type === 'undergroundBrick') mat = this.materials.undergroundBrick;
+
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.98, 0.98), mat);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    group.add(mesh);
+
+    if (type === 'hard') {
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(1.01, 0.82, 0.82), this.materials.emptyBlock);
+      group.add(frame);
+    }
+    return group;
+  }
+
+  createPipe(height = 2) {
+    const group = new THREE.Group();
+    const shaftH = height - 0.45;
+    const shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.86, 0.86, shaftH, 28),
+      this.materials.pipeGreen
+    );
+    shaft.position.y = shaftH / 2;
+    shaft.castShadow = true;
+    shaft.receiveShadow = true;
+    group.add(shaft);
+
+    const collar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.98, 0.98, 0.46, 28),
+      this.materials.pipeGreen
+    );
+    collar.position.y = height - 0.23;
+    collar.castShadow = true;
+    collar.receiveShadow = true;
+    group.add(collar);
+
+    const hole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.76, 0.76, 0.08, 24),
+      this.materials.pipeDark
+    );
+    hole.position.y = height - 0.02;
+    group.add(hole);
+
+    return group;
+  }
+
+  createCoin() {
+    const group = new THREE.Group();
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.11, 24), this.materials.gold);
+    disc.rotation.x = Math.PI / 2;
+    disc.castShadow = true;
+    group.add(disc);
+
+    const slot = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.36, 0.14), this.materials.hardBlock);
+    group.add(slot);
+    return group;
+  }
+
+  createPowerUp(type = 'mushroom') {
+    const group = new THREE.Group();
+    if (type === 'mushroom' || type === 'oneup') {
+      const capColor = type === 'oneup' ? 0x22c55e : 0xe11d48;
+      const capMat = new THREE.MeshStandardMaterial({ color: capColor, roughness: 0.3 });
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.38, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.62), capMat);
+      cap.position.y = 0.34;
+      cap.castShadow = true;
+      group.add(cap);
+
+      [[0, 0.56, 0.22], [-0.26, 0.48, 0.12], [0.26, 0.48, 0.12], [0, 0.52, -0.24]].forEach(([sx, sy, sz]) => {
+        const spot = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 12), this.materials.marioWhite);
+        spot.position.set(sx, sy, sz);
+        group.add(spot);
+      });
+
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.24, 0.32, 16), this.materials.skin);
+      stem.position.y = 0.18;
+      group.add(stem);
+    } else if (type === 'flower') {
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.44, 10), this.materials.pipeGreen);
+      stem.position.y = 0.22;
+      group.add(stem);
+
+      const outerRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.24, 0.09, 12, 20),
+        new THREE.MeshStandardMaterial({ color: 0xe11d48, emissive: 0x991b1b, emissiveIntensity: 0.4 })
+      );
+      outerRing.position.y = 0.52;
+      group.add(outerRing);
+
+      const innerRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.14, 0.07, 12, 18),
+        new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xca8a04, emissiveIntensity: 0.5 })
+      );
+      innerRing.position.y = 0.52;
+      group.add(innerRing);
+
+      const core = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 12), this.materials.marioWhite);
+      core.position.y = 0.52;
+      group.add(core);
+    } else if (type === 'star') {
+      const starMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.42, 0), this.materials.gold);
+      starMesh.scale.set(1.1, 1.1, 0.45);
+      starMesh.position.y = 0.45;
+      starMesh.castShadow = true;
+      group.add(starMesh);
+    }
+    return group;
+  }
+
+  createCloud(scale = 1) {
+    const group = new THREE.Group();
+    const cloudMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.65 });
+    const puffs = [
+      [0, 0, 0, 0.85],
+      [-0.75, -0.12, 0.08, 0.65],
+      [0.75, -0.12, 0.08, 0.65],
+      [-0.38, 0.32, -0.05, 0.68],
+      [0.38, 0.32, -0.05, 0.68]
+    ];
+    puffs.forEach(([px, py, pz, pr]) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(pr, 16, 16), cloudMat);
+      m.position.set(px, py, pz);
+      group.add(m);
+    });
+    [-0.22, 0.22].forEach(ex => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 10), this.materials.black);
+      eye.scale.set(0.7, 1.4, 0.5);
+      eye.position.set(ex, 0.08, 0.82);
+      group.add(eye);
+    });
+    group.scale.setScalar(scale);
+    return group;
+  }
+
+  createCastle() {
+    const group = new THREE.Group();
+    const keep1 = new THREE.Mesh(new THREE.BoxGeometry(5.2, 3.6, 4.2), this.materials.brick);
+    keep1.position.y = 1.8;
+    keep1.castShadow = true;
+    keep1.receiveShadow = true;
+    group.add(keep1);
+
+    const keep2 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.4, 2.8), this.materials.brick);
+    keep2.position.y = 4.6;
+    keep2.castShadow = true;
+    group.add(keep2);
+
+    for (let x = -2.2; x <= 2.2; x += 1.1) {
+      const merlon = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.65), this.materials.brick);
+      merlon.position.set(x, 3.9, 1.8);
+      group.add(merlon);
+    }
+    for (let x = -1.2; x <= 1.2; x += 0.8) {
+      const merlon2 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.55, 0.5), this.materials.brick);
+      merlon2.position.set(x, 6.05, 1.15);
+      group.add(merlon2);
+    }
+
+    const doorBox = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.8, 0.25), this.materials.black);
+    doorBox.position.set(0, 0.9, 2.05);
+    group.add(doorBox);
+
+    const doorArch = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.25, 20), this.materials.black);
+    doorArch.rotation.x = Math.PI / 2;
+    doorArch.position.set(0, 1.8, 2.05);
+    group.add(doorArch);
+
+    return group;
+  }
+}
+
+window.MarioModelFactory = MarioModelFactory;
+  </script>
+  <script>
+// ============================================================================
+// Super Mario 3D Bros - Interactive 360° 3D Model Turntable Inspector Studio
+// ============================================================================
+
+class ModelInspectorStudio {
+  constructor(factory) {
+    this.factory = factory;
+    this.active = false;
+    this.currentModelIndex = 0;
+    this.models = [];
+    this.initStudio();
+  }
+
+  initStudio() {
+    this.canvas = document.getElementById('inspector-canvas');
+    if (!this.canvas) return;
+
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x0f172a);
+
+    this.camera = new THREE.PerspectiveCamera(36, 520 / 360, 0.1, 50);
+    this.camera.position.set(0, 1.1, 3.3);
+    this.camera.lookAt(0, 0.65, 0);
+
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
+    this.renderer.setSize(520, 360);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x334155, 0.9);
+    this.scene.add(hemi);
+
+    const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.35);
+    keyLight.position.set(4, 6, 5);
+    keyLight.castShadow = true;
+    this.scene.add(keyLight);
+
+    const rimLight = new THREE.PointLight(0x38bdf8, 1.1, 10);
+    rimLight.position.set(-3, 2, -3);
+    this.scene.add(rimLight);
+
+    const pedestal = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.1, 1.22, 0.14, 36),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.25 })
+    );
+    pedestal.position.y = -0.07;
+    pedestal.receiveShadow = true;
+    this.scene.add(pedestal);
+
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(1.12, 0.025, 12, 36),
+      new THREE.MeshBasicMaterial({ color: 0xfacc15 })
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.01;
+    this.scene.add(ring);
+
+    this.turntable = new THREE.Group();
+    this.scene.add(this.turntable);
+
+    const marioHero = this.factory.createMario();
+    marioHero.setForm('super');
+    marioHero.model.rotation.y = 0;
+
+    const fireMario = this.factory.createMario();
+    fireMario.setForm('fire');
+    fireMario.model.rotation.y = 0;
+
+    const goomba = this.factory.createGoomba();
+    const koopa = this.factory.createKoopa();
+    koopa.bodyGroup.rotation.y = 0;
+    const piranha = this.factory.createPiranhaPlant();
+
+    this.entries = [
+      {
+        title: '超级马里奥 (Super Mario - 38部件骨骼绑定模型)',
+        desc: '包含立体M字徽章帽、球形大鼻子、6段式立体胡须、多层蓝瞳孔、金属胸扣背带裤、带腕口褶皱的立体白手套与厚底工装皮靴。',
+        obj: marioHero.root,
+        animate: (t) => marioHero.animate(3.2, 0, true, t, 0)
+      },
+      {
+        title: '火焰马里奥 (Fire Mario - 烈焰战衣形态)',
+        desc: '拾取火焰花后的高阶形态：象牙白衬衫与战帽、赤红背带裤，支持发射带动态点光源的3D弹跳火球。',
+        obj: fireMario.root,
+        animate: (t) => fireMario.animate(0, 1, false, t, 0)
+      },
+      {
+        title: '栗宝宝 (Goomba - 精细蘑菇怪建模)',
+        desc: '板栗色高光菌盖、奶油色菌柄、愤怒立体浓眉、双层眼珠与下颚尖锐白色小獠牙，行走时双脚交替摆动。',
+        obj: goomba.root,
+        animate: (t) => goomba.animate(t)
+      },
+      {
+        title: '诺库龟 (Koopa Troopa - 立体龟壳与缩壳形态)',
+        desc: '高光绿色圆顶龟壳配白色包边、黄色长吻部与短靴，被踩踏后可缩入龟壳并高速旋转撞飞沿途敌人。',
+        obj: koopa.root,
+        animate: (t) => koopa.animate(2.0, t, false)
+      },
+      {
+        title: '食人花 (Piranha Plant - 锯齿上下颚咬合模型)',
+        desc: '鲜红球形花冠镶嵌3D立体白斑、厚实白唇圈、10颗圆锥形尖锐利齿，配合双侧叶片与上下颚开合动画。',
+        obj: piranha.root,
+        animate: (t) => piranha.animate(t)
+      }
+    ];
+
+    this.selectEntry(0);
+  }
+
+  selectEntry(index) {
+    this.currentModelIndex = (index + this.entries.length) % this.entries.length;
+    while (this.turntable.children.length > 0) {
+      this.turntable.remove(this.turntable.children[0]);
+    }
+    const entry = this.entries[this.currentModelIndex];
+    this.turntable.add(entry.obj);
+
+    const titleEl = document.getElementById('inspector-title');
+    const descEl = document.getElementById('inspector-desc');
+    if (titleEl) titleEl.textContent = entry.title;
+    if (descEl) descEl.textContent = entry.desc;
+  }
+
+  toggle(show) {
+    this.active = show !== undefined ? show : !this.active;
+    const modal = document.getElementById('inspector-modal');
+    if (modal) {
+      modal.classList.toggle('hidden', !this.active);
+    }
+    if (this.active) {
+      this.renderLoop();
+    }
+  }
+
+  renderLoop() {
+    if (!this.active) return;
+    const t = performance.now() * 0.001;
+    this.turntable.rotation.y = t * 0.95;
+    const entry = this.entries[this.currentModelIndex];
+    if (entry && entry.animate) entry.animate(t);
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(() => this.renderLoop());
+  }
+}
+
+window.ModelInspectorStudio = ModelInspectorStudio;
+  </script>
+  <script>
+// ============================================================================
+// Super Mario 3D Bros - Complete World 1-1 Physics, AI, Particles & Gameplay
+// ============================================================================
+
+class SuperMario3DGame {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.audio = new MarioAudioEngine();
+    this.factory = new MarioModelFactory();
+
+    this.score = 0;
+    this.coins = 0;
+    this.lives = 3;
+    this.timeLeft = 400;
+    this.worldName = '1-1';
+    this.cameraMode = 0;
+    this.showcaseActive = false;
+    this.isPaused = false;
+    this.isGameOver = false;
+    this.isStageClear = false;
+    this.inUnderground = false;
+
+    this.keys = { left: false, right: false, up: false, down: false, run: false, fire: false };
+    this.fireCooldown = 0;
+
+    this.blocks = [];
+    this.spatialGrid = new Map();
+    this.pipes = [];
+    this.enemies = [];
+    this.items = [];
+    this.fireballs = [];
+    this.particles = [];
+    this.floatingTexts = [];
+    this.scenery = [];
+    this.undergroundObjects = [];
+
+    this.initThree();
+    this.initPlayer();
+    this.buildLevel();
+    this.bindEvents();
+
+    this.lastTime = performance.now();
+    this.timerAccum = 0;
+    this.animateLoop = this.animateLoop.bind(this);
+    requestAnimationFrame(this.animateLoop);
+  }
+
+  initThree() {
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x5c94fc);
+    this.scene.fog = new THREE.FogExp2(0x5c94fc, 0.0065);
+
+    this.camera = new THREE.PerspectiveCamera(
+      42,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      250
+    );
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.08;
+    this.container.appendChild(this.renderer.domElement);
+
+    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0x3b7a2a, 0.72);
+    this.hemiLight.position.set(0, 30, 0);
+    this.scene.add(this.hemiLight);
+
+    this.dirLight = new THREE.DirectionalLight(0xfffbeb, 1.15);
+    this.dirLight.position.set(18, 28, 22);
+    this.dirLight.castShadow = true;
+    this.dirLight.shadow.mapSize.width = 2048;
+    this.dirLight.shadow.mapSize.height = 2048;
+    this.dirLight.shadow.camera.near = 2;
+    this.dirLight.shadow.camera.far = 90;
+    const d = 22;
+    this.dirLight.shadow.camera.left = -d;
+    this.dirLight.shadow.camera.right = d;
+    this.dirLight.shadow.camera.top = d;
+    this.dirLight.shadow.camera.bottom = -d;
+    this.dirLight.shadow.bias = -0.0005;
+    this.scene.add(this.dirLight);
+    this.scene.add(this.dirLight.target);
+  }
+
+  initPlayer() {
+    this.mario = this.factory.createMario();
+    this.scene.add(this.mario.root);
+    this.resetPlayerPosition(2.5, 2.0);
+  }
+
+  resetPlayerPosition(x, y) {
+    this.player = {
+      x,
+      y,
+      vx: 0,
+      vy: 0,
+      width: 0.68,
+      height: this.mario.form === 'small' ? 0.95 : 1.55,
+      onGround: false,
+      invincibleTimer: 0,
+      starTimer: 0,
+      dead: false,
+      flagSlide: false,
+      walkingToCastle: false
+    };
+    this.mario.root.position.set(x, y, 0);
+    this.mario.root.rotation.set(0, 0, 0);
+  }
+
+  clearEntities() {
+    [...this.blocks, ...this.pipes, ...this.enemies, ...this.items, ...this.fireballs, ...this.particles, ...this.scenery].forEach(obj => {
+      if (obj.mesh) this.scene.remove(obj.mesh);
+      if (obj.root) this.scene.remove(obj.root);
+    });
+    this.blocks = [];
+    this.spatialGrid.clear();
+    this.pipes = [];
+    this.enemies = [];
+    this.items = [];
+    this.fireballs = [];
+    this.particles = [];
+    this.scenery = [];
+  }
+
+  addBlock(x, y, type = 'brick', content = null) {
+    const mesh = this.factory.createBlock(type);
+    mesh.position.set(x, y + 0.5, 0);
+    this.scene.add(mesh);
+    const block = { x, y, baseY: y + 0.5, type, content, bumpOffset: 0, bumpVel: 0, mesh };
+    this.blocks.push(block);
+    const key = `${Math.round(x)},${Math.round(y)}`;
+    this.spatialGrid.set(key, block);
+    return block;
+  }
+
+  removeBlock(block) {
+    this.scene.remove(block.mesh);
+    const key = `${Math.round(block.x)},${Math.round(block.y)}`;
+    this.spatialGrid.delete(key);
+    const idx = this.blocks.indexOf(block);
+    if (idx !== -1) this.blocks.splice(idx, 1);
+  }
+
+  addPipe(x, y, height = 2, hasPiranha = false, warpTarget = null) {
+    const mesh = this.factory.createPipe(height);
+    mesh.position.set(x, y, 0);
+    this.scene.add(mesh);
+
+    let piranha = null;
+    if (hasPiranha) {
+      piranha = this.factory.createPiranhaPlant();
+      piranha.root.position.set(x, y + height - 0.8, 0);
+      this.scene.add(piranha.root);
+    }
+
+    const pipe = {
+      x,
+      y,
+      width: 1.72,
+      height,
+      mesh,
+      piranha,
+      piranhaOffset: 0,
+      piranhaTimer: Math.random() * 3,
+      warpTarget
+    };
+    this.pipes.push(pipe);
+  }
+
+  addEnemy(type, x, y) {
+    if (type === 'goomba') {
+      const g = this.factory.createGoomba();
+      g.root.position.set(x, y, 0);
+      this.scene.add(g.root);
+      this.enemies.push({
+        type: 'goomba',
+        x, y, vx: -2.2, vy: 0,
+        width: 0.78, height: 0.82,
+        squished: false, squishTimer: 0, dead: false,
+        rig: g, mesh: g.root
+      });
+    } else if (type === 'koopa') {
+      const k = this.factory.createKoopa();
+      k.root.position.set(x, y, 0);
+      this.scene.add(k.root);
+      this.enemies.push({
+        type: 'koopa',
+        x, y, vx: -2.4, vy: 0,
+        width: 0.78, height: 1.05,
+        inShell: false, shellMoving: false, dead: false,
+        rig: k, mesh: k.root
+      });
+    }
+  }
+
+  buildLevel() {
+    this.clearEntities();
+    this.inUnderground = false;
+    this.scene.background.setHex(0x5c94fc);
+    this.scene.fog.color.setHex(0x5c94fc);
+
+    for (let x = -6; x <= 145; x++) {
+      if ((x >= 52 && x <= 54) || (x >= 72 && x <= 74)) continue;
+      this.addBlock(x, 0, 'ground');
+      this.addBlock(x, -1, 'ground');
+    }
+
+    for (let cx = 2; cx < 140; cx += 12) {
+      const cloud = this.factory.createCloud(0.85 + (cx % 3) * 0.22);
+      cloud.position.set(cx + (cx % 5), 8.5 + (cx % 4) * 1.4, -5 - (cx % 3) * 2);
+      this.scene.add(cloud);
+      this.scenery.push({ mesh: cloud, speed: 0.15 });
+
+      const hillGeo = new THREE.ConeGeometry(2.8 + (cx % 3), 3.6 + (cx % 2) * 1.5, 24);
+      const hillMat = new THREE.MeshStandardMaterial({ color: cx % 24 === 0 ? 0x16a34a : 0x15803d, roughness: 0.75 });
+      const hill = new THREE.Mesh(hillGeo, hillMat);
+      hill.position.set(cx - 3, 2.2, -4.5);
+      hill.receiveShadow = true;
+      this.scene.add(hill);
+      this.scenery.push({ mesh: hill, speed: 0 });
+    }
+
+    this.addBlock(10, 4, 'question', 'coin');
+    this.addBlock(14, 4, 'brick');
+    this.addBlock(15, 4, 'question', 'powerup');
+    this.addBlock(16, 4, 'brick');
+    this.addBlock(17, 4, 'question', 'coin');
+    this.addBlock(18, 4, 'brick');
+    this.addBlock(16, 8, 'question', 'oneup');
+
+    this.addPipe(23, 1, 2, false);
+    this.addPipe(30, 1, 3, true);
+    this.addPipe(38, 1, 4, true, 'underground');
+    this.addPipe(46, 1, 4, false);
+
+    const ringGeo = new THREE.TorusGeometry(0.55, 0.06, 12, 24);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xca8a04, emissiveIntensity: 0.7 });
+    const warpIndicator = new THREE.Mesh(ringGeo, ringMat);
+    warpIndicator.rotation.x = Math.PI / 2;
+    warpIndicator.position.set(38, 5.15, 0);
+    this.scene.add(warpIndicator);
+    this.scenery.push({ mesh: warpIndicator, pulse: true });
+
+    this.addBlock(59, 4, 'brick');
+    this.addBlock(60, 4, 'question', 'powerup');
+    this.addBlock(61, 4, 'brick');
+
+    for (let bx = 62; bx <= 69; bx++) {
+      this.addBlock(bx, 8, 'brick');
+    }
+    this.addBlock(77, 8, 'brick');
+    this.addBlock(78, 8, 'brick');
+    this.addBlock(79, 8, 'question', 'coin');
+    this.addBlock(79, 4, 'brick');
+
+    this.addBlock(84, 4, 'brick');
+    this.addBlock(85, 4, 'question', 'star');
+
+    this.addBlock(90, 4, 'question', 'coin');
+    this.addBlock(93, 4, 'question', 'coin');
+    this.addBlock(93, 8, 'question', 'powerup');
+    this.addBlock(96, 4, 'question', 'coin');
+
+    for (let s = 0; s < 4; s++) {
+      for (let h = 0; h <= s; h++) {
+        this.addBlock(103 + s, 1 + h, 'hard');
+        this.addBlock(112 - s, 1 + h, 'hard');
+      }
+    }
+
+    this.addPipe(116, 1, 2, false);
+
+    for (let s = 0; s < 8; s++) {
+      for (let h = 0; h <= s; h++) {
+        this.addBlock(120 + s, 1 + h, 'hard');
+      }
+    }
+    for (let h = 0; h < 8; h++) {
+      this.addBlock(128, 1 + h, 'hard');
+    }
+
+    this.flagpoleX = 134;
+    const poleGroup = new THREE.Group();
+    poleGroup.position.set(this.flagpoleX, 1, 0);
+    const baseBlock = this.factory.createBlock('hard');
+    baseBlock.position.y = 0.5;
+    poleGroup.add(baseBlock);
+
+    const poleShaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.09, 0.09, 9.5, 16),
+      new THREE.MeshStandardMaterial({ color: 0xdcfce7, metalness: 0.6, roughness: 0.2 })
+    );
+    poleShaft.position.y = 5.25;
+    poleGroup.add(poleShaft);
+
+    const topBall = new THREE.Mesh(new THREE.SphereGeometry(0.32, 18, 18), this.factory.materials.gold);
+    topBall.position.y = 10.1;
+    poleGroup.add(topBall);
+
+    this.flagMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1.35, 0.9, 0.08),
+      new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x14532d, emissiveIntensity: 0.25 })
+    );
+    this.flagMesh.position.set(-0.72, 9.2, 0);
+    poleGroup.add(this.flagMesh);
+    this.scene.add(poleGroup);
+    this.scenery.push({ mesh: poleGroup });
+
+    this.castleX = 140;
+    const castle = this.factory.createCastle();
+    castle.position.set(this.castleX, 1, -0.8);
+    this.scene.add(castle);
+    this.scenery.push({ mesh: castle });
+
+    this.addEnemy('goomba', 16, 1.0);
+    this.addEnemy('goomba', 27, 1.0);
+    this.addEnemy('goomba', 34, 1.0);
+    this.addEnemy('goomba', 35.5, 1.0);
+    this.addEnemy('koopa', 43, 1.0);
+    this.addEnemy('goomba', 63, 9.0);
+    this.addEnemy('goomba', 65, 9.0);
+    this.addEnemy('koopa', 70, 1.0);
+    this.addEnemy('goomba', 81, 1.0);
+    this.addEnemy('goomba', 82.5, 1.0);
+    this.addEnemy('koopa', 94, 1.0);
+    this.addEnemy('goomba', 100, 1.0);
+    this.addEnemy('goomba', 101.4, 1.0);
+
+    this.updateHUD();
+  }
+
+  enterUnderground() {
+    this.audio.playPipeWarp();
+    this.clearEntities();
+    this.inUnderground = true;
+    this.worldName = '1-1 (地下密室)';
+    this.scene.background.setHex(0x090d16);
+    this.scene.fog.color.setHex(0x090d16);
+    this.audio.startBGM('underground');
+
+    for (let x = 0; x <= 24; x++) {
+      this.addBlock(x, 0, 'undergroundBrick');
+      this.addBlock(x, -1, 'undergroundBrick');
+      if (x >= 4 && x <= 20) {
+        this.addBlock(x, 10, 'undergroundBrick');
+      }
+    }
+    for (let y = 1; y <= 10; y++) {
+      this.addBlock(0, y, 'undergroundBrick');
+      this.addBlock(24, y, 'undergroundBrick');
+    }
+    for (let x = 6; x <= 16; x++) {
+      this.addBlock(x, 1, 'undergroundBrick');
+      this.addBlock(x, 2, 'undergroundBrick');
+      this.addBlock(x, 3, 'undergroundBrick');
+    }
+    for (let x = 7; x <= 15; x++) {
+      for (let y = 4.5; y <= 7.5; y += 1.4) {
+        if (y > 7 && (x === 7 || x === 15)) continue;
+        const coinMesh = this.factory.createCoin();
+        coinMesh.position.set(x, y, 0);
+        this.scene.add(coinMesh);
+        this.items.push({ type: 'staticCoin', x, y, vx: 0, vy: 0, mesh: coinMesh });
+      }
+    }
+
+    this.addPipe(21, 1, 3, false, 'overworldExit');
+    this.resetPlayerPosition(3.0, 8.0);
+    this.spawnFloatingText(3.0, 9.0, 'SECRET COIN ROOM!', '#38bdf8');
+    this.updateHUD();
+  }
+
+  exitUnderground() {
+    this.audio.playPipeWarp();
+    this.worldName = '1-1';
+    this.buildLevel();
+    this.resetPlayerPosition(116, 3.2);
+    this.audio.startBGM(this.player.starTimer > 0 ? 'star' : 'overworld');
+    this.spawnFloatingText(116, 4.5, 'WARP EXIT!', '#4ade80');
+  }
+
+  spawnBrickShatter(x, y) {
+    this.audio.playBreakBlock();
+    const dirs = [
+      [-3.5, 9.5], [3.5, 9.5], [-4.8, 6.2], [4.8, 6.2],
+      [-2.2, 11.0], [2.2, 11.0], [-5.2, 4.5], [5.2, 4.5]
+    ];
+    dirs.forEach(([vx, vy]) => {
+      const shard = new THREE.Mesh(
+        new THREE.BoxGeometry(0.32, 0.32, 0.32),
+        this.inUnderground ? this.factory.materials.undergroundBrick : this.factory.materials.brick
+      );
+      shard.position.set(x, y + 0.5, (Math.random() - 0.5) * 0.4);
+      shard.castShadow = true;
+      this.scene.add(shard);
+      this.particles.push({
+        mesh: shard,
+        vx, vy, vz: (Math.random() - 0.5) * 3,
+        rotSpeed: (Math.random() - 0.5) * 14,
+        life: 1.4
+      });
+    });
+  }
+
+  spawnCoinBurst(x, y) {
+    this.audio.playCoin();
+    this.coins++;
+    this.score += 200;
+    if (this.coins >= 100) {
+      this.coins -= 100;
+      this.lives++;
+      this.audio.playOneUp();
+    }
+    const coinMesh = this.factory.createCoin();
+    coinMesh.position.set(x, y + 1.0, 0);
+    this.scene.add(coinMesh);
+    this.particles.push({
+      mesh: coinMesh,
+      vx: 0, vy: 9.5, vz: 0,
+      rotSpeed: 18,
+      life: 0.55
+    });
+    this.spawnFloatingText(x, y + 1.4, '+200', '#facc15');
+    this.updateHUD();
+  }
+
+  spawnFireworkBurst(x, y, z) {
+    this.audio.playFirework();
+    const colors = [0xef4444, 0xfacc15, 0x38bdf8, 0x4ade80, 0xf472b6];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const mat = new THREE.MeshBasicMaterial({ color });
+    for (let i = 0; i < 24; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      const speed = 4 + Math.random() * 5;
+      const spark = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), mat);
+      spark.position.set(x, y, z);
+      this.scene.add(spark);
+      this.particles.push({
+        mesh: spark,
+        vx: Math.sin(phi) * Math.cos(theta) * speed,
+        vy: Math.cos(phi) * speed + 2,
+        vz: Math.sin(phi) * Math.sin(theta) * speed,
+        rotSpeed: 0,
+        life: 0.95
+      });
+    }
+  }
+
+  spawnFloatingText(x, y, text, color = '#ffffff') {
+    const div = document.createElement('div');
+    div.className = 'floating-score';
+    div.style.color = color;
+    div.textContent = text;
+    document.body.appendChild(div);
+    this.floatingTexts.push({ el: div, x, y, life: 0.95 });
+  }
+
+  triggerBlockHit(block) {
+    if (block.type === 'empty' || block.type === 'hard' || block.type === 'ground') {
+      this.audio.playBump();
+      return;
+    }
+
+    block.bumpVel = 4.2;
+
+    this.enemies.forEach(en => {
+      if (!en.dead && Math.abs(en.x - block.x) < 0.85 && Math.abs(en.y - (block.y + 1)) < 0.4) {
+        en.dead = true;
+        en.vy = 7.5;
+        this.score += 100;
+        this.audio.playKick();
+        this.spawnFloatingText(en.x, en.y + 0.8, '+100', '#facc15');
+      }
+    });
+
+    if (block.type === 'question') {
+      block.type = 'empty';
+      block.mesh.children[0].material = this.factory.materials.emptyBlock;
+
+      if (block.content === 'coin') {
+        this.spawnCoinBurst(block.x, block.y);
+      } else if (block.content === 'powerup') {
+        this.audio.playPowerUpAppear();
+        const itemType = this.mario.form === 'small' ? 'mushroom' : 'flower';
+        const mesh = this.factory.createPowerUp(itemType);
+        mesh.position.set(block.x, block.y + 1.05, 0);
+        this.scene.add(mesh);
+        this.items.push({
+          type: itemType,
+          x: block.x,
+          y: block.y + 1.05,
+          vx: itemType === 'flower' ? 0 : 2.5,
+          vy: 2.2,
+          mesh
+        });
+      } else if (block.content === 'oneup') {
+        this.audio.playPowerUpAppear();
+        const mesh = this.factory.createPowerUp('oneup');
+        mesh.position.set(block.x, block.y + 1.05, 0);
+        this.scene.add(mesh);
+        this.items.push({
+          type: 'oneup',
+          x: block.x,
+          y: block.y + 1.05,
+          vx: 2.8,
+          vy: 2.2,
+          mesh
+        });
+      } else if (block.content === 'star') {
+        this.audio.playPowerUpAppear();
+        const mesh = this.factory.createPowerUp('star');
+        mesh.position.set(block.x, block.y + 1.05, 0);
+        this.scene.add(mesh);
+        this.items.push({
+          type: 'star',
+          x: block.x,
+          y: block.y + 1.05,
+          vx: 3.4,
+          vy: 6.5,
+          mesh
+        });
+      }
+    } else if (block.type === 'brick') {
+      if (this.mario.form !== 'small') {
+        this.removeBlock(block);
+        this.spawnBrickShatter(block.x, block.y);
+        this.score += 50;
+        this.updateHUD();
+      } else {
+        this.audio.playBump();
+      }
+    }
+  }
+
+  shootFireball() {
+    if (this.mario.form !== 'fire' || this.fireCooldown > 0 || this.player.dead) return;
+    this.fireCooldown = 0.28;
+    this.audio.playFireball();
+
+    const dir = this.mario.model.rotation.y > 0 ? 1 : -1;
+    const fbGroup = new THREE.Group();
+    const core = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22, 14, 14),
+      new THREE.MeshBasicMaterial({ color: 0xfacc15 })
+    );
+    const aura = new THREE.Mesh(
+      new THREE.SphereGeometry(0.32, 14, 14),
+      new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.65 })
+    );
+    const light = new THREE.PointLight(0xf97316, 1.4, 5);
+    fbGroup.add(core, aura, light);
+
+    const fx = this.player.x + dir * 0.55;
+    const fy = this.player.y + 0.85;
+    fbGroup.position.set(fx, fy, 0);
+    this.scene.add(fbGroup);
+
+    this.fireballs.push({
+      x: fx,
+      y: fy,
+      vx: dir * 13.5,
+      vy: -3.5,
+      mesh: fbGroup,
+      life: 2.5
+    });
+  }
+
+  getSolidCollidersNear(x, y) {
+    const list = [];
+    const minX = Math.floor(x - 2);
+    const maxX = Math.ceil(x + 2);
+    const minY = Math.floor(y - 2);
+    const maxY = Math.ceil(y + 3);
+
+    for (let gx = minX; gx <= maxX; gx++) {
+      for (let gy = minY; gy <= maxY; gy++) {
+        const b = this.spatialGrid.get(`${gx},${gy}`);
+        if (b) {
+          list.push({ x: b.x, y: b.y, w: 1.0, h: 1.0, block: b });
+        }
+      }
+    }
+    this.pipes.forEach(p => {
+      if (Math.abs(p.x - x) < 3.0) {
+        list.push({ x: p.x, y: p.y, w: p.width, h: p.height, pipe: p });
+      }
+    });
+    return list;
+  }
+
+  overlapAABB(ax, ay, aw, ah, bx, by, bw, bh) {
+    return (
+      Math.abs(ax - bx) < (aw + bw) * 0.5 &&
+      ay < by + bh &&
+      ay + ah > by
+    );
+  }
+
+  updatePlayer(dt, time) {
+    const p = this.player;
+    if (p.dead) {
+      p.vy -= 26 * dt;
+      p.y += p.vy * dt;
+      this.mario.root.position.set(p.x, p.y, 0);
+      this.mario.root.rotation.z += 9 * dt;
+      return;
+    }
+
+    if (p.flagSlide) {
+      if (p.y > 2.0) {
+        p.y -= 6.5 * dt;
+        this.flagMesh.position.y = Math.max(1.8, p.y);
+        this.mario.root.position.set(this.flagpoleX - 0.35, p.y, 0);
+      } else if (!p.walkingToCastle) {
+        p.walkingToCastle = true;
+        this.audio.playStageClear();
+      } else {
+        if (p.x < this.castleX) {
+          p.x += 4.2 * dt;
+          this.mario.root.position.set(p.x, 1.0, 0);
+          this.mario.animate(4.2, 0, true, time, 0);
+        } else {
+          this.mario.root.visible = false;
+          if (Math.random() < 0.06) {
+            this.spawnFireworkBurst(
+              this.castleX + (Math.random() - 0.5) * 8,
+              6 + Math.random() * 4,
+              -1 + (Math.random() - 0.5) * 2
+            );
+          }
+        }
+      }
+      return;
+    }
+
+    if (p.invincibleTimer > 0) {
+      p.invincibleTimer -= dt;
+      this.mario.root.visible = Math.floor(p.invincibleTimer * 16) % 2 === 0;
+    } else {
+      this.mario.root.visible = true;
+    }
+
+    if (p.starTimer > 0) {
+      p.starTimer -= dt;
+      if (p.starTimer <= 0) {
+        this.audio.startBGM(this.inUnderground ? 'underground' : 'overworld');
+      }
+    }
+
+    if (this.fireCooldown > 0) this.fireCooldown -= dt;
+    if (this.keys.fire) this.shootFireball();
+
+    const maxSpeed = this.keys.run ? 9.8 : 6.6;
+    const accel = p.onGround ? 34.0 : 20.0;
+    const friction = p.onGround ? 24.0 : 6.0;
+
+    if (this.keys.left) {
+      p.vx = Math.max(-maxSpeed, p.vx - accel * dt);
+    } else if (this.keys.right) {
+      p.vx = Math.min(maxSpeed, p.vx + accel * dt);
+    } else {
+      if (p.vx > 0) p.vx = Math.max(0, p.vx - friction * dt);
+      if (p.vx < 0) p.vx = Math.min(0, p.vx + friction * dt);
+    }
+
+    if (this.keys.up && p.onGround) {
+      p.vy = 13.8 + Math.abs(p.vx) * 0.18;
+      p.onGround = false;
+      this.audio.playJump(this.mario.form !== 'small');
+      this.keys.up = false;
+    }
+
+    const gravity = p.vy > 0 && this.keys.upHeld ? 24.5 : 36.0;
+    p.vy = Math.max(-22, p.vy - gravity * dt);
+
+    p.x += p.vx * dt;
+    const collidersX = this.getSolidCollidersNear(p.x, p.y);
+    for (const c of collidersX) {
+      if (this.overlapAABB(p.x, p.y + 0.05, p.width, p.height - 0.1, c.x, c.y, c.w, c.h)) {
+        if (p.vx > 0) p.x = c.x - (c.w + p.width) * 0.5;
+        else if (p.vx < 0) p.x = c.x + (c.w + p.width) * 0.5;
+        p.vx = 0;
+      }
+    }
+
+    p.y += p.vy * dt;
+    p.onGround = false;
+    const collidersY = this.getSolidCollidersNear(p.x, p.y);
+    for (const c of collidersY) {
+      if (this.overlapAABB(p.x, p.y, p.width * 0.9, p.height, c.x, c.y, c.w, c.h)) {
+        if (p.vy <= 0 && p.y - p.vy * dt >= c.y + c.h - 0.25) {
+          p.y = c.y + c.h;
+          p.vy = 0;
+          p.onGround = true;
+
+          if (c.pipe && c.pipe.warpTarget && this.keys.down) {
+            if (c.pipe.warpTarget === 'underground') {
+              this.enterUnderground();
+              return;
+            } else if (c.pipe.warpTarget === 'overworldExit') {
+              this.exitUnderground();
+              return;
+            }
+          }
+        } else if (p.vy > 0 && p.y + p.height - p.vy * dt <= c.y + 0.3) {
+          p.y = c.y - p.height;
+          p.vy = -1.5;
+          if (c.block) this.triggerBlockHit(c.block);
+        }
+      }
+    }
+
+    if (p.y < -3.5) {
+      this.killPlayer();
+      return;
+    }
+
+    if (!this.inUnderground && !this.isStageClear && p.x >= this.flagpoleX - 0.45) {
+      this.isStageClear = true;
+      p.flagSlide = true;
+      p.vx = 0;
+      const heightBonus = Math.min(5000, Math.max(100, Math.round(p.y * 500)));
+      this.score += heightBonus;
+      this.audio.playFlagpole();
+      this.spawnFloatingText(this.flagpoleX, p.y + 1, `+${heightBonus} FLAG!`, '#4ade80');
+      this.updateHUD();
+      document.getElementById('victory-banner').classList.remove('hidden');
+    }
+
+    this.mario.root.position.set(p.x, p.y, 0);
+    this.mario.animate(p.vx, p.vy, p.onGround, time, p.starTimer);
+  }
+
+  takeDamage() {
+    if (this.player.invincibleTimer > 0 || this.player.starTimer > 0 || this.player.dead) return;
+    if (this.mario.form === 'fire') {
+      this.mario.setForm('super');
+      this.player.invincibleTimer = 2.0;
+      this.audio.playPipeWarp();
+      this.spawnFloatingText(this.player.x, this.player.y + 1.5, 'POWER DOWN', '#fb923c');
+    } else if (this.mario.form === 'super') {
+      this.mario.setForm('small');
+      this.player.height = 0.95;
+      this.player.invincibleTimer = 2.0;
+      this.audio.playPipeWarp();
+      this.spawnFloatingText(this.player.x, this.player.y + 1.2, 'SMALL MARIO', '#fb923c');
+    } else {
+      this.killPlayer();
+    }
+    this.updateHUD();
+  }
+
+  killPlayer() {
+    if (this.player.dead) return;
+    this.player.dead = true;
+    this.player.vy = 11.5;
+    this.lives--;
+    this.audio.playDeath();
+    this.updateHUD();
+
+    setTimeout(() => {
+      if (this.lives <= 0) {
+        this.lives = 3;
+        this.score = 0;
+        this.coins = 0;
+      }
+      this.mario.setForm('small');
+      this.buildLevel();
+      this.resetPlayerPosition(2.5, 2.0);
+      this.audio.startBGM('overworld');
+    }, 2600);
+  }
+
+  updateEntities(dt, time) {
+    this.blocks.forEach(b => {
+      if (b.bumpOffset > 0 || b.bumpVel !== 0) {
+        b.bumpOffset += b.bumpVel * dt;
+        b.bumpVel -= 28 * dt;
+        if (b.bumpOffset <= 0) {
+          b.bumpOffset = 0;
+          b.bumpVel = 0;
+        }
+        b.mesh.position.y = b.baseY + b.bumpOffset;
+      }
+    });
+
+    this.pipes.forEach(pipe => {
+      if (pipe.piranha) {
+        pipe.piranha.animate(time);
+        const distMario = Math.abs(this.player.x - pipe.x);
+        pipe.piranhaTimer += dt;
+        const cycle = pipe.piranhaTimer % 4.4;
+        let targetOffset = 0;
+        if (cycle < 1.8 && distMario > 1.7) {
+          targetOffset = 1.05;
+        }
+        pipe.piranhaOffset += (targetOffset - pipe.piranhaOffset) * 5 * dt;
+        pipe.piranha.root.position.y = pipe.y + pipe.height - 0.9 + pipe.piranhaOffset;
+
+        if (pipe.piranhaOffset > 0.45 && !this.player.dead) {
+          if (this.overlapAABB(this.player.x, this.player.y, this.player.width, this.player.height, pipe.x, pipe.y + pipe.height, 0.7, 0.85)) {
+            if (this.player.starTimer > 0) {
+              this.scene.remove(pipe.piranha.root);
+              pipe.piranha = null;
+              this.score += 200;
+              this.audio.playKick();
+            } else {
+              this.takeDamage();
+            }
+          }
+        }
+      }
+    });
+
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const item = this.items[i];
+      item.mesh.rotation.y += 2.6 * dt;
+
+      if (item.type !== 'staticCoin' && item.type !== 'flower') {
+        item.vy = Math.max(-15, item.vy - 24 * dt);
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+
+        const cols = this.getSolidCollidersNear(item.x, item.y);
+        for (const c of cols) {
+          if (this.overlapAABB(item.x, item.y, 0.7, 0.7, c.x, c.y, c.w, c.h)) {
+            if (item.vy <= 0 && item.y - item.vy * dt >= c.y + c.h - 0.25) {
+              item.y = c.y + c.h;
+              item.vy = item.type === 'star' ? 8.5 : 0;
+            } else {
+              item.vx = -item.vx;
+            }
+          }
+        }
+        item.mesh.position.set(item.x, item.y, 0);
+      }
+
+      if (!this.player.dead && this.overlapAABB(this.player.x, this.player.y, this.player.width, this.player.height, item.x, item.y, 0.75, 0.75)) {
+        this.scene.remove(item.mesh);
+        this.items.splice(i, 1);
+
+        if (item.type === 'staticCoin') {
+          this.audio.playCoin();
+          this.coins++;
+          this.score += 200;
+          this.spawnFloatingText(item.x, item.y + 0.6, '+200', '#facc15');
+        } else if (item.type === 'mushroom') {
+          this.audio.playPowerUpCollect();
+          this.mario.setForm('super');
+          this.player.height = 1.55;
+          this.score += 1000;
+          this.spawnFloatingText(item.x, item.y + 1.0, 'SUPER MARIO! +1000', '#4ade80');
+        } else if (item.type === 'flower') {
+          this.audio.playPowerUpCollect();
+          this.mario.setForm('fire');
+          this.player.height = 1.55;
+          this.score += 1000;
+          this.spawnFloatingText(item.x, item.y + 1.0, 'FIRE MARIO! [J/X]', '#f97316');
+        } else if (item.type === 'oneup') {
+          this.audio.playOneUp();
+          this.lives++;
+          this.spawnFloatingText(item.x, item.y + 1.0, '1-UP!', '#22c55e');
+        } else if (item.type === 'star') {
+          this.audio.playPowerUpCollect();
+          this.player.starTimer = 11.0;
+          this.score += 1000;
+          this.audio.startBGM('star');
+          this.spawnFloatingText(item.x, item.y + 1.0, 'STAR INVINCIBLE!', '#facc15');
+        }
+        this.updateHUD();
+      }
+    }
+
+    for (let i = this.fireballs.length - 1; i >= 0; i--) {
+      const fb = this.fireballs[i];
+      fb.life -= dt;
+      fb.vy -= 28 * dt;
+      fb.x += fb.vx * dt;
+      fb.y += fb.vy * dt;
+      fb.mesh.position.set(fb.x, fb.y, 0);
+
+      let removeFb = fb.life <= 0;
+      const cols = this.getSolidCollidersNear(fb.x, fb.y);
+      for (const c of cols) {
+        if (this.overlapAABB(fb.x, fb.y, 0.35, 0.35, c.x, c.y, c.w, c.h)) {
+          if (fb.vy < 0 && fb.y - fb.vy * dt >= c.y + c.h - 0.25) {
+            fb.y = c.y + c.h;
+            fb.vy = 6.8;
+          } else {
+            removeFb = true;
+          }
+        }
+      }
+
+      for (const en of this.enemies) {
+        if (!en.dead && !en.squished && this.overlapAABB(fb.x, fb.y, 0.4, 0.4, en.x, en.y, en.width, en.height)) {
+          en.dead = true;
+          en.vy = 7.5;
+          this.score += 200;
+          this.audio.playKick();
+          this.spawnFloatingText(en.x, en.y + 0.8, '+200 FIRE!', '#f97316');
+          this.updateHUD();
+          removeFb = true;
+          break;
+        }
+      }
+
+      if (removeFb) {
+        this.scene.remove(fb.mesh);
+        this.fireballs.splice(i, 1);
+      }
+    }
+
+    for (let i = this.enemies.length - 1; i >= 0; i--) {
+      const en = this.enemies[i];
+      if (Math.abs(en.x - this.player.x) > 28 && !en.shellMoving) continue;
+
+      if (en.dead) {
+        en.vy -= 25 * dt;
+        en.y += en.vy * dt;
+        en.mesh.position.set(en.x, en.y, 0);
+        en.mesh.rotation.x += 8 * dt;
+        if (en.y < -5) {
+          this.scene.remove(en.mesh);
+          this.enemies.splice(i, 1);
+        }
+        continue;
+      }
+
+      if (en.squished) {
+        en.squishTimer -= dt;
+        if (en.squishTimer <= 0) {
+          this.scene.remove(en.mesh);
+          this.enemies.splice(i, 1);
+        }
+        continue;
+      }
+
+      en.vy = Math.max(-18, en.vy - 28 * dt);
+      en.x += en.vx * dt;
+      en.y += en.vy * dt;
+
+      const cols = this.getSolidCollidersNear(en.x, en.y);
+      for (const c of cols) {
+        if (this.overlapAABB(en.x, en.y, en.width, en.height, c.x, c.y, c.w, c.h)) {
+          if (en.vy <= 0 && en.y - en.vy * dt >= c.y + c.h - 0.25) {
+            en.y = c.y + c.h;
+            en.vy = 0;
+          } else {
+            en.vx = -en.vx;
+            en.x += en.vx * dt * 2;
+            if (en.shellMoving) this.audio.playBump();
+          }
+        }
+      }
+
+      en.mesh.position.set(en.x, en.y, 0);
+      if (en.type === 'goomba') en.rig.animate(time);
+      else if (en.type === 'koopa') en.rig.animate(en.vx, time, en.inShell);
+
+      if (en.inShell && en.shellMoving) {
+        this.enemies.forEach(other => {
+          if (other !== en && !other.dead && !other.squished) {
+            if (this.overlapAABB(en.x, en.y, en.width, en.height, other.x, other.y, other.width, other.height)) {
+              other.dead = true;
+              other.vy = 8.0;
+              this.score += 500;
+              this.audio.playKick();
+              this.spawnFloatingText(other.x, other.y + 0.8, '+500 SHELL COMBO!', '#38bdf8');
+              this.updateHUD();
+            }
+          }
+        });
+      }
+
+      if (!this.player.dead && this.overlapAABB(this.player.x, this.player.y, this.player.width, this.player.height, en.x, en.y, en.width, en.height)) {
+        if (this.player.starTimer > 0) {
+          en.dead = true;
+          en.vy = 8.5;
+          this.score += 200;
+          this.audio.playKick();
+          this.spawnFloatingText(en.x, en.y + 0.8, '+200 STAR!', '#facc15');
+          this.updateHUD();
+        } else if (this.player.vy < -0.5 && this.player.y > en.y + en.height * 0.42) {
+          this.player.vy = 9.8;
+          this.audio.playStomp();
+          this.score += 200;
+          this.updateHUD();
+
+          if (en.type === 'goomba') {
+            en.squished = true;
+            en.squishTimer = 0.65;
+            en.mesh.scale.set(1.25, 0.25, 1.25);
+            this.spawnFloatingText(en.x, en.y + 0.7, '+200 STOMP!', '#ffffff');
+          } else if (en.type === 'koopa') {
+            if (!en.inShell) {
+              en.inShell = true;
+              en.shellMoving = false;
+              en.vx = 0;
+              en.height = 0.68;
+              en.rig.setShellMode(true);
+              this.spawnFloatingText(en.x, en.y + 0.7, 'SHELL!', '#4ade80');
+            } else if (!en.shellMoving) {
+              en.shellMoving = true;
+              en.vx = this.player.x < en.x ? 12.5 : -12.5;
+              this.audio.playKick();
+              this.spawnFloatingText(en.x, en.y + 0.7, 'KICK! +400', '#38bdf8');
+            } else {
+              en.shellMoving = false;
+              en.vx = 0;
+            }
+          }
+        } else if (en.inShell && !en.shellMoving) {
+          en.shellMoving = true;
+          en.vx = this.player.x < en.x ? 12.5 : -12.5;
+          this.audio.playKick();
+          this.score += 400;
+          this.spawnFloatingText(en.x, en.y + 0.7, 'KICK!', '#38bdf8');
+        } else {
+          this.takeDamage();
+        }
+      }
+    }
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const pt = this.particles[i];
+      pt.life -= dt;
+      pt.vy -= 24 * dt;
+      pt.mesh.position.x += pt.vx * dt;
+      pt.mesh.position.y += pt.vy * dt;
+      pt.mesh.position.z += pt.vz * dt;
+      pt.mesh.rotation.x += pt.rotSpeed * dt;
+      pt.mesh.rotation.y += pt.rotSpeed * dt;
+      if (pt.life <= 0) {
+        this.scene.remove(pt.mesh);
+        this.particles.splice(i, 1);
+      }
+    }
+
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.life -= dt;
+      ft.y += 1.6 * dt;
+      const vec = new THREE.Vector3(ft.x, ft.y, 0);
+      vec.project(this.camera);
+      const sx = (vec.x * 0.5 + 0.5) * window.innerWidth;
+      const sy = (-vec.y * 0.5 + 0.5) * window.innerHeight;
+      ft.el.style.left = `${sx}px`;
+      ft.el.style.top = `${sy}px`;
+      ft.el.style.opacity = Math.min(1, ft.life * 1.5);
+      if (ft.life <= 0) {
+        ft.el.remove();
+        this.floatingTexts.splice(i, 1);
+      }
+    }
+  }
+
+  cycleCameraMode() {
+    this.cameraMode = (this.cameraMode + 1) % 3;
+    const names = ['2.5D 经典横版视角', '3D 动感斜视角', '近景模型特写视角'];
+    const btn = document.getElementById('btn-camera');
+    if (btn) btn.textContent = `🎥 视角: ${names[this.cameraMode]} [C]`;
+  }
+
+  updateCamera(dt, time) {
+    const px = this.player.x;
+    const py = Math.max(2.5, this.player.y);
+
+    let targetPos = new THREE.Vector3();
+    let lookTarget = new THREE.Vector3();
+
+    if (this.cameraMode === 0) {
+      targetPos.set(px + 2.8, py + 2.6, 15.8);
+      lookTarget.set(px + 2.8, py + 1.8, 0);
+    } else if (this.cameraMode === 1) {
+      targetPos.set(px - 4.5, py + 4.2, 12.5);
+      lookTarget.set(px + 3.5, py + 1.5, 0);
+    } else {
+      targetPos.set(px + Math.sin(time * 0.6) * 2.4, this.player.y + 1.5, 5.2);
+      lookTarget.set(px, this.player.y + 0.85, 0);
+    }
+
+    this.camera.position.lerp(targetPos, 6.5 * dt);
+    if (!this.currentLookAt) this.currentLookAt = lookTarget.clone();
+    this.currentLookAt.lerp(lookTarget, 8.0 * dt);
+    this.camera.lookAt(this.currentLookAt);
+
+    this.dirLight.position.set(px + 14, 26, 18);
+    this.dirLight.target.position.set(px, 0, 0);
+  }
+
+  updateHUD() {
+    const elScore = document.getElementById('hud-score');
+    const elCoins = document.getElementById('hud-coins');
+    const elWorld = document.getElementById('hud-world');
+    const elTime = document.getElementById('hud-time');
+    const elLives = document.getElementById('hud-lives');
+    const elForm = document.getElementById('hud-form');
+
+    if (elScore) elScore.textContent = String(this.score).padStart(6, '0');
+    if (elCoins) elCoins.textContent = `x${String(this.coins).padStart(2, '0')}`;
+    if (elWorld) elWorld.textContent = this.worldName;
+    if (elTime) elTime.textContent = String(Math.max(0, Math.floor(this.timeLeft))).padStart(3, '0');
+    if (elLives) elLives.textContent = `x${this.lives}`;
+    if (elForm) {
+      const map = { small: '小马里奥', super: '超级马里奥', fire: '🔥 火焰马里奥' };
+      elForm.textContent = this.player.starTimer > 0 ? '⭐ 无敌星马里奥' : map[this.mario.form];
+    }
+  }
+
+  bindEvents() {
+    window.addEventListener('resize', () => {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('keydown', e => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+        e.preventDefault();
+      }
+      this.audio.init();
+      if (!this.audio.bgmPlaying && !this.isStageClear && !this.player.dead) {
+        this.audio.startBGM(this.inUnderground ? 'underground' : 'overworld');
+      }
+
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') this.keys.left = true;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') this.keys.right = true;
+      if (e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Space') {
+        if (!this.keys.upHeld) this.keys.up = true;
+        this.keys.upHeld = true;
+      }
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') this.keys.down = true;
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.keys.run = true;
+      if (e.code === 'KeyJ' || e.code === 'KeyX') this.keys.fire = true;
+      if (e.code === 'KeyC') this.cycleCameraMode();
+      if (e.code === 'KeyM') {
+        const muted = this.audio.toggleMute();
+        const btn = document.getElementById('btn-audio');
+        if (btn) btn.textContent = muted ? '🔇 音效: 关 [M]' : '🔊 音效: 开 [M]';
+      }
+      if (e.code === 'Digit1') { this.mario.setForm('small'); this.player.height = 0.95; this.updateHUD(); }
+      if (e.code === 'Digit2') { this.mario.setForm('super'); this.player.height = 1.55; this.updateHUD(); }
+      if (e.code === 'Digit3') { this.mario.setForm('fire'); this.player.height = 1.55; this.updateHUD(); }
+    });
+
+    window.addEventListener('keyup', e => {
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') this.keys.left = false;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') this.keys.right = false;
+      if (e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Space') {
+        this.keys.up = false;
+        this.keys.upHeld = false;
+      }
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') this.keys.down = false;
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.keys.run = false;
+      if (e.code === 'KeyJ' || e.code === 'KeyX') this.keys.fire = false;
+    });
+  }
+
+  animateLoop(now) {
+    const dt = Math.min(0.05, (now - this.lastTime) / 1000);
+    this.lastTime = now;
+    const time = now * 0.001;
+
+    if (!this.isPaused) {
+      this.timerAccum += dt;
+      if (this.timerAccum >= 1.0 && !this.isStageClear && !this.player.dead) {
+        this.timerAccum = 0;
+        this.timeLeft = Math.max(0, this.timeLeft - 1);
+        this.updateHUD();
+        if (this.timeLeft <= 0) this.killPlayer();
+      }
+
+      this.updatePlayer(dt, time);
+      this.updateEntities(dt, time);
+      this.updateCamera(dt, time);
+    }
+
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this.animateLoop);
+  }
+}
+
+window.SuperMario3DGame = SuperMario3DGame;
+  </script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.game = new SuperMario3DGame('game-canvas-container');
+      window.inspector = new ModelInspectorStudio(window.game.factory);
+    });
+  </script>
+</body>
+</html>
