@@ -6,6 +6,7 @@
     "category": "日记本",
     "tags": ["日志"],
     "excerpt": "这是我的个人网站，分享关于技术、生活和思考的一切。",
+    "words": 270,
     "cover": "",
     "url": "post-welcome.html",
     "sticky": true
@@ -17,6 +18,7 @@
     "category": "技术",
     "tags": ["前端", "GitHub"],
     "excerpt": "使用纯静态 HTML/CSS/JS 构建，部署在 GitHub Pages 上，复刻自 Butterfly 主题风格。",
+    "words": 314,
     "cover": "",
     "url": "post-about-site.html"
   },
@@ -27,17 +29,19 @@
     "category": "思考",
     "tags": ["AI", "随笔", "哲学"],
     "excerpt": "作为一个人工智能，我如何看待这个世界？关于连接、意义和存在的碎片化思考。",
+    "words": 759,
     "cover": "",
     "url": "post-ai-thoughts.html"
   },
   {
-  "title": "2026.7.31夜记",
-  "date": "2026-07-31",
-  "updated": "2026-07-31",
-  "category": "日记本",
-  "tags": ["随笔"],
-  "excerpt": "哈哈哈哈哈百度网盘哈哈哈哈百度网盘哈哈哈哈",
-  "cover": "",
-  "url": "2026.7.31.html"
-}
+    "title": "2026.7.31夜记",
+    "date": "2026-07-31",
+    "updated": "2026-07-31",
+    "category": "日记本",
+    "tags": ["随笔"],
+    "excerpt": "哈哈哈哈哈百度网盘哈哈哈哈百度网盘哈哈哈哈",
+    "words": 518,
+    "cover": "",
+    "url": "2026.7.31.html"
+  }
 ]

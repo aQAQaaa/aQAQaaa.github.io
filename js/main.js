@@ -128,17 +128,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== Calculate Word Count ====================
   const countWords = (text) => {
     if (!text) return 0;
-    // Count Chinese chars + English words
+    // Count Chinese chars + English/numeric words
     const chinese = (text.match(/[\u4e00-\u9fff]/g) || []).length;
-    const english = (text.match(/[a-zA-Z]+/g) || []).length;
+    const english = (text.match(/[a-zA-Z0-9]+/g) || []).length;
     return chinese + english;
+  };
+
+  // Fetch and count full article body words from post HTML
+  const fetchPostWordCount = async (post) => {
+    if (!post.url) return post.words || countWords(post.excerpt || '');
+    try {
+      const res = await fetch(post.url);
+      if (!res.ok) throw new Error('Fetch failed');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const postBody = doc.querySelector('.post-body') || doc.querySelector('article') || doc.querySelector('main');
+      if (!postBody) return post.words || countWords(post.excerpt || '');
+
+      const clone = postBody.cloneNode(true);
+      // Exclude scripts, styles, top metadata line, and bottom return-home button
+      clone.querySelectorAll('script, style').forEach(el => el.remove());
+      const firstP = clone.querySelector('p');
+      if (firstP && firstP.querySelector('.fa-calendar-alt')) {
+        firstP.remove();
+      }
+      clone.querySelectorAll('a[href="/"]').forEach(el => el.remove());
+
+      const fullCount = countWords(clone.textContent || '');
+      if (fullCount > 0) {
+        post.words = fullCount;
+      }
+    } catch {
+      // Fallback to pre-configured words in posts.json or excerpt
+      if (!post.words) {
+        post.words = countWords(post.excerpt || '');
+      }
+    }
+    return post.words || 0;
   };
 
   // ==================== Format Number ====================
   const formatNumber = (num) => {
     if (num >= 10000) return (num / 10000).toFixed(1) + 'w';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-    return num.toString();
+    return num.toLocaleString('zh-CN');
   };
 
   // ==================== Calculate Run Days (with h:m:s) ====================
@@ -185,8 +217,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return new Date(b.date) - new Date(a.date);
       });
 
-      // Calculate stats
-      const totalWords = allPosts.reduce((sum, p) => sum + countWords(p.excerpt || ''), 0);
+      // Ensure initial word count uses post.words (full article count) with fallback
+      allPosts.forEach(p => {
+        if (typeof p.words !== 'number' || p.words <= 0) {
+          p.words = countWords(p.excerpt || '');
+        }
+      });
+
+      const updateWordStatsUI = () => {
+        const totalWords = allPosts.reduce((sum, p) => sum + (p.words || 0), 0);
+        const webinfoWords = document.getElementById('webinfo-words');
+        if (webinfoWords) webinfoWords.textContent = formatNumber(totalWords) + ' 字';
+
+        // Update any rendered post card word count badges in-place
+        document.querySelectorAll('.post-word-count[data-post-url]').forEach(badge => {
+          const url = badge.getAttribute('data-post-url');
+          const matched = allPosts.find(p => p.url === url);
+          if (matched && matched.words > 0) {
+            badge.innerHTML = `<i class="fas fa-file-word"></i> ${matched.words} 字`;
+          }
+        });
+      };
+
       const lastUpdate = allPosts.reduce((latest, p) => {
         const d = p.updated || p.date;
         return d > latest ? d : latest;
@@ -194,12 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update web info
       const webinfoPosts = document.getElementById('webinfo-posts');
-      const webinfoWords = document.getElementById('webinfo-words');
       const webinfoLastUpdate = document.getElementById('webinfo-last-update');
       const webinfoRunDays = document.getElementById('webinfo-run-days');
 
       if (webinfoPosts) webinfoPosts.textContent = allPosts.length;
-      if (webinfoWords) webinfoWords.textContent = formatNumber(totalWords);
       if (webinfoLastUpdate) webinfoLastUpdate.textContent = lastUpdate;
       if (webinfoRunDays) {
         webinfoRunDays.textContent = formatRunTime();
@@ -230,8 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Render aside archives
       renderAsideArchives(allPosts);
 
-      // Initial render of posts
+      // Initial render of posts & word stats
       renderPosts(allPosts);
+      updateWordStatsUI();
+
+      // Dynamically verify/compute full article word counts from each post's HTML
+      await Promise.all(allPosts.map(p => fetchPostWordCount(p)));
+      updateWordStatsUI();
 
     } catch (err) {
       console.error('Error loading posts:', err);
@@ -419,8 +474,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `<a class="article-meta__categories" href="javascript:void(0)" data-tag="${t}">${t}</a>`
       ).join('');
 
-      const wordCount = countWords(post.excerpt || '');
-      const wordBadge = wordCount > 0 ? `<span class="post-word-count"><i class="fas fa-file-word"></i> ${wordCount} 字</span>` : '';
+      const wordCount = post.words || countWords(post.excerpt || '');
+      const wordBadge = wordCount > 0 ? `<span class="post-word-count" data-post-url="${post.url || ''}"><i class="fas fa-file-word"></i> ${wordCount} 字</span>` : '';
 
       return `
         <div class="recent-post-item">
@@ -690,63 +745,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initReveal(document);
 
-  // ==================== Spring Physics Engine ====================
-  // Simulates a damped spring for each card. Scroll impulses cascade through
-  // cards with different responsiveness, creating the "spring chain" effect
-  // (like HarmonyOS task switcher).
+  // ==================== Coupled Inter-Card Spring Physics Engine ====================
+  // HarmonyOS-style spring chain:
+  // 1. Detects which card is closest to the user's mouse cursor (or viewport center).
+  // 2. When scrolling, the card closest to the mouse moves FIRST.
+  // 3. Adjacent cards (above & below) are connected by virtual springs (kCouple),
+  //    so the moving card pushes/pulls its neighbors — creating an attract-then-repel
+  //    elastic wave up and down the card stack before settling back to rest.
 
   const SPRING = {
-    stiffness: 150,    // Spring constant (higher = snappier return)
-    damping: 13,       // Friction (lower = more bouncy oscillation)
+    kAnchor: 95,       // Restoring spring pulling each card back to its natural slot (offset -> 0)
+    cAnchor: 11,       // Damping relative to natural slot
+    kCouple: 165,      // Inter-card spring stiffness connecting card[i] <-> card[i-1], card[i+1]
+    cCouple: 6.5,      // Inter-card relative velocity damping
     mass: 1,           // Card mass
-    maxOffset: 60,     // Clamp max displacement (px)
-    impulseScale: 0.7, // How much scroll delta feeds into velocity
-    restThreshold: 0.15 // Stop simulating when motion is negligible
+    maxOffset: 65,     // Maximum displacement clamp (px)
+    impulseScale: 0.9, // Scroll impulse multiplier for the lead card
+    restThreshold: 0.12 // Stop simulation when all cards settle below this threshold
   };
 
-  // Responsiveness: how quickly each card picks up the scroll impulse.
-  // First card reacts instantly; further cards lag behind = cascade.
-  const POST_RESPONSIVENESS  = [0.95, 0.72, 0.52, 0.38, 0.26, 0.18];
-  const ASIDE_RESPONSIVENESS = [0.60, 0.45, 0.34, 0.25, 0.18, 0.13, 0.09];
-
-  // Spring node pool
   let springNodes = [];
   let animating = false;
+  let mouseClientY = window.innerHeight * 0.45;
+  let mouseClientX = window.innerWidth * 0.5;
+
+  window.addEventListener('mousemove', (e) => {
+    mouseClientX = e.clientX;
+    mouseClientY = e.clientY;
+  }, { passive: true });
+
+  window.addEventListener('wheel', (e) => {
+    if (typeof e.clientY === 'number' && e.clientY > 0) {
+      mouseClientX = e.clientX;
+      mouseClientY = e.clientY;
+    }
+  }, { passive: true });
 
   class SpringNode {
-    constructor(el, responsiveness) {
+    constructor(el, group) {
       this.el = el;
-      this.resp = responsiveness;
-      this.offset = 0;   // Current displacement from natural position
-      this.vel = 0;       // Current velocity
-    }
-
-    /** Apply a scroll impulse (proportional to scroll delta) */
-    impulse(scrollDelta) {
-      this.vel += scrollDelta * this.resp * SPRING.impulseScale;
-    }
-
-    /** Advance one physics step. Returns true if still moving. */
-    step(dt) {
-      // Spring force: pulls back to natural position (offset → 0)
-      const springForce = -SPRING.stiffness * this.offset;
-      // Damping force: resists velocity
-      const dampingForce = -SPRING.damping * this.vel;
-      // Acceleration
-      const accel = (springForce + dampingForce) / SPRING.mass;
-
-      this.vel += accel * dt;
-      this.offset += this.vel * dt;
-
-      // Clamp to prevent extreme displacement
-      if (this.offset > SPRING.maxOffset) { this.offset = SPRING.maxOffset; this.vel *= -0.3; }
-      if (this.offset < -SPRING.maxOffset) { this.offset = -SPRING.maxOffset; this.vel *= -0.3; }
-
-      // Apply transform
-      this.el.style.transform = `translateY(${this.offset.toFixed(2)}px)`;
-
-      // Check if at rest
-      return Math.abs(this.offset) > SPRING.restThreshold || Math.abs(this.vel) > SPRING.restThreshold;
+      this.group = group; // 'post' | 'aside'
+      this.offset = 0;    // Current Y displacement (px)
+      this.vel = 0;       // Current Y velocity (px/s)
+      this.nextVel = 0;
+      this.nextOffset = 0;
     }
 
     reset() {
@@ -756,44 +798,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /** Register a card into the spring system */
+  /** Register a card into the coupled spring system after entrance completes */
   const activateSpring = (el) => {
     if (el.classList.contains('spring-active')) return;
     el.classList.add('spring-active');
 
-    // Determine responsiveness based on type and index
-    const isPost = el.classList.contains('recent-post-item');
-    const parent = el.parentElement;
-    const siblings = parent ? Array.from(parent.children).filter(
-      c => c.classList.contains(isPost ? 'recent-post-item' : 'card-widget')
-    ) : [];
-    const idx = siblings.indexOf(el);
-    const table = isPost ? POST_RESPONSIVENESS : ASIDE_RESPONSIVENESS;
-    const resp = table[Math.min(idx, table.length - 1)] || 0.1;
+    const group = el.classList.contains('recent-post-item') ? 'post' : 'aside';
+    springNodes.push(new SpringNode(el, group));
+  };
 
-    springNodes.push(new SpringNode(el, resp));
+  /** Get ordered chain of active SpringNodes for a column ('post' or 'aside') */
+  const getChain = (group) => {
+    return springNodes
+      .filter(n => n.group === group && document.body.contains(n.el))
+      .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
+  };
+
+  /** Apply scroll impulse led by the card closest to the mouse cursor */
+  const applyChainImpulse = (chain, scrollDelta) => {
+    if (chain.length === 0) return;
+
+    // Find the card in this chain whose vertical center is closest to mouseClientY
+    let leadIdx = 0;
+    let minDist = Infinity;
+    chain.forEach((node, i) => {
+      const rect = node.el.getBoundingClientRect();
+      const centerY = rect.top + rect.height * 0.5;
+      const dist = Math.abs(centerY - mouseClientY);
+      if (dist < minDist) {
+        minDist = dist;
+        leadIdx = i;
+      }
+    });
+
+    // The card closest to the mouse moves FIRST with strong immediate impulse.
+    // Neighboring cards above & below get a much smaller initial impulse (or slight counter-lag)
+    // so the inter-card coupling springs (kCouple) visibly push and pull them!
+    chain.forEach((node, i) => {
+      const distSteps = Math.abs(i - leadIdx);
+      if (distSteps === 0) {
+        // Lead card (closest to mouse): moves immediately
+        node.vel += -scrollDelta * SPRING.impulseScale;
+      } else if (distSteps === 1) {
+        // Immediate neighbors: slight delay/contrast so spring compression/stretch is pronounced
+        node.vel += -scrollDelta * SPRING.impulseScale * 0.22;
+      } else {
+        // Further cards: driven primarily by the propagating inter-card spring wave
+        node.vel += -scrollDelta * SPRING.impulseScale * Math.pow(0.15, distSteps);
+      }
+    });
   };
 
   // --- Scroll velocity tracking ---
   let lastScrollY = window.scrollY;
-  let scrollDelta = 0;
-  let scrollTicking = false;
-
-  // Respect prefers-reduced-motion
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   window.addEventListener('scroll', () => {
     if (reducedMotion) return;
     const currentY = window.scrollY;
-    scrollDelta = currentY - lastScrollY;
+    const rawDelta = currentY - lastScrollY;
     lastScrollY = currentY;
 
-    if (springNodes.length === 0) return;
+    // Clamp extreme jump deltas (e.g. page-down / anchor jump)
+    const scrollDelta = Math.max(-120, Math.min(120, rawDelta));
+    if (Math.abs(scrollDelta) < 0.5 || springNodes.length === 0) return;
 
-    // Feed scroll impulse into each spring node
-    springNodes.forEach(node => node.impulse(scrollDelta));
+    applyChainImpulse(getChain('post'), scrollDelta);
+    applyChainImpulse(getChain('aside'), scrollDelta * 0.8);
 
-    // Start the animation loop if not already running
     if (!animating) {
       animating = true;
       lastFrameTime = performance.now();
@@ -801,44 +873,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, { passive: true });
 
-  // --- Physics animation loop (runs at display refresh rate) ---
-  let lastFrameTime = 0;
+  // --- Coupled spring physics step for a 1D chain of cards ---
+  const stepChain = (chain, dt) => {
+    let moving = false;
+    const len = chain.length;
 
-  const physicsTick = (now) => {
-    // Delta time in seconds, capped to prevent spiral of death on tab switch
-    const dt = Math.min((now - lastFrameTime) / 1000, 0.032);
-    lastFrameTime = now;
+    // 1. Compute forces & next velocities for each card in the chain
+    for (let i = 0; i < len; i++) {
+      const node = chain[i];
 
-    let anyMoving = false;
+      // Anchor restoring force (pulls card back toward its layout origin 0)
+      let force = -SPRING.kAnchor * node.offset - SPRING.cAnchor * node.vel;
 
-    for (const node of springNodes) {
-      if (node.step(dt)) {
-        anyMoving = true;
+      // Upper spring (connecting node[i] <-> node[i - 1])
+      if (i > 0) {
+        const upper = chain[i - 1];
+        const diffX = upper.offset - node.offset;
+        const diffV = upper.vel - node.vel;
+        force += SPRING.kCouple * diffX + SPRING.cCouple * diffV;
+      }
+
+      // Lower spring (connecting node[i] <-> node[i + 1])
+      if (i < len - 1) {
+        const lower = chain[i + 1];
+        const diffX = lower.offset - node.offset;
+        const diffV = lower.vel - node.vel;
+        force += SPRING.kCouple * diffX + SPRING.cCouple * diffV;
+      }
+
+      const accel = force / SPRING.mass;
+      node.nextVel = node.vel + accel * dt;
+      node.nextOffset = node.offset + node.nextVel * dt;
+
+      // Soft elastic boundary clamp
+      if (node.nextOffset > SPRING.maxOffset) {
+        node.nextOffset = SPRING.maxOffset;
+        node.nextVel *= -0.4;
+      } else if (node.nextOffset < -SPRING.maxOffset) {
+        node.nextOffset = -SPRING.maxOffset;
+        node.nextVel *= -0.4;
       }
     }
 
-    if (anyMoving) {
+    // 2. Commit states & apply transforms
+    for (let i = 0; i < len; i++) {
+      const node = chain[i];
+      node.vel = node.nextVel;
+      node.offset = node.nextOffset;
+      node.el.style.transform = `translate3d(0, ${node.offset.toFixed(2)}px, 0)`;
+
+      if (Math.abs(node.offset) > SPRING.restThreshold || Math.abs(node.vel) > SPRING.restThreshold) {
+        moving = true;
+      }
+    }
+
+    return moving;
+  };
+
+  let lastFrameTime = 0;
+
+  const physicsTick = (now) => {
+    const dt = Math.min((now - lastFrameTime) / 1000, 0.025);
+    lastFrameTime = now;
+
+    const postMoving = stepChain(getChain('post'), dt);
+    const asideMoving = stepChain(getChain('aside'), dt);
+
+    if (postMoving || asideMoving) {
       requestAnimationFrame(physicsTick);
     } else {
       animating = false;
-      // Snap to rest
-      springNodes.forEach(n => {
-        if (Math.abs(n.offset) < SPRING.restThreshold) {
-          n.offset = 0;
-          n.vel = 0;
-          n.el.style.transform = '';
-        }
-      });
+      springNodes.forEach(n => n.reset());
     }
   };
 
   /** Rebuild spring nodes (called after posts re-render) */
   const collectSprings = () => {
-    // Don't remove existing nodes; newly rendered cards will be picked up
-    // by initReveal → activateSpring when they enter viewport
+    springNodes = springNodes.filter(n => document.body.contains(n.el));
   };
 
-  // Expose for renderPosts
   window._collectSprings = collectSprings;
 });
 
