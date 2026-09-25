@@ -475,9 +475,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Re-init scroll reveal + parallax for newly rendered cards
+    // Re-init scroll reveal for newly rendered cards
     initReveal(postList);
-    collectParallax();
+    // Clean up spring nodes for removed cards & let new ones register via reveal
+    springNodes = springNodes.filter(n => document.body.contains(n.el));
   };
 
   // ==================== Clear Filter ====================
@@ -649,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // ==================== Scroll Reveal (transition-based, no CSS animation conflicts) ====================
+  // ==================== Scroll Reveal (transition-based entrance) ====================
   const revealObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -658,19 +659,17 @@ document.addEventListener('DOMContentLoaded', () => {
             el.classList.add('animate-in');
             revealObserver.unobserve(el);
 
-            // After the entrance transition finishes, enable parallax on this card
-            const onEnd = () => {
+            // After entrance transition, hand off to spring physics
+            const onEnd = (e) => {
+              if (e.propertyName !== 'transform' && e.propertyName !== 'opacity') return;
               el.removeEventListener('transitionend', onEnd);
-              el.classList.add('parallax-ready');
+              activateSpring(el);
             };
             el.addEventListener('transitionend', onEnd);
 
-            // Safety fallback: if transitionend never fires (e.g. tab hidden),
-            // promote to parallax-ready after 900ms
+            // Fallback if transitionend doesn't fire
             setTimeout(() => {
-              if (!el.classList.contains('parallax-ready')) {
-                el.classList.add('parallax-ready');
-              }
+              if (!el.classList.contains('spring-active')) activateSpring(el);
             }, 900);
           }
         });
@@ -679,51 +678,168 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const initReveal = (root) => {
     if (!revealObserver) return;
-
-    // Post cards
     root.querySelectorAll('.recent-post-item:not(.js-anim)').forEach(el => {
       el.classList.add('js-anim');
       revealObserver.observe(el);
     });
-
-    // Aside widgets
     root.querySelectorAll('.aside-content .card-widget:not(.js-anim)').forEach(el => {
       el.classList.add('js-anim');
       revealObserver.observe(el);
     });
   };
 
-  // Init reveal for static aside widgets; post cards re-init inside renderPosts
   initReveal(document);
 
-  // ==================== Scroll Parallax (spring-like inertia, only after entrance) ====================
-  // Each card gets a speed factor; CSS transition-delay per nth-child creates the spring lag.
-  const POST_FACTORS = [1.3, 1.05, 0.82, 0.62, 0.42, 0.26];
-  const ASIDE_FACTORS = [1.0, 0.82, 0.65, 0.5, 0.36, 0.24, 0.15];
-  let parallaxItems = [];
+  // ==================== Spring Physics Engine ====================
+  // Simulates a damped spring for each card. Scroll impulses cascade through
+  // cards with different responsiveness, creating the "spring chain" effect
+  // (like HarmonyOS task switcher).
 
-  const updateParallax = () => {
-    const y = (window.scrollY || document.documentElement.scrollTop) * 0.04;
-    parallaxItems.forEach((item) => {
-      // Only apply parallax offset to cards that finished their entrance
-      if (item.el.classList.contains('parallax-ready')) {
-        const offset = (y * item.factor).toFixed(2);
-        item.el.style.transform = `translateY(${offset}px)`;
+  const SPRING = {
+    stiffness: 150,    // Spring constant (higher = snappier return)
+    damping: 13,       // Friction (lower = more bouncy oscillation)
+    mass: 1,           // Card mass
+    maxOffset: 60,     // Clamp max displacement (px)
+    impulseScale: 0.7, // How much scroll delta feeds into velocity
+    restThreshold: 0.15 // Stop simulating when motion is negligible
+  };
+
+  // Responsiveness: how quickly each card picks up the scroll impulse.
+  // First card reacts instantly; further cards lag behind = cascade.
+  const POST_RESPONSIVENESS  = [0.95, 0.72, 0.52, 0.38, 0.26, 0.18];
+  const ASIDE_RESPONSIVENESS = [0.60, 0.45, 0.34, 0.25, 0.18, 0.13, 0.09];
+
+  // Spring node pool
+  let springNodes = [];
+  let animating = false;
+
+  class SpringNode {
+    constructor(el, responsiveness) {
+      this.el = el;
+      this.resp = responsiveness;
+      this.offset = 0;   // Current displacement from natural position
+      this.vel = 0;       // Current velocity
+    }
+
+    /** Apply a scroll impulse (proportional to scroll delta) */
+    impulse(scrollDelta) {
+      this.vel += scrollDelta * this.resp * SPRING.impulseScale;
+    }
+
+    /** Advance one physics step. Returns true if still moving. */
+    step(dt) {
+      // Spring force: pulls back to natural position (offset → 0)
+      const springForce = -SPRING.stiffness * this.offset;
+      // Damping force: resists velocity
+      const dampingForce = -SPRING.damping * this.vel;
+      // Acceleration
+      const accel = (springForce + dampingForce) / SPRING.mass;
+
+      this.vel += accel * dt;
+      this.offset += this.vel * dt;
+
+      // Clamp to prevent extreme displacement
+      if (this.offset > SPRING.maxOffset) { this.offset = SPRING.maxOffset; this.vel *= -0.3; }
+      if (this.offset < -SPRING.maxOffset) { this.offset = -SPRING.maxOffset; this.vel *= -0.3; }
+
+      // Apply transform
+      this.el.style.transform = `translateY(${this.offset.toFixed(2)}px)`;
+
+      // Check if at rest
+      return Math.abs(this.offset) > SPRING.restThreshold || Math.abs(this.vel) > SPRING.restThreshold;
+    }
+
+    reset() {
+      this.offset = 0;
+      this.vel = 0;
+      this.el.style.transform = '';
+    }
+  }
+
+  /** Register a card into the spring system */
+  const activateSpring = (el) => {
+    if (el.classList.contains('spring-active')) return;
+    el.classList.add('spring-active');
+
+    // Determine responsiveness based on type and index
+    const isPost = el.classList.contains('recent-post-item');
+    const parent = el.parentElement;
+    const siblings = parent ? Array.from(parent.children).filter(
+      c => c.classList.contains(isPost ? 'recent-post-item' : 'card-widget')
+    ) : [];
+    const idx = siblings.indexOf(el);
+    const table = isPost ? POST_RESPONSIVENESS : ASIDE_RESPONSIVENESS;
+    const resp = table[Math.min(idx, table.length - 1)] || 0.1;
+
+    springNodes.push(new SpringNode(el, resp));
+  };
+
+  // --- Scroll velocity tracking ---
+  let lastScrollY = window.scrollY;
+  let scrollDelta = 0;
+  let scrollTicking = false;
+
+  // Respect prefers-reduced-motion
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  window.addEventListener('scroll', () => {
+    if (reducedMotion) return;
+    const currentY = window.scrollY;
+    scrollDelta = currentY - lastScrollY;
+    lastScrollY = currentY;
+
+    if (springNodes.length === 0) return;
+
+    // Feed scroll impulse into each spring node
+    springNodes.forEach(node => node.impulse(scrollDelta));
+
+    // Start the animation loop if not already running
+    if (!animating) {
+      animating = true;
+      lastFrameTime = performance.now();
+      requestAnimationFrame(physicsTick);
+    }
+  }, { passive: true });
+
+  // --- Physics animation loop (runs at display refresh rate) ---
+  let lastFrameTime = 0;
+
+  const physicsTick = (now) => {
+    // Delta time in seconds, capped to prevent spiral of death on tab switch
+    const dt = Math.min((now - lastFrameTime) / 1000, 0.032);
+    lastFrameTime = now;
+
+    let anyMoving = false;
+
+    for (const node of springNodes) {
+      if (node.step(dt)) {
+        anyMoving = true;
       }
-    });
+    }
+
+    if (anyMoving) {
+      requestAnimationFrame(physicsTick);
+    } else {
+      animating = false;
+      // Snap to rest
+      springNodes.forEach(n => {
+        if (Math.abs(n.offset) < SPRING.restThreshold) {
+          n.offset = 0;
+          n.vel = 0;
+          n.el.style.transform = '';
+        }
+      });
+    }
   };
 
-  const collectParallax = () => {
-    parallaxItems = [];
-    document.querySelectorAll('.recent-post-item').forEach((el, i) => {
-      parallaxItems.push({ el, factor: POST_FACTORS[Math.min(i, POST_FACTORS.length - 1)] });
-    });
-    document.querySelectorAll('.aside-content .card-widget').forEach((el, i) => {
-      parallaxItems.push({ el, factor: ASIDE_FACTORS[Math.min(i, ASIDE_FACTORS.length - 1)] });
-    });
+  /** Rebuild spring nodes (called after posts re-render) */
+  const collectSprings = () => {
+    // Don't remove existing nodes; newly rendered cards will be picked up
+    // by initReveal → activateSpring when they enter viewport
   };
 
-  window.addEventListener('scroll', updateParallax, { passive: true });
-  collectParallax();
+  // Expose for renderPosts
+  window._collectSprings = collectSprings;
 });
+
 

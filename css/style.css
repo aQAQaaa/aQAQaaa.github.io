@@ -1648,30 +1648,13 @@ html {
 .aside-content .card-widget.js-anim:nth-child(6) { transition-delay: 0.3s; }
 .aside-content .card-widget.js-anim:nth-child(7) { transition-delay: 0.36s; }
 
-/* After entrance completes, remove the entrance delay so hover & parallax
-   transitions aren't sluggish; parallax uses a smooth spring curve. */
-.js-anim.parallax-ready {
+/* After entrance completes, JS takes direct control of transform via
+   requestAnimationFrame spring physics — no CSS transition on transform. */
+.js-anim.spring-active {
   transition: opacity 0.3s ease,
-              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
               background-color 0.5s ease,
               box-shadow 0.3s ease;
   transition-delay: 0s;
+  will-change: transform;
 }
-
-
-/* Parallax spring-lag: each card follows at a slightly different time */
-.recent-post-item.parallax-ready:nth-child(1) { transition-delay: 0s; }
-.recent-post-item.parallax-ready:nth-child(2) { transition-delay: 0.07s; }
-.recent-post-item.parallax-ready:nth-child(3) { transition-delay: 0.14s; }
-.recent-post-item.parallax-ready:nth-child(4) { transition-delay: 0.2s; }
-.recent-post-item.parallax-ready:nth-child(5) { transition-delay: 0.26s; }
-.recent-post-item.parallax-ready:nth-child(6) { transition-delay: 0.32s; }
-
-.aside-content .card-widget.parallax-ready:nth-child(1) { transition-delay: 0s; }
-.aside-content .card-widget.parallax-ready:nth-child(2) { transition-delay: 0.06s; }
-.aside-content .card-widget.parallax-ready:nth-child(3) { transition-delay: 0.12s; }
-.aside-content .card-widget.parallax-ready:nth-child(4) { transition-delay: 0.18s; }
-.aside-content .card-widget.parallax-ready:nth-child(5) { transition-delay: 0.24s; }
-.aside-content .card-widget.parallax-ready:nth-child(6) { transition-delay: 0.3s; }
-.aside-content .card-widget.parallax-ready:nth-child(7) { transition-delay: 0.36s; }
 
