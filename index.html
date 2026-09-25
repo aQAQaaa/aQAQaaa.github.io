@@ -281,6 +281,72 @@
             }
           })();
         </script>
+
+        <!-- Left Sidebar: 每日音乐推荐 (黑胶唱片拟物卡片) -->
+        <div class="card-widget card-music" id="card-music">
+          <div class="music-header">
+            <span class="music-title"><i class="fas fa-record-vinyl"></i> 每日音乐推荐</span>
+            <button class="music-random-btn" id="music-random-btn" type="button" title="换一首随机播放"><i class="fas fa-dice"></i> 随便听听</button>
+          </div>
+
+          <!-- Vinyl Turntable Display -->
+          <div class="music-stage">
+            <div class="music-vinyl-disc" id="music-vinyl-disc">
+              <div class="music-vinyl-cover-wrap">
+                <img class="music-vinyl-cover" id="music-vinyl-cover" src="img/author.jpg" alt="Cover" />
+                <div class="music-vinyl-hole"></div>
+              </div>
+            </div>
+            <!-- Tonearm (唱针) -->
+            <div class="music-tonearm" id="music-tonearm">
+              <div class="tonearm-base"></div>
+              <div class="tonearm-arm"></div>
+              <div class="tonearm-head"></div>
+            </div>
+          </div>
+
+          <!-- Song Meta -->
+          <div class="music-meta">
+            <div class="music-title-wrap">
+              <span class="music-song-title" id="music-title">加载中...</span>
+              <span class="music-tag-badge" id="music-tag">🌟 今日之选</span>
+            </div>
+            <div class="music-song-artist" id="music-artist">网易云歌单同步中...</div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="music-progress-section">
+            <div class="music-progress-bar-wrap" id="music-progress-wrap" title="点击跳转进度">
+              <div class="music-progress-bar-fill" id="music-progress-bar"></div>
+            </div>
+            <div class="music-time-row">
+              <span id="music-cur-time">00:00</span>
+              <span id="music-dur-time">00:00</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="music-controls-row">
+            <button class="music-ctrl-btn" id="music-prev-btn" type="button" title="上一首"><i class="fas fa-step-backward"></i></button>
+            <button class="music-ctrl-btn music-ctrl-play" id="music-play-btn" type="button" title="播放 / 暂停"><i class="fas fa-play"></i></button>
+            <button class="music-ctrl-btn" id="music-next-btn" type="button" title="下一首"><i class="fas fa-step-forward"></i></button>
+            <a class="music-ctrl-btn music-link-btn" id="music-netease-link" href="https://music.163.com/#/playlist?id=14317721939" target="_blank" rel="noopener" title="在网易云中打开当前歌曲"><i class="fas fa-external-link-alt"></i></a>
+          </div>
+
+          <!-- Playlist Drawer -->
+          <div class="music-drawer">
+            <div class="music-drawer-toggle" id="music-drawer-toggle">
+              <span><i class="fas fa-list-ul"></i> 歌单列表 <b id="music-drawer-count">(56首)</b></span>
+              <i class="fas fa-chevron-down drawer-arrow"></i>
+            </div>
+            <div class="music-drawer-list" id="music-drawer-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Hidden Native Audio Element -->
+          <audio id="music-audio" preload="none"></audio>
+        </div>
       </div>
 
       <!-- Recent Posts (中间文章主体) -->
@@ -462,6 +528,8 @@
   <script src="https://cdn.jsdelivr.net/npm/typed.js@3.0.0/dist/typed.umd.min.js"></script>
   <script src="js/season-module.js"></script>
   <script src="js/season-particles.js"></script>
+  <script src="js/daily-music-data.js?v=20260925"></script>
+  <script src="js/daily-music-player.js?v=20260925"></script>
   <script src="js/main.js?v=20260925e"></script>
 </body>
 </html>
