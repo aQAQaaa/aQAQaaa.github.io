@@ -1086,13 +1086,13 @@ img {
   color: var(--link-hover-color);
 }
 
-/* --- Luogu-style Check-in & Fortune Card (洛谷风格每日签到卡片) --- */
+/* --- Luogu-style Check-in & Fortune Card (洛谷风格每日签到卡片 - 精致小巧版) --- */
 .card-fortune {
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: var(--shadow-card);
-  padding: 20px 24px;
-  margin-bottom: 20px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: var(--glass-border);
@@ -1102,83 +1102,87 @@ img {
 }
 
 .card-fortune:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .fortune-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 10px;
+  align-items: baseline;
+  padding-bottom: 8px;
   border-bottom: 1px dashed var(--border-color);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+  white-space: nowrap;
 }
 
 .fortune-title {
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--link-color);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .fortune-title i {
-  margin-right: 6px;
+  margin-right: 5px;
 }
 
 .fortune-date {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   color: var(--dark-grey);
+  white-space: nowrap;
 }
 
 /* Unchecked State */
 .fortune-uncheck {
-  padding: 20px 10px;
+  padding: 10px 4px;
   text-align: center;
 }
 
 .fortune-uncheck-icon {
-  font-size: 2.4rem;
+  font-size: 1.8rem;
   color: #ff7242;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .fortune-uncheck-tip {
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   color: var(--font-color);
-  margin-bottom: 16px;
-  opacity: 0.9;
+  margin-bottom: 12px;
+  opacity: 0.88;
 }
 
 .fortune-check-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: linear-gradient(135deg, #ff7242, #ff5252);
   color: #fff;
   border: none;
-  border-radius: 24px;
-  padding: 10px 28px;
-  font-size: 0.96rem;
+  border-radius: 20px;
+  padding: 7px 18px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 18px rgba(255, 114, 66, 0.35);
+  box-shadow: 0 3px 14px rgba(255, 114, 66, 0.32);
   transition: all 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 .fortune-check-btn:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(255, 114, 66, 0.45);
+  box-shadow: 0 6px 18px rgba(255, 114, 66, 0.42);
 }
 
 /* Checked State (Luogu Fortune Display) */
 .fortune-content {
   text-align: center;
-  animation: fortuneReveal 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
+  animation: fortuneReveal 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 @keyframes fortuneReveal {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(8px);
+    transform: scale(0.96) translateY(6px);
   }
   to {
     opacity: 1;
@@ -1187,48 +1191,53 @@ img {
 }
 
 .fortune-rank-wrap {
-  margin: 6px 0 16px;
+  margin: 4px 0 10px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 14px;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .fortune-section-sign {
   font-family: 'Noto Serif SC', serif;
-  font-size: 2.2rem;
+  font-size: 1.35rem;
   font-weight: 900;
   color: #e74c3c;
   user-select: none;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .fortune-rank {
   font-family: 'Noto Serif SC', serif;
-  font-size: 2.4rem;
+  font-size: 1.65rem;
   font-weight: 900;
   color: #e74c3c;
-  letter-spacing: 5px;
-  text-shadow: 0 2px 12px rgba(231, 76, 60, 0.22);
+  letter-spacing: 2px;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
 }
 
 [data-theme='dark'] .fortune-section-sign,
 [data-theme='dark'] .fortune-rank {
   color: #ff6b6b;
-  text-shadow: 0 2px 14px rgba(255, 107, 107, 0.3);
+  text-shadow: 0 2px 10px rgba(255, 107, 107, 0.28);
 }
 
 .fortune-events-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 12px 0 16px;
+  gap: 7px;
+  margin: 10px 0 12px;
   text-align: left;
 }
 
 .fortune-event-item {
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: rgba(0, 0, 0, 0.025);
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid rgba(227, 232, 247, 0.5);
   transition: all 0.3s;
 }
@@ -1239,15 +1248,18 @@ img {
 }
 
 .fortune-event-item:hover {
-  transform: translateX(3px);
+  transform: translateX(2px);
   border-color: rgba(73, 177, 245, 0.4);
 }
 
 .fortune-event-title {
-  font-size: 0.94rem;
+  font-size: 0.88rem;
   font-weight: 700;
   margin-bottom: 2px;
   color: var(--text-highlight-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-tag.tag-good {
@@ -1269,7 +1281,7 @@ img {
 }
 
 .fortune-event-desc {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   color: var(--dark-grey);
   line-height: 1.35;
 }
@@ -1279,10 +1291,29 @@ img {
   justify-content: space-between;
   align-items: center;
   border-top: 1px dashed var(--border-color);
-  padding-top: 10px;
-  margin-top: 6px;
-  font-size: 0.8rem;
+  padding-top: 8px;
+  margin-top: 4px;
+  font-size: 0.75rem;
   color: var(--dark-grey);
+}
+
+.fortune-streak-count {
+  color: #ff7242;
+  font-size: 0.96rem;
+  font-weight: 700;
+  margin: 0 2px;
+}
+
+.fortune-badge-signed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(73, 177, 245, 0.12);
+  color: var(--link-color);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .fortune-streak-count {

@@ -118,7 +118,7 @@
     <main class="layout" id="content-inner">
       <!-- Left Sidebar (主页左侧栏：每日签到/运势卡片) -->
       <div class="aside-content aside-left" id="aside-content-left">
-        <div class="card-widget card-fortune sticky_layout" id="card-fortune">
+        <div class="card-widget card-fortune" id="card-fortune">
           <div class="fortune-header">
             <span class="fortune-title"><i class="fas fa-calendar-check"></i> 今日运势</span>
             <span class="fortune-date" id="fortune-date">今日运势</span>
@@ -128,14 +128,14 @@
           <div class="fortune-uncheck" id="fortune-uncheck">
             <div class="fortune-uncheck-inner">
               <div class="fortune-uncheck-icon"><i class="fas fa-gift fa-bounce"></i></div>
-              <div class="fortune-uncheck-tip">每天打卡签到，开启一整天的好心情</div>
+              <div class="fortune-uncheck-tip">每天打卡签到，开启好心情</div>
               <button class="fortune-check-btn" id="fortune-check-btn" type="button">
                 <i class="fas fa-stamp"></i> 点击打卡 · 抽取好运
               </button>
             </div>
           </div>
 
-          <!-- Checked state: Luogu-style fortune result card -->
+          <!-- Checked state: Luogu-style fortune result card (精致小巧版) -->
           <div class="fortune-content" id="fortune-content" style="display: none;">
             <div class="fortune-rank-wrap">
               <span class="fortune-section-sign">§</span>
@@ -149,16 +149,8 @@
                 <div class="fortune-event-desc" id="fortune-good-1-desc">美食能治愈一切疲惫</div>
               </div>
               <div class="fortune-event-item">
-                <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-1-name">熬夜刷手机</span></div>
-                <div class="fortune-event-desc" id="fortune-bad-1-desc">眼睛会酸，明早起不来床</div>
-              </div>
-              <div class="fortune-event-item">
-                <div class="fortune-event-title"><span class="event-tag tag-good">宜：</span><span class="event-name" id="fortune-good-2-name">出去走走</span></div>
-                <div class="fortune-event-desc" id="fortune-good-2-desc">偶遇路边的小猫和小花</div>
-              </div>
-              <div class="fortune-event-item">
-                <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-2-name">生闷气</span></div>
-                <div class="fortune-event-desc" id="fortune-bad-2-desc">气出皱纹不划算，开心最重要</div>
+                <div class="fortune-event-title"><span class="event-tag tag-bad">忌：</span><span class="event-name" id="fortune-bad-1-name">生闷气</span></div>
+                <div class="fortune-event-desc" id="fortune-bad-1-desc">气出皱纹不划算，开心最重要</div>
               </div>
             </div>
 
@@ -210,15 +202,15 @@
               const y = today.getFullYear();
               const m = today.getMonth() + 1;
               const d = today.getDate();
-              const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+              const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
               const dateStr = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-              const dateDisplay = y + '年' + m + '月' + d + '日 ' + days[today.getDay()];
+              const dateDisplay = m + '月' + d + '日 ' + days[today.getDay()];
 
               const dateEl = document.getElementById('fortune-date');
               if (dateEl) dateEl.textContent = dateDisplay;
 
               let hash = 0;
-              const seed = dateStr + '_fortune_v2';
+              const seed = dateStr + '_fortune_v3';
               for (let i = 0; i < seed.length; i++) {
                 hash = ((hash << 5) - hash) + seed.charCodeAt(i);
                 hash |= 0;
@@ -227,11 +219,7 @@
 
               const rank = RANKS[hash % RANKS.length];
               const g1 = GOOD[(hash >> 2) % GOOD.length];
-              let g2 = GOOD[(hash >> 5) % GOOD.length];
-              if (g2.name === g1.name) g2 = GOOD[((hash >> 5) + 1) % GOOD.length];
               const b1 = BAD[(hash >> 8) % BAD.length];
-              let b2 = BAD[(hash >> 11) % BAD.length];
-              if (b2.name === b1.name) b2 = BAD[((hash >> 11) + 1) % BAD.length];
 
               const setTxt = (id, txt) => {
                 const el = document.getElementById(id);
@@ -241,12 +229,8 @@
               setTxt('fortune-rank', rank);
               setTxt('fortune-good-1-name', g1.name);
               setTxt('fortune-good-1-desc', g1.desc);
-              setTxt('fortune-good-2-name', g2.name);
-              setTxt('fortune-good-2-desc', g2.desc);
               setTxt('fortune-bad-1-name', b1.name);
               setTxt('fortune-bad-1-desc', b1.desc);
-              setTxt('fortune-bad-2-name', b2.name);
-              setTxt('fortune-bad-2-desc', b2.desc);
 
               const uncheckWrap = document.getElementById('fortune-uncheck');
               const contentWrap = document.getElementById('fortune-content');

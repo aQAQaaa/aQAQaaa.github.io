@@ -1000,9 +1000,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     const date = today.getDate();
-    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-    const dateDisplay = `${year}年${month}月${date}日 ${weekDays[today.getDay()]}`;
+    const dateDisplay = `${month}月${date}日 ${weekDays[today.getDay()]}`;
 
     const dateEl = document.getElementById('fortune-date');
     if (dateEl) dateEl.textContent = dateDisplay;
@@ -1018,23 +1018,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getDailyFortune = (seedDate) => {
-      const h = hashStr(seedDate + '_fortune_v1');
+      const h = hashStr(seedDate + '_fortune_v3');
       const rank = RANKS[h % RANKS.length];
-
-      const gIdx1 = (h >> 2) % GOOD_THINGS.length;
-      let gIdx2 = (h >> 5) % GOOD_THINGS.length;
-      if (gIdx2 === gIdx1) gIdx2 = (gIdx1 + 1) % GOOD_THINGS.length;
-
-      const bIdx1 = (h >> 8) % BAD_THINGS.length;
-      let bIdx2 = (h >> 11) % BAD_THINGS.length;
-      if (bIdx2 === bIdx1) bIdx2 = (bIdx1 + 1) % BAD_THINGS.length;
+      const g1 = GOOD_THINGS[(h >> 2) % GOOD_THINGS.length];
+      const b1 = BAD_THINGS[(h >> 8) % BAD_THINGS.length];
 
       return {
         rank,
-        good1: GOOD_THINGS[gIdx1],
-        good2: GOOD_THINGS[gIdx2],
-        bad1: BAD_THINGS[bIdx1],
-        bad2: BAD_THINGS[bIdx2]
+        good1: g1,
+        bad1: b1
       };
     };
 
@@ -1044,23 +1036,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const rankEl = document.getElementById('fortune-rank');
     const g1Name = document.getElementById('fortune-good-1-name');
     const g1Desc = document.getElementById('fortune-good-1-desc');
-    const g2Name = document.getElementById('fortune-good-2-name');
-    const g2Desc = document.getElementById('fortune-good-2-desc');
     const b1Name = document.getElementById('fortune-bad-1-name');
     const b1Desc = document.getElementById('fortune-bad-1-desc');
-    const b2Name = document.getElementById('fortune-bad-2-name');
-    const b2Desc = document.getElementById('fortune-bad-2-desc');
     const streakEl = document.getElementById('fortune-streak');
 
     if (rankEl) rankEl.textContent = fortune.rank;
     if (g1Name) g1Name.textContent = fortune.good1.name;
     if (g1Desc) g1Desc.textContent = fortune.good1.desc;
-    if (g2Name) g2Name.textContent = fortune.good2.name;
-    if (g2Desc) g2Desc.textContent = fortune.good2.desc;
     if (b1Name) b1Name.textContent = fortune.bad1.name;
     if (b1Desc) b1Desc.textContent = fortune.bad1.desc;
-    if (b2Name) b2Name.textContent = fortune.bad2.name;
-    if (b2Desc) b2Desc.textContent = fortune.bad2.desc;
 
     // Streak calculation
     const lastCheckDate = localStorage.getItem('blog_fortune_last_date');
