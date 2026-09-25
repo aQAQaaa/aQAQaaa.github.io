@@ -452,7 +452,6 @@ img {
   box-shadow: var(--shadow-card);
   margin-bottom: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: post-in 0.6s ease-out both;
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: var(--glass-border);
@@ -463,23 +462,8 @@ img {
   border-color: rgba(73, 177, 245, 0.3);
 }
 
-@keyframes post-in {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.recent-post-item:nth-child(1) { animation-delay: 0.1s; }
-.recent-post-item:nth-child(2) { animation-delay: 0.15s; }
-.recent-post-item:nth-child(3) { animation-delay: 0.2s; }
-.recent-post-item:nth-child(4) { animation-delay: 0.25s; }
-.recent-post-item:nth-child(5) { animation-delay: 0.3s; }
-.recent-post-item:nth-child(6) { animation-delay: 0.35s; }
+
 
 .post_cover {
   width: 260px;
@@ -658,7 +642,6 @@ img {
 
 .card-widget:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
 }
 
 /* Card glass shimmer effect */
@@ -1393,10 +1376,7 @@ html {
   transition: background-color 0.5s ease;
 }
 
-.card-widget,
-.recent-post-item {
-  transition: background-color 0.5s ease, box-shadow 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+
 
 /* --- Responsive --- */
 @media screen and (max-width: 1200px) {
@@ -1492,10 +1472,8 @@ html {
   top: 80px;
 }
 
-/* --- Page fade-in --- */
-.page {
-  animation: fadeInUp 0.6s ease-out;
-}
+
+
 
 /* --- Aside toggle --- */
 .layout.hide-aside #aside-content {
@@ -1508,14 +1486,7 @@ html {
   margin: 0 auto;
 }
 
-/* --- Card hover effect --- */
-.card-widget {
-  animation: fadeInUp 0.6s ease-out both;
-}
 
-.card-widget:nth-child(1) { animation-delay: 0.1s; }
-.card-widget:nth-child(2) { animation-delay: 0.15s; }
-.card-widget:nth-child(3) { animation-delay: 0.2s; }
 
 /* --- Article bg for inner pages --- */
 .article-bg {
@@ -1645,52 +1616,62 @@ html {
 }
 
 
-/* --- Scroll Reveal (non-linear entrance, triggered on scroll) --- */
+/* --- Scroll Reveal (unified entrance with CSS transitions, no animation conflicts) --- */
+/* Cards start hidden; JS adds .animate-in when they scroll into view. */
 .js-anim {
-  animation: reveal-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  animation-play-state: paused;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 
 .js-anim.animate-in {
-  animation-play-state: running;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes reveal-in {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Stagger entrance delays — post cards */
+.recent-post-item.js-anim:nth-child(1) { transition-delay: 0s; }
+.recent-post-item.js-anim:nth-child(2) { transition-delay: 0.06s; }
+.recent-post-item.js-anim:nth-child(3) { transition-delay: 0.12s; }
+.recent-post-item.js-anim:nth-child(4) { transition-delay: 0.18s; }
+.recent-post-item.js-anim:nth-child(5) { transition-delay: 0.24s; }
+.recent-post-item.js-anim:nth-child(6) { transition-delay: 0.3s; }
+
+/* Stagger entrance delays — aside widgets */
+.aside-content .card-widget.js-anim:nth-child(1) { transition-delay: 0s; }
+.aside-content .card-widget.js-anim:nth-child(2) { transition-delay: 0.06s; }
+.aside-content .card-widget.js-anim:nth-child(3) { transition-delay: 0.12s; }
+.aside-content .card-widget.js-anim:nth-child(4) { transition-delay: 0.18s; }
+.aside-content .card-widget.js-anim:nth-child(5) { transition-delay: 0.24s; }
+.aside-content .card-widget.js-anim:nth-child(6) { transition-delay: 0.3s; }
+.aside-content .card-widget.js-anim:nth-child(7) { transition-delay: 0.36s; }
+
+/* After entrance completes, remove the entrance delay so hover & parallax
+   transitions aren't sluggish; parallax uses a smooth spring curve. */
+.js-anim.parallax-ready {
+  transition: opacity 0.3s ease,
+              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.5s ease,
+              box-shadow 0.3s ease;
+  transition-delay: 0s;
 }
 
 
-/* --- Scroll Parallax with spring-like inertia --- */
-/* JS sets --parallax-offset per card (different speed); the transform
-   transition + per-item delay create the springy lag while scrolling. */
-.recent-post-item,
-.aside-content .card-widget {
-  transform: translate3d(0, var(--parallax-offset, 0px), 0);
-  transition: background-color 0.5s ease, box-shadow 0.3s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
+/* Parallax spring-lag: each card follows at a slightly different time */
+.recent-post-item.parallax-ready:nth-child(1) { transition-delay: 0s; }
+.recent-post-item.parallax-ready:nth-child(2) { transition-delay: 0.07s; }
+.recent-post-item.parallax-ready:nth-child(3) { transition-delay: 0.14s; }
+.recent-post-item.parallax-ready:nth-child(4) { transition-delay: 0.2s; }
+.recent-post-item.parallax-ready:nth-child(5) { transition-delay: 0.26s; }
+.recent-post-item.parallax-ready:nth-child(6) { transition-delay: 0.32s; }
 
-/* Cards follow at slightly different times (spring lag) */
-.recent-post-item:nth-child(1) { transition-delay: 0s, 0s, 0s; }
-.recent-post-item:nth-child(2) { transition-delay: 0s, 0s, 0.09s; }
-.recent-post-item:nth-child(3) { transition-delay: 0s, 0s, 0.18s; }
-.recent-post-item:nth-child(4) { transition-delay: 0s, 0s, 0.27s; }
-.recent-post-item:nth-child(5) { transition-delay: 0s, 0s, 0.36s; }
-.recent-post-item:nth-child(6) { transition-delay: 0s, 0s, 0.45s; }
+.aside-content .card-widget.parallax-ready:nth-child(1) { transition-delay: 0s; }
+.aside-content .card-widget.parallax-ready:nth-child(2) { transition-delay: 0.06s; }
+.aside-content .card-widget.parallax-ready:nth-child(3) { transition-delay: 0.12s; }
+.aside-content .card-widget.parallax-ready:nth-child(4) { transition-delay: 0.18s; }
+.aside-content .card-widget.parallax-ready:nth-child(5) { transition-delay: 0.24s; }
+.aside-content .card-widget.parallax-ready:nth-child(6) { transition-delay: 0.3s; }
+.aside-content .card-widget.parallax-ready:nth-child(7) { transition-delay: 0.36s; }
 
-.aside-content .card-widget:nth-child(1) { transition-delay: 0s, 0s, 0s; }
-.aside-content .card-widget:nth-child(2) { transition-delay: 0s, 0s, 0.08s; }
-.aside-content .card-widget:nth-child(3) { transition-delay: 0s, 0s, 0.16s; }
-.aside-content .card-widget:nth-child(4) { transition-delay: 0s, 0s, 0.24s; }
-.aside-content .card-widget:nth-child(5) { transition-delay: 0s, 0s, 0.32s; }
-.aside-content .card-widget:nth-child(6) { transition-delay: 0s, 0s, 0.4s; }
-.aside-content .card-widget:nth-child(7) { transition-delay: 0s, 0s, 0.48s; }
-
-/* Parallax cards keep their spring offset on hover (no lift) */

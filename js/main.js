@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const wordBadge = wordCount > 0 ? `<span class="post-word-count"><i class="fas fa-file-word"></i> ${wordCount} 字</span>` : '';
 
       return `
-        <div class="recent-post-item" style="animation-delay: ${0.1 + i * 0.05}s">
+        <div class="recent-post-item">
           ${coverHtml}
           <div class="recent-post-info">
             <a class="article-title" href="${post.url || '#'}" title="${post.title}">${stickyIcon}${post.title}</a>
@@ -649,31 +649,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // ==================== Scroll Reveal (non-linear card entrance) ====================
+  // ==================== Scroll Reveal (transition-based, no CSS animation conflicts) ====================
   const revealObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-            revealObserver.unobserve(entry.target);
+            const el = entry.target;
+            el.classList.add('animate-in');
+            revealObserver.unobserve(el);
+
+            // After the entrance transition finishes, enable parallax on this card
+            const onEnd = () => {
+              el.removeEventListener('transitionend', onEnd);
+              el.classList.add('parallax-ready');
+            };
+            el.addEventListener('transitionend', onEnd);
+
+            // Safety fallback: if transitionend never fires (e.g. tab hidden),
+            // promote to parallax-ready after 900ms
+            setTimeout(() => {
+              if (!el.classList.contains('parallax-ready')) {
+                el.classList.add('parallax-ready');
+              }
+            }, 900);
           }
         });
-      }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' })
+      }, { threshold: 0.08, rootMargin: '0px 0px -10px 0px' })
     : null;
 
   const initReveal = (root) => {
     if (!revealObserver) return;
 
-    // Post cards (stagger comes from the inline animation-delay in renderPosts)
+    // Post cards
     root.querySelectorAll('.recent-post-item:not(.js-anim)').forEach(el => {
       el.classList.add('js-anim');
       revealObserver.observe(el);
     });
 
-    // Aside widgets (slight cascade delay)
-    root.querySelectorAll('.aside-content .card-widget:not(.js-anim)').forEach((el, i) => {
+    // Aside widgets
+    root.querySelectorAll('.aside-content .card-widget:not(.js-anim)').forEach(el => {
       el.classList.add('js-anim');
-      el.style.animationDelay = Math.min(0.06 + i * 0.05, 0.4) + 's';
       revealObserver.observe(el);
     });
   };
@@ -681,17 +696,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init reveal for static aside widgets; post cards re-init inside renderPosts
   initReveal(document);
 
-  // ==================== Scroll Parallax (spring-like inertia) ====================
-  // Each card / aside widget gets its own --parallax-offset (different speed);
-  // the CSS transform transition + per-item delay create the springy lag.
+  // ==================== Scroll Parallax (spring-like inertia, only after entrance) ====================
+  // Each card gets a speed factor; CSS transition-delay per nth-child creates the spring lag.
   const POST_FACTORS = [1.3, 1.05, 0.82, 0.62, 0.42, 0.26];
   const ASIDE_FACTORS = [1.0, 0.82, 0.65, 0.5, 0.36, 0.24, 0.15];
   let parallaxItems = [];
 
   const updateParallax = () => {
-    const y = (window.scrollY || document.documentElement.scrollTop) * 0.045;
+    const y = (window.scrollY || document.documentElement.scrollTop) * 0.04;
     parallaxItems.forEach((item) => {
-      item.el.style.setProperty('--parallax-offset', (y * item.factor).toFixed(2) + 'px');
+      // Only apply parallax offset to cards that finished their entrance
+      if (item.el.classList.contains('parallax-ready')) {
+        const offset = (y * item.factor).toFixed(2);
+        item.el.style.transform = `translateY(${offset}px)`;
+      }
     });
   };
 
@@ -703,9 +721,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.aside-content .card-widget').forEach((el, i) => {
       parallaxItems.push({ el, factor: ASIDE_FACTORS[Math.min(i, ASIDE_FACTORS.length - 1)] });
     });
-    updateParallax();
   };
 
   window.addEventListener('scroll', updateParallax, { passive: true });
   collectParallax();
 });
+
