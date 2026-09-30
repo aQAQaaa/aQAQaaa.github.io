@@ -75,7 +75,7 @@
         <div class="music-list-item ${idx === currentIndex ? 'active' : ''}" data-index="${idx}">
           <span class="ml-index">${idx + 1}</span>
           <div class="ml-info">
-            <div class="ml-title" title="${s.title}">${s.title}</div>
+            <div class="ml-title" title="${s.title}">${s.title}${s.tag ? ` <span style="font-size:0.62rem; background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.25); padding:1px 5px; border-radius:4px; font-weight:700;">${s.tag}</span>` : ''}</div>
             <div class="ml-artist" title="${s.artist}">${s.artist}</div>
           </div>
           <span class="ml-wave-icon"><i class="fas fa-play"></i></span>
@@ -110,7 +110,11 @@
         vinylCover.src = song.cover || 'img/author.jpg';
       }
       if (tagEl) {
-        tagEl.textContent = (currentIndex === todayDefaultIndex) ? '🌟 今日之选' : `🎵 第 ${currentIndex + 1} 首`;
+        if (song.tag) {
+          tagEl.textContent = (currentIndex === todayDefaultIndex) ? `🌟 今日之选 · ${song.tag}` : song.tag;
+        } else {
+          tagEl.textContent = (currentIndex === todayDefaultIndex) ? '🌟 今日之选' : `🎵 第 ${currentIndex + 1} 首`;
+        }
       }
       if (neteaseLink) {
         neteaseLink.href = `https://music.163.com/#/song?id=${song.id}`;

@@ -1,12 +1,156 @@
 /**
- * Daily Music Playlist Data - Verified 100% Playable Tracks from NetEase Playlist
- * Playlist ID: 14317721939
- * Playable Count: 27
+ * Daily Music Playlist Data - Verified 100% Playable Tracks
+ * Includes NetEase Million-Favorite Hits (🔥 百万收藏神曲) + User Playlist (你好 - 14317721939)
+ * Total Playable Songs: 43
  */
 window.BLOG_PLAYLIST_DATA = {
   "playlistId": "14317721939",
-  "playlistName": "你好",
+  "playlistName": "你好 & 百万收藏精选",
   "songs": [
+    {
+      "id": 1330348068,
+      "title": "起风了",
+      "artist": "冯沁苑(买辣椒也用券)",
+      "album": "起风了",
+      "cover": "https://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1330348068.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 3414057940,
+      "title": "水星记",
+      "artist": "郭顶",
+      "album": "伤心俱乐部",
+      "cover": "https://p1.music.126.net/J5HaeNTVIlVPGSZ-LqODCQ==/109951173667452352.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=3414057940.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 1363948882,
+      "title": "世间美好与你环环相扣",
+      "artist": "柏松",
+      "album": "听闻余生",
+      "cover": "https://p1.music.126.net/DK1_4sP_339o5rowMdPXdw==/109951164071024476.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1363948882.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 569200213,
+      "title": "消愁",
+      "artist": "毛不易",
+      "album": "平凡的一天",
+      "cover": "https://p1.music.126.net/vmCcDvD1H04e9gm97xsCqg==/109951163350929740.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=569200213.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 569213220,
+      "title": "像我这样的人",
+      "artist": "毛不易",
+      "album": "平凡的一天",
+      "cover": "https://p1.music.126.net/vmCcDvD1H04e9gm97xsCqg==/109951163350929740.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=569213220.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 27646205,
+      "title": "安和桥",
+      "artist": "宋冬野",
+      "album": "安和桥北",
+      "cover": "https://p1.music.126.net/B8XyAbneWgxRcD95SGMBbA==/109951173825645527.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=27646205.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 29715551,
+      "title": "南山南",
+      "artist": "马頔",
+      "album": "孤岛",
+      "cover": "https://p1.music.126.net/CVJlM5yyYcdTFVn5gXtyOw==/109951172945818860.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=29715551.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 2749430418,
+      "title": "奇妙能力歌",
+      "artist": "陈粒",
+      "album": "十年自选",
+      "cover": "https://p1.music.126.net/jeWHIkiTkBglJKxte7p6JA==/109951172059186762.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=2749430418.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 2007345300,
+      "title": "春风十里 (Live)",
+      "artist": "鹿先森乐队",
+      "album": "乐人·Live：鹿先森乐队“春风千里”巡演深圳站 (Live)",
+      "cover": "https://p1.music.126.net/Ghp1XJ4QqG7-EDxBncseQA==/109951168152727919.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=2007345300.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 1430583016,
+      "title": "海底",
+      "artist": "一支榴莲",
+      "album": "海底",
+      "cover": "https://p1.music.126.net/YRFYXG6YaJfTyy_mQntS4A==/109951164799337803.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1430583016.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 1454730043,
+      "title": "赤伶",
+      "artist": "李玉刚",
+      "album": "赤伶",
+      "cover": "https://p1.music.126.net/0el5yaTEo3KjeJjL3ZXxmg==/109951165054951989.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1454730043.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 31445554,
+      "title": "七月上",
+      "artist": "Jam",
+      "album": "阿敬的单曲集",
+      "cover": "https://p1.music.126.net/uxyYBS5jhmi_DN4xDYy3eg==/7872503255697381.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=31445554.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 1436709403,
+      "title": "夏天的风",
+      "artist": "火羊瞌睡了",
+      "album": "夏天的风",
+      "cover": "https://p1.music.126.net/rFUKVdOjqxgwAT6Zi6qv7A==/109951164906689206.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1436709403.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 1313354324,
+      "title": "出山",
+      "artist": "花粥 / 王胜娚",
+      "album": "粥请客（四）",
+      "cover": "https://p1.music.126.net/xUAfdMHdXhu3BmO4g8nOYA==/109951163573311341.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=1313354324.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 108779,
+      "title": "江南 (Live)",
+      "artist": "林俊杰",
+      "album": "2006就是俊杰世界巡回演唱会",
+      "cover": "https://p1.music.126.net/n71Alfj8GOuIYjfhJnfB7A==/109951171387075468.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=108779.mp3",
+      "tag": "🔥 百万收藏"
+    },
+    {
+      "id": 27949882,
+      "title": "泡沫 (Live)",
+      "artist": "G.E.M.邓紫棋",
+      "album": "G.E.M.X.X.X.Live",
+      "cover": "https://p1.music.126.net/k0Y5aZ7M40UaqYLVaTXrkg==/7786741349028795.jpg",
+      "url": "https://music.163.com/song/media/outer/url?id=27949882.mp3",
+      "tag": "🔥 百万收藏"
+    },
     {
       "id": 465921195,
       "title": "还是分开",
