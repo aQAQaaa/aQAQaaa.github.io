@@ -1,6 +1,6 @@
 /**
  * Daily Music Playlist Data - Verified 100% Playable Tracks
- * Includes NetEase Million-Favorite Hits (🔥 百万收藏神曲) + User Playlist (你好 - 14317721939)
+ * Playlist ID: 14317721939
  * Total Playable Songs: 36
  */
 window.BLOG_PLAYLIST_DATA = {
@@ -13,8 +13,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "冯沁苑(买辣椒也用券)",
       "album": "起风了",
       "cover": "https://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1330348068.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=1330348068.mp3"
     },
     {
       "id": 3414057940,
@@ -22,8 +21,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "郭顶",
       "album": "伤心俱乐部",
       "cover": "https://p1.music.126.net/J5HaeNTVIlVPGSZ-LqODCQ==/109951173667452352.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=3414057940.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=3414057940.mp3"
     },
     {
       "id": 1363948882,
@@ -31,8 +29,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "柏松",
       "album": "听闻余生",
       "cover": "https://p1.music.126.net/DK1_4sP_339o5rowMdPXdw==/109951164071024476.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1363948882.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=1363948882.mp3"
     },
     {
       "id": 569200213,
@@ -40,8 +37,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "毛不易",
       "album": "平凡的一天",
       "cover": "https://p1.music.126.net/vmCcDvD1H04e9gm97xsCqg==/109951163350929740.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=569200213.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=569200213.mp3"
     },
     {
       "id": 569213220,
@@ -49,8 +45,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "毛不易",
       "album": "平凡的一天",
       "cover": "https://p1.music.126.net/vmCcDvD1H04e9gm97xsCqg==/109951163350929740.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=569213220.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=569213220.mp3"
     },
     {
       "id": 29715551,
@@ -58,8 +53,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "马頔",
       "album": "孤岛",
       "cover": "https://p1.music.126.net/CVJlM5yyYcdTFVn5gXtyOw==/109951172945818860.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=29715551.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=29715551.mp3"
     },
     {
       "id": 1436709403,
@@ -67,8 +61,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "火羊瞌睡了",
       "album": "夏天的风",
       "cover": "https://p1.music.126.net/rFUKVdOjqxgwAT6Zi6qv7A==/109951164906689206.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1436709403.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=1436709403.mp3"
     },
     {
       "id": 108779,
@@ -76,8 +69,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "林俊杰",
       "album": "2006就是俊杰世界巡回演唱会",
       "cover": "https://p1.music.126.net/n71Alfj8GOuIYjfhJnfB7A==/109951171387075468.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=108779.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=108779.mp3"
     },
     {
       "id": 27949882,
@@ -85,8 +77,7 @@ window.BLOG_PLAYLIST_DATA = {
       "artist": "G.E.M.邓紫棋",
       "album": "G.E.M.X.X.X.Live",
       "cover": "https://p1.music.126.net/k0Y5aZ7M40UaqYLVaTXrkg==/7786741349028795.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=27949882.mp3",
-      "tag": "🔥 百万收藏"
+      "url": "https://music.163.com/song/media/outer/url?id=27949882.mp3"
     },
     {
       "id": 465921195,
