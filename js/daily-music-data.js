@@ -1,7 +1,7 @@
 /**
  * Daily Music Playlist Data - Verified 100% Playable Tracks
  * Includes NetEase Million-Favorite Hits (🔥 百万收藏神曲) + User Playlist (你好 - 14317721939)
- * Total Playable Songs: 43
+ * Total Playable Songs: 36
  */
 window.BLOG_PLAYLIST_DATA = {
   "playlistId": "14317721939",
@@ -53,15 +53,6 @@ window.BLOG_PLAYLIST_DATA = {
       "tag": "🔥 百万收藏"
     },
     {
-      "id": 27646205,
-      "title": "安和桥",
-      "artist": "宋冬野",
-      "album": "安和桥北",
-      "cover": "https://p1.music.126.net/B8XyAbneWgxRcD95SGMBbA==/109951173825645527.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=27646205.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
       "id": 29715551,
       "title": "南山南",
       "artist": "马頔",
@@ -71,66 +62,12 @@ window.BLOG_PLAYLIST_DATA = {
       "tag": "🔥 百万收藏"
     },
     {
-      "id": 2749430418,
-      "title": "奇妙能力歌",
-      "artist": "陈粒",
-      "album": "十年自选",
-      "cover": "https://p1.music.126.net/jeWHIkiTkBglJKxte7p6JA==/109951172059186762.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2749430418.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
-      "id": 2007345300,
-      "title": "春风十里 (Live)",
-      "artist": "鹿先森乐队",
-      "album": "乐人·Live：鹿先森乐队“春风千里”巡演深圳站 (Live)",
-      "cover": "https://p1.music.126.net/Ghp1XJ4QqG7-EDxBncseQA==/109951168152727919.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=2007345300.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
-      "id": 1430583016,
-      "title": "海底",
-      "artist": "一支榴莲",
-      "album": "海底",
-      "cover": "https://p1.music.126.net/YRFYXG6YaJfTyy_mQntS4A==/109951164799337803.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1430583016.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
-      "id": 1454730043,
-      "title": "赤伶",
-      "artist": "李玉刚",
-      "album": "赤伶",
-      "cover": "https://p1.music.126.net/0el5yaTEo3KjeJjL3ZXxmg==/109951165054951989.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1454730043.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
-      "id": 31445554,
-      "title": "七月上",
-      "artist": "Jam",
-      "album": "阿敬的单曲集",
-      "cover": "https://p1.music.126.net/uxyYBS5jhmi_DN4xDYy3eg==/7872503255697381.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=31445554.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
       "id": 1436709403,
       "title": "夏天的风",
       "artist": "火羊瞌睡了",
       "album": "夏天的风",
       "cover": "https://p1.music.126.net/rFUKVdOjqxgwAT6Zi6qv7A==/109951164906689206.jpg",
       "url": "https://music.163.com/song/media/outer/url?id=1436709403.mp3",
-      "tag": "🔥 百万收藏"
-    },
-    {
-      "id": 1313354324,
-      "title": "出山",
-      "artist": "花粥 / 王胜娚",
-      "album": "粥请客（四）",
-      "cover": "https://p1.music.126.net/xUAfdMHdXhu3BmO4g8nOYA==/109951163573311341.jpg",
-      "url": "https://music.163.com/song/media/outer/url?id=1313354324.mp3",
       "tag": "🔥 百万收藏"
     },
     {
